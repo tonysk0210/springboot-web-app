@@ -10,6 +10,7 @@ import com.company.MyWeb.repository.PersonRepository;
 import com.company.MyWeb.service.ContactService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import static com.company.MyWeb.constant.ProjectConstant.ANSI_GREEN;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
 
@@ -34,14 +36,6 @@ public class AdminController {
     private final PlanRepository planRepository;
     private final PersonRepository personRepository;
     private final CoursesRepository coursesRepository;
-
-    @Autowired
-    public AdminController(ContactService contactService, PlanRepository planRepository, PersonRepository personRepository, CoursesRepository coursesRepository) {
-        this.contactService = contactService;
-        this.planRepository = planRepository;
-        this.personRepository = personRepository;
-        this.coursesRepository = coursesRepository;
-    }
 
     //contact messages
 //    @GetMapping("/contactMessage")
