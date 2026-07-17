@@ -1,0 +1,68 @@
+<div th:fragment="contactMessageDescriptionFrag" class="contact-message-section">
+    <h3 style="color: #1e3a8a;">聯絡訊息分頁與排序管理 — Spring Data JPA 與 Thymeleaf 整合應用</h3>
+    <p>
+        View Contact Page 頁面僅顯示 <code>status</code> 為 <code>OPEN</code> 的 <code>Contact</code> 物件，並由 <code>AdminController</code> 負責處理對 <code>/viewContactMessage/page/{currentPageNum}</code> 的請求。
+    </p>
+    <p>
+        系統利用 Spring Data JPA 的內建分頁 <strong>Pagination</strong> 和 <strong>Sorting</strong> 機制，從 <code>contact_msg</code> 資料表建立 <code>Page&lt;Contact&gt;</code> 物件。
+        接著，從中擷取當前頁面的 <code>List&lt;Contact&gt;</code>　資料，並透過 Thymeleaf 將結果渲染至前端。
+    </p>
+    <p>
+        當使用者透過分頁或欄位排序連結進行操作時，系統會根據新的 URL 參數更新查詢條件，重新建立分頁結果並渲染畫面，提供完整且互動性良好的分頁與排序功能。
+    </p>
+
+    <h4>🔧 建立 Pageable 與 Page&lt;Contact&gt;</h4>
+
+    <p>為建立 <code>Page&lt;Contact&gt;</code> 物件，必須先建立 <code>Pageable</code> 物件，用來定義欲查詢的分頁條件，當中包含了以下屬性：</p>
+    <ul>
+        <li><code>pageNumber</code>：目前頁碼</li>
+        <li><code>sizePerPage</code>：每頁顯示的筆數</li>
+        <li><code>sortField</code>：排序欄位</li>
+        <li><code>sortDir</code>：排序方向（asc / desc）</li>
+    </ul>
+
+    <!--code-->
+    <pre><code>Pageable pageable = PageRequest.of(
+    currentPageNum - 1,   <span style="color:skyblue;">// Spring Boot 的分頁機制為 zero-based（從 0 開始），因此若前端傳入的頁碼從 1 起算，需將其減 1 以符合系統預期。</span>
+    sizePerPage,
+    sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
+    sortField
+);</code></pre>
+
+    <p>這些參數可透過 URL 指定，例如：</p>
+    <!--code-->
+    <pre><code>/admin/viewContactMessage/page/1?sortField=name&amp;sortDir=asc</code></pre>
+
+    <p>
+        系統會根據這些參數建立對應的 <code>Pageable</code> 物件，並傳入<code>contactRepository</code>查詢方法中，以取得特定狀態（status = OPEN）的聯絡訊息。
+    </p>
+
+    <!--code-->
+    <pre><code>Page&lt;Contact&gt; pageOfContacts =
+    contactRepository.findByStatusWithPageableAtQuery(
+        ProjectConstant.STATUS_OPEN,  <span style="color:skyblue;">// 查詢 status 為 OPEN 的聯絡訊息</span>
+        pageable);  <span style="color:skyblue;">// 套用分頁與排序條件</span>
+
+<span style="color:skyblue;">// 查詢所有 status 為 OPEN 的 Contact 物件並封裝成一個 Page&lt;Contact&gt;</span></code></pre>
+
+    <p>
+        接著，透過 <code>.getContent()</code> 方法從 <code>pageOfContacts</code> 中擷取當前頁面的資料內容（型別為 <code>List&lt;Contact&gt;</code>），並傳遞至前端進行渲染。
+    </p>
+
+    <!--code-->
+    <pre><code>List&lt;Contact&gt; listOfContactsPerPage = pageOfContacts.getContent(); <span style="color:skyblue;">// 從 Page 物件中取得當前分頁的資料列表 (List&lt;Contact&gt;)，並傳送至前端</span></code></pre>
+
+    <p>
+        使用者亦可透過分頁與排序連結（例如：表格標題欄中帶有參數的超連結），動態調整 <code>Pageable</code> 條件，實現彈性且友善的聯絡訊息管理與檢視體驗。
+    </p>
+    <h3 style="color: #1e3a8a;">聯絡訊息關閉流程與頁面重導機制</h3>
+    <p>
+        前端的 <strong>「Close」</strong> 按鈕會附帶 <code>contactId</code> 及當前的分頁參數（如 <code>pageNum</code>、<code>sortField</code>、<code>sortDir</code>），確保完成關閉操作後能正確導回原頁面，維持良好的使用者瀏覽體驗。
+    </p>
+    <p>
+        當管理者點選 <strong>「Close」</strong> 後，系統會依據 <code>contactId</code> 取得該筆 <code>Contact</code>，並將其 <code>status</code> 設為 <code>CLOSED</code>，再執行儲存。
+    </p>
+    <p>
+        最後進行 <code>redirect</code> 返回聯絡訊息頁面，並保留分頁與排序參數，重新查詢並渲染更新後結果。
+    </p>
+</div>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Plan Details</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/viewPlanDetail.css}"/>
+</head>
+<body>
+
+<!-- navbar frag -->
+<div th:replace="~{nav/navbar :: navbarFrag}">...</div>
+
+<main class="container">
+    <!-- page header -->
+    <div class="page-header">
+        <h1 th:text="'Plan: ' + ${thePlan.name}"></h1> <!--model("thePlan")-->
+        <button id="openModalBtn" class="add-button">＋ Add Student</button>
+    </div>
+
+    <!-- validation error msg -->
+    <div class="error-message" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
+        ⚠️ Student not found. Please enter a valid email.
+    </div>
+
+    <h2>Student Information: </h2>
+    <!-- add Student Modal -->
+    <dialog id="studentModal" class="modal">
+        <form method="post" th:action="@{/admin/addStudent}" th:object="${person}" class="modal-form"> <!--model("person")-->
+            <h2>Add New Student</h2>
+
+            <label for="studentEmail">Student Email:</label>
+            <input type="text" id="studentEmail" th:field="*{email}" placeholder="e.g. student@example.com" required/>
+
+            <div class="modal-actions">
+                <button type="submit" class="submit-btn">Add</button>
+                <button type="button" class="cancel-btn" onclick="document.getElementById('studentModal').close()">Cancel</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- table content -->
+    <section class="table-section">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="person : ${thePlan.persons}"> <!--model("thePlan")-->
+                <td th:text="${person.name}"></td>
+                <td th:text="${person.email}"></td>
+                <td th:text="${person.mobile}"></td>
+                <td class="actions">
+                    <a th:href="@{/admin/removeStudent(personId=${person.personId})}" class="delete-link"
+                       onclick="return confirm('Are you sure you want to remove this student?')">Remove</a>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a th:href="@{/admin/planPage}">← Back to Plan Management</a>
+    </div>
+</main>
+
+<!--viewPlanDetailDescription.html-->
+<div th:replace="~{text/viewPlanDetailDescription :: planViewDetailDescriptionFrag}"></div>
+
+<!-- Script to open modal -->
+<script>
+    document.getElementById('openModalBtn').addEventListener('click', function () {
+        document.getElementById('studentModal').showModal();
+    });
+</script>
+
+</body>
+</html>

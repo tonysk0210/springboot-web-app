@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Courses</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/signUpCourses.css}"/>
+</head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="~{nav/navbar :: navbarFrag}">...</div>
+
+<main class="container">
+    <h1>Available Courses</h1>
+
+    <!-- Show success or error messages -->
+    <div class="success-message" th:if="${param.success}">
+        ✅ Your purchase was successful.
+    </div>
+
+    <div class="error-message" th:if="${error}" th:text="'⚠️ '+ ${error}"></div> <!--model("error")-->
+
+    <!-- Courses Table -->
+    <div th:if="${courseList != null and !courseList.isEmpty()}">
+        <form th:action="@{/student/purchaseSelectedCourse}" method="post">
+            <table>
+                <thead>
+                <tr>
+                    <th>Course ID</th>
+                    <th>Name</th>
+                    <th>Fees</th>
+                    <th>Select</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="course : ${courseList}">
+                    <td th:text="${course.courseId}"></td>
+                    <td><strong th:text="${course.name}"></strong></td>
+                    <td th:text="'$ ' + ${course.fees}"></td>
+                    <td>
+                        <!--each checked box represents the courseId
+                            if alreadyRegisteredCourses contains course, then disable the checked box-->
+                        <input type="checkbox" name="selectedCourses"
+                               th:value="${course.courseId}"
+                               th:disabled="${#lists.contains(alreadyRegisteredCourses, course)}"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="submit-container">
+                <button type="submit" class="purchase-button">Purchase Selected</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- No Courses Message -->
+    <p class="info-message" th:unless="${courseList != null and !courseList.isEmpty()}">
+        No courses available at the moment.
+    </p>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a th:href="@{/dashboard}">← Back to Dashboard</a>
+    </div>
+</main>
+
+<!--signUpCoursesDescription.html-->
+<div th:replace="~{text/signUpCoursesDescription :: signUpCoursesDescriptionFrag}">...</div>
+
+</body>
+</html>

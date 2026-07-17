@@ -1,0 +1,56 @@
+<div th:fragment="planPageDescriptionFrag" class="plan-section">
+    <h3 style="color: #1e3a8a;">方案管理頁面：載入與新增 Plan 的資料處理流程</h3>
+    <p>
+        當管理員進入Plan Management頁面時(<code>admin/planPage</code>)，系統會透過下列方法，自動查詢所有已建立的所有方案資料：
+    </p>
+    <pre><code><span style="color:skyblue;">// 此方法會在每次進入 AdminController 所控制的頁面時自動執行</span>
+@ModelAttribute("planList")
+public List&lt;Plan&gt; displayAllPlans() {
+    return planRepository.findAll();
+}
+</code></pre>
+    <p>
+        上述方法將所有 <code>Plan</code> 物件以 <code>List&lt;Plan&gt;</code> 型態傳遞至前端進行渲染。前端頁面將顯示所有方案資訊，並為每筆資料提供<strong>「VIEW」</strong> 與 <strong>「DELETE」</strong> 操作，每個按鈕皆附帶對應的 <code>planId</code> 作為查詢參數。
+    </p>
+    <p>
+        此外，系統會提供一個空的 <code>Plan</code> 物件，作為 <strong> 「Add Plan」</strong> 表單的綁定對象。一旦表單送出後 <code>Plan</code> 物件將會觸發後端驗證。
+        <code>name</code> : <span class="alert-text">⚠️ Plan name is required</span>
+    </p>
+    <p>
+        若驗證通過，系統將該方案儲存至資料庫中的 <code>plan</code> 資料表( <code>planRepository.save(plan);</code> )，並執行 <code>redirect:/admin/planPage</code> 導回當前頁面。此時，<code>displayAllPlans()</code> 方法會再次執行，重新載入並渲染最新的方案清單。
+    </p>
+
+    <h3 style="color: #1e3a8a;">刪除 Plan 前的關聯解除處理</h3>
+    <p>當管理員執行刪除操作時，系統會根據傳入的 <code>planId</code>，透過下列程式碼查詢對應的 <code>Plan</code> 物件：</p>
+    <pre><code>Optional&lt;Plan&gt; planToBeDeleted = planRepository.findById(planId);</code></pre>
+
+    <p>根據 <code>Plan</code> 類別中的 JPA 設定：</p>
+    <pre><code><span style="color:skyblue;">// mappedBy 表示此關聯的擁有端為對方實體（此例為 Person）中的 plan 屬性，外鍵實際存在於 Person 資料表中。</span>
+@OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, targetEntity = Person.class)
+private Set&lt;Person&gt; persons;</code></pre>
+
+    <p>
+        此設定表示 <code>Person</code> 是擁有端（owning side），<code>Plan</code> 為被參照端（inverse side）。
+        在 JPA 中，外鍵實際存在於 <code>Person</code> 資料表，<strong>因此必須由 <code>Person</code> 主動維護與 <code>Plan</code> 的關聯關係。</strong>
+    </p>
+
+
+    <h4>🚨 刪除 Plan 前必須先解除所有 Person 的關聯：</h4>
+
+    <p>
+        若直接刪除仍有關聯的 <code>Plan</code> 物件，將會違反資料庫的外鍵約束而產生例外。
+        因此，系統應先將每一位已關聯的 <code>Person</code> 的 <code>plan</code> 屬性設為 <code>null</code>，如下：
+    </p>
+
+    <pre><code>for (Person person : plan.getPersons()) {
+    person.setPlan(null);
+    personRepository.save(person); <span style="color:skyblue;">// 儲存解除關聯後的變更</span>
+}</code></pre>
+
+    <p>完成關聯解除後，即可安全地刪除該 <code>Plan</code>：</p>
+    <pre><code>planRepository.deleteById(planId);</code></pre>
+
+    <p>
+        此流程可確保刪除操作符合 JPA 的關聯維護規範，避免因資料表間的外鍵依賴而導致錯誤發生。
+    </p>
+</div>

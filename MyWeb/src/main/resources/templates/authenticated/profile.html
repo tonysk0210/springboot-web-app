@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/profile.css}"/>
+</head>
+<body>
+<!-- navbar frag -->
+<div th:replace="~{nav/navbar :: navbarFrag}">...</div>
+
+<div class="profile-container">
+    <h1>Profile</h1>
+
+    <!-- validation error msg -->
+    <ul class="error-list">
+        <li th:each="error : ${#fields.errors('profile.*')}"
+            th:class="${error.contains('already exists')} ? 'email-error' : 'error-list'"
+            th:text="${error}">
+        </li>
+    </ul>
+
+    <!-- update success msg -->
+    <div class="success-message" th:if="${param.updated}">
+        Profile updated successfully
+    </div>
+
+    <!--Form content-->
+    <form th:action="@{/updateProfile}" method="post" th:object="${profile}">
+        <fieldset>
+            <legend>Personal Details</legend>
+
+            <div class="form-group">
+                <label for="name">Name:<span class="required-asterisk">*</span></label>
+                <input type="text" id="name" th:field="*{name}" required>
+            </div>
+            <div class="form-group">
+                <label for="mobile">Mobile:<span class="required-asterisk">*</span></label>
+                <input type="text" id="mobile" th:field="*{mobile}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:<span class="required-asterisk">*</span></label>
+                <input type="email" id="email" th:field="*{email}" required>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Address Details</legend>
+            <div class="form-group">
+                <label for="address1">Address Line 1:<span class="required-asterisk">*</span></label>
+                <input type="text" id="address1" th:field="*{address1}" required>
+            </div>
+            <div class="form-group">
+                <label for="address2">Address Line 2:</label>
+                <input type="text" id="address2" th:field="*{address2}">
+            </div>
+            <div class="form-group">
+                <label for="city">City:<span class="required-asterisk">*</span></label>
+                <input type="text" id="city" th:field="*{city}" required>
+            </div>
+            <div class="form-group">
+                <label for="zipCode">Zip Code:<span class="required-asterisk">*</span></label>
+                <input type="text" id="zipCode" th:field="*{zipcode}" required>
+            </div>
+        </fieldset>
+        <button type="submit" class="submit-btn">Update</button>
+    </form>
+</div>
+
+<!--back to dashboard-->
+<div class="back-to-dashboard-container">
+    <a th:href="@{/dashboard}" class="back-to-dashboard">← Back to Dashboard</a>
+</div>
+
+<!--profileDescription.html-->
+<div th:insert="text/profileDescription :: profileDescriptionFrag"></div>
+
+</body>
+</html>

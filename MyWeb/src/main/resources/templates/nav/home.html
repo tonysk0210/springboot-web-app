@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--Enable thymeleaf attributes-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+</head>
+<body>
+
+<!--navbar frag-->
+<div th:replace="~{nav/navbar :: navbarFrag}"></div>
+
+<!-- Home Content -->
+<h1>Welcome to the MyWeb</h1>
+<p>SpringWise is a focused learning platform designed to help developers master the Spring Framework through guided projects, expert insights, and real-world application.</p>
+
+<!--homeDescription.html frag-->
+<div th:replace="~{text/homeDescription :: homeDescriptionFrag}"></div>
+
+</body>
+</html>

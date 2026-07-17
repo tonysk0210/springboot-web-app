@@ -1,0 +1,71 @@
+<div th:fragment="registerDescriptionFrag" class="register-section">
+    <h3 style="color: #1e3a8a;">註冊表單三層驗證機制</h3>
+    <p>
+        <code>/public/register</code> 路徑由 <code>PublicController</code> 負責處理，使用者透過表單將輸入資料綁定至 <code>Person</code> 類別（@Entity）。
+        表單送出後（至 <code>/public/createUser</code>），會進行以下三道驗證流程：
+    </p>
+
+    <strong>✅ 第一層：Spring Boot Validation 套件內建驗證</strong>
+    <ul>
+        <li><code>name</code>：不得為空白 | <span class="alert-text">⚠️ Name must not be blank</span></li>
+        <li><code>mobile</code>：必須為 10 碼數字| <span class="alert-text">⚠️ Mobile Number must be exactly 10 digits long</span></li>
+    </ul>
+
+    <strong>✅ 第二層：自訂驗證條件</strong>
+    <ul>
+        <li><code>@PasswordValidator</code> ：
+            <ul>
+                <li>密碼不得為 null | <span class="alert-text">⚠️ Password cannot be null</span></li>
+                <li>不得為「123456」、「qwer」、「asdf」等弱密碼 | <span class="alert-text">⚠️ Password is too common or weak</span></li>
+                <li>至少 8 個字元以上 | <span class="alert-text">⚠️ Password must be at least 8 characters long</span></li>
+            </ul>
+        </li>
+        <li><code>@FieldValueMatchValidator</code> ：
+            <ul>
+                <li><code>password</code> 和 <code>confirmPassword</code> 必須一致 | <span class="alert-text">⚠️ Passwords do not match</span></li>
+                <li><code>email</code> 和 <code>confirmEmail</code> 必須一致 | <span class="alert-text">⚠️ Emails do not match</span></li>
+            </ul>
+        </li>
+    </ul>
+    <strong>✅ 第三層：Email 重複驗證</strong>
+    <p>
+        兩段驗證通過後，系統將透過 <code>PersonRepository</code> 檢查使用者輸入的 Email (為系統username) 是否已存在資料庫中。
+        若有重複帳號，系統會拋出 <code>EmailAlreadyExistsException</code> <span class="warning-text">⚠️ An account with email " + person.getEmail() + " already exists.</span> 並透過 <code>BindingResult</code> 回傳錯誤訊息至前端表單，由 Thymeleaf 進行渲染。
+    </p>
+    <!--code-->
+    <pre><code><span style="color:skyblue;">&lt;!-- 渲染驗證失敗信息顯示 --&gt;</span>
+&lt;ul&gt;
+    &lt;li th:each=&quot;error : ${#fields.errors('person.*')}&quot;
+        th:text=&quot;${error}&quot;&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+
+<span style="color:skyblue;">&lt;!-- #fields.errors('person.*') 會回傳 java.util.List&lt;String&gt;，也就是一串「已經解析好、可直接顯示」的錯誤訊息字串 --&gt;</span>
+<span style="color:skyblue;">&lt;!-- 從所有與 person.*（例如：person.name、person.email 等）相關的欄位中取得驗證錯誤訊息，存到變數 error 中 --&gt;</span>
+</code></pre>
+
+    <h3 style="color: #1e3a8a;">註冊成功後的資料處理與使用者提示流程（角色賦予、密碼加密、建立者設定、導向登入頁）</h3>
+    <p>
+        若註冊資料通過所有驗證，系統會為 <code>Person</code> 賦予 <code>STUDENT_ROLE</code>，並透過 <code>PasswordEncoder</code>（使用 BCrypt）進行密碼加密。
+        此時註冊當下使用者尚未登入，無 <code>Authentication</code> 物件，因此 <code>AuditorAware</code> 在 <code>createdBy</code>的預設為 <code>"anonymousUser"</code>。
+        為正確記錄註冊者 Email 為建立者，系統會手動執行：
+    </p>
+
+    <!--code-->
+    <pre><code>person.setCreatedBy(person.getEmail()); <span style="color:skyblue;">// Person 類別必須重新宣告String createdBy - Variable hiding（變數遮蔽）</span></code></pre>
+
+    <p>
+        最後，透過 Spring Data JPA 執行 <code>personRepository.save(person)</code>，將註冊資料保存至 <code>person</code> 資料表中。完成註冊後，系統會回傳 <code>redirect:/login?register=true</code>，導向 Login 頁面。前端頁面由 Thymeleaf 根據 URL 參數 <code>register=true</code> 顯示註冊成功訊息：
+        <span class="success-text">Your registration is successful. Please login to continue.</span>
+    </p>
+
+    <!--code-->
+    <pre><code><span style="color:skyblue;">&lt;!-- 渲染成功註冊信息 ?register=true --&gt;</span>
+
+&lt;div class=&quot;logout-message&quot; th:if=&quot;${param.register}&quot;&gt;
+    Your registration is successful. &lt;br&gt;
+    Please login to continue.
+&lt;/div&gt;
+</code></pre>
+
+</div>

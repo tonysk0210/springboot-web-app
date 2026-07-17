@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Enrolled Courses</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/viewEnrolledCourses.css}"/>
+</head>
+<body>
+
+<!-- Navbar fragment -->
+<div th:replace="~{nav/navbar :: navbarFrag}">...</div>
+
+<main class="container">
+    <!-- Dynamic page header -->
+    <h1 th:text="${person.name} + ' - Enrolled Courses'"></h1>
+
+    <!-- display enrolled courses table -->
+    <section class="table-section" th:if="${person.courses != null and !person.courses.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>Course ID</th>
+                <th>Course Name</th>
+                <th>Fees</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${person.courses}">
+                <td th:text="${course.courseId}"></td>
+                <td><strong th:text="${course.name}"></strong></td>
+                <td th:text="'$ '+ ${course.fees}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- No courses message -->
+    <!--    Show this element unless the courses list is non-null and not empty =
+            Show this element when courses is null OR empty (i.e., person has no courses)   -->
+    <p class="info-message" th:unless="${person.courses != null and !person.courses.isEmpty()}">
+        This student is not enrolled in any courses yet.
+    </p>
+
+    <!-- Back to Dashboard -->
+    <div class="back-link">
+        <a th:href="@{/dashboard}">← Back to Dashboard</a>
+    </div>
+</main>
+
+<!--viewEnrolledCoursesDescription-->
+<div th:insert="~{text/viewEnrolledCoursesDescription :: viewEnrolledCoursesDescriptionFrag}">...</div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/register.css}"/>
+</head>
+<body>
+<!-- navbar frag -->
+<div th:replace="~{nav/navbar :: navbarFrag}">...</div>
+
+<div class="register-container">
+    <h2>Student Registration</h2>
+
+    <!--display list of data validation error-->
+    <ul>
+        <li th:each="error : ${#fields.errors('person.*')}"
+            th:classappend="${error.contains('already exists') ? 'email-error' : 'alert'}"
+            th:text="${error}">
+        </li>
+    </ul>
+
+    <!--Form content-->
+    <form th:action="@{/public/createUser}" method="post" th:object="${person}">
+        <!-- CSRF Token -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div>
+            <label for="name">Name:<span class="required-asterisk">*</span></label>
+            <input type="text" th:field="*{name}" id="name" required/>
+        </div>
+        <div>
+            <label for="mobile">Mobile Number:<span class="required-asterisk">*</span></label>
+            <input type="text" th:field="*{mobile}" id="mobile" required/>
+        </div>
+        <div>
+            <label for="email">Email:<span class="required-asterisk">*</span></label>
+            <input type="email" th:field="*{email}" id="email" required/>
+        </div>
+        <div>
+            <label for="confirmEmail">Confirm Email:</label>
+            <input type="email" th:field="*{confirmEmail}" id="confirmEmail" required/>
+        </div>
+        <div>
+            <label for="password">Password:<span class="required-asterisk">*</span></label>
+            <input type="password" th:field="*{password}" id="password" required/>
+        </div>
+        <div>
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" th:field="*{confirmPassword}" id="confirmPassword" required/>
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+</div>
+
+<!--registerDescription.html-->
+<div th:insert="~{text/registerDescription :: registerDescriptionFrag}"></div>
+
+</body>
+</html>

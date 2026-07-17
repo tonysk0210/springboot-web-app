@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+</head>
+<body>
+
+<!-- navbar frag -->
+<div th:replace="~{nav/navbar :: navbarFrag}"></div>
+
+<!-- header display -->
+<div class="dashboard-content">
+    <h1 th:text="${'Welcome to Your Dashboard - ' + username}"></h1>  <!--model("username")-->
+    <h2 th:text="${'You logged in as '+ role}"></h2>                  <!--model("role")-->
+    <h3 class="" th:if="${!#strings.isEmpty(plan)}"
+        th:text="${'You have subscribed to [' + plan +'] plan. You now have full access to all features in this plan'}"></h3>  <!--model("plan")-->
+    <p>This is a simple dashboard page. You can customize this area to display user-specific data, account settings, or
+        system stats.</p>
+
+    <!--Profile section-->
+    <div class="profile-section">
+        <a th:href="@{/profilePage}"><i class="fa-regular fa-address-card"></i> Edit Profile</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--Student authorized section-->
+    <div class="section-block" sec:authorize="hasRole('ROLE_STUDENT')">
+        <a th:href="@{/student/viewEnrolledCourses}"><i class="fa-solid fa-list-ul"></i> View Enrolled Courses</a>
+        <a th:href="@{/student/signUpCourses}"><i class="fa-solid fa-user-plus"></i> Sign Up Courses</a>
+    </div>
+
+    <!-- Admin authorized section-->
+    <div class="section-block" sec:authorize="hasRole('ROLE_ADMIN')">
+        <a th:href="@{/admin/viewContactMessage/page/1(sortField='name', sortDir='asc')}"><i class="fa-solid fa-envelope"></i> View Contact Messages</a>
+        <a th:href="@{/admin/planPage}"><i class="fa-solid fa-clipboard"></i> Manage Plans</a>
+        <a th:href="@{/admin/coursePage}"><i class="fa-solid fa-book-open"></i> Manage Courses</a>
+    </div>
+</div>
+
+<!--dashboardDescription.html-->
+<div th:insert="text/dashboardDescription :: dashboardDescriptionFrag"></div>
+
+<script src="https://kit.fontawesome.com/a75d89fa9f.js" crossorigin="anonymous"></script>
+</body>
+</html>

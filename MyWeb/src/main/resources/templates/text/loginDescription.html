@@ -1,0 +1,59 @@
+<div th:fragment="loginDescriptionFrag" class="login-section">
+    <h3 style="color: #1e3a8a;">自訂登入流程：整合 Spring Security 與表單驗證的登入設定</h3>
+    <p>
+        Login 功能 <code>&lt;form th:action=&quot;@{/login}&quot; method=&quot;post&quot;&gt;</code> 表單送出後，將由 Spring Security 自動攔截請求，並進一步透過其內建的 <code>filterChain(HttpSecurity http, AuthenticationProvider myCustomProvider)</code> 方法進行處理，該方法會回傳一個 <code>SecurityFilterChain</code>
+        Bean ，在此方法中，可透過 <code>HttpSecurity.formLogin()</code>
+        配置整體登入流程，包含登入成功與失敗後的導向路徑設定，實現自訂化的登入體驗。
+    </p>
+
+    <h4>@Bean<br>
+        SecurityFilterChain filterChain(HttpSecurity http,
+        AuthenticationProvider myCustomProvider)</h4>
+    <!--code-->
+    <pre><code>http.formLogin(loginConfig -> loginConfig
+                .loginPage("/login") <span style="color:skyblue;">// Spring Security 將自動攔截 POST 請求至 /login</span>
+                .defaultSuccessUrl("/dashboard") <span style="color:skyblue;">// 登入成功後導向 /dashboard</span>
+                .failureUrl("/login?error=true")); <span style="color:skyblue;">// 登入失敗後導向 /login，並附加錯誤參數</span>
+
+http.authenticationProvider(myCustomProvider); <span style="color:skyblue;">// 註冊自定義的 AuthenticationProvider 負責驗證邏輯</span>
+</code></pre>
+
+    <h3 style="color: #1e3a8a;">自訂驗證邏輯：實作 AuthenticationProvider 建立使用者驗證流程</h3>
+    <p>
+        使用者提交的帳號與密碼會由自訂的 <code>AuthenticationProvider</code>（註冊為 <code>@Component</code>）負責驗證。該元件內的 <code>authenticate(Authentication authentication)</code> 方法會比對使用者名稱與經由
+        <code>PasswordEncoder</code>（如 BCrypt）雜湊處理的密碼是否一致。
+    </p>
+
+    <h4>@Component<br>public class UsernamePwdAuthenticationProvider implements AuthenticationProvider</h4>
+    <!--code-->
+    <pre><code>@Override
+public Authentication authenticate(Authentication authentication) {
+
+    String enteredEmail = authentication.getName(); <span style="color:skyblue;">// 表單所輸入的 email</span>
+    String enteredPassword = authentication.getCredentials().toString(); <span style="color:skyblue;">// 表單所輸入的密碼</span>
+
+    Person person = personRepository.readByEmail(enteredEmail); <span style="color:skyblue;">// 透過輸入的 email 從資料庫取得對應的 Person 物件</span>
+    if (person != null && passwordEncoder.matches(enteredPassword, person.getPassword()))  <span style="color:skyblue;">// 驗證 Person 是否存在，且輸入密碼與加密後的密碼是否相符</span>
+        return new UsernamePasswordAuthenticationToken(
+                enteredEmail,
+                null,
+                getGrantedAuthorities(person.getRoles())); <span style="color:skyblue;">// 驗證成功，建立 Authentication 物件並附帶使用者角色權限</span>
+    else
+        throw new BadCredentialsException("Invalid credentials"); <span style="color:skyblue;">// 驗證失敗，拋出例外，由 Spring Security 處理導向登入失敗頁面</span>
+}
+</code></pre>
+
+    <p>
+        若驗證成功，系統會為該使用者（<code>Person</code>）建立一個 <code>Authentication</code> 物件，實作類型為 <code>UsernamePasswordAuthenticationToken</code>，
+        其中包含以下資訊：
+    </p>
+    <ul>
+        <li><code>principal</code>：代表使用者本身（此處為 Email）</li>
+        <li><code>credentials</code>：使用者的密碼（驗證用，登入後不再儲存）</li>
+        <li><code>authorities</code>：使用者擁有的角色或權限（<code>ROLE_STUDENT</code> 或 <code>ROLE_ADMIN</code>）</li>
+    </ul>
+    <p>
+        此 <code>Authentication</code> 物件隨後會被儲存至 <code>SecurityContextHolder</code>，代表使用者已成功登入並建立安全性上下文。登入成功後，系統將自動導向 <code>/dashboard</code>。
+        若無法取得對應的使用者物件，或密碼驗證失敗，則登入流程會導向 <code>/login?error=true</code>。前端登入頁面將透過 Thymeleaf 根據 URL 參數 <code>error=true</code> 顯示錯誤訊息：<br> <span class="alert-text">Invalid Email or Password</span>
+    </p>
+</div>

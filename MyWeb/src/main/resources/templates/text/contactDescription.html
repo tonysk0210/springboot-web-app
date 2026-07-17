@@ -1,0 +1,49 @@
+<div th:fragment="contactDescriptionFrag" class="contact-section">
+    <h3 style="color: #1e3a8a;">使用者聯絡表單提交流程與驗證機制（Spring Boot + JPA + Thymeleaf 整合）</h3>
+    <p>
+        <code>/contact</code> 路徑由 <code>ContactController</code> 負責接收並處理請求。
+        系統會先建立一個新的 <code>Contact</code> 物件，並透過 <code>Model</code> 與前端表單欄位進行屬性綁定（MVC Binding)。
+        使用者提交表單後， <code>Contact</code> 物件經由 <code>/saveMessage</code> 路徑回傳至 <code>ContactController</code> 做後續驗證。
+    </p>
+
+    <p>Spring Boot Validation 套件根據 <code>Contact</code> 類別中針對所定義的驗證條件進行驗證。
+        驗證條件如下：若驗證未通過，將於前端顯示相對應的錯誤信息並要求重新輸入；</p>
+    <ul>
+        <li><code>name</code>：不得為空白 | <span class="alert-text">⚠️Name must not be blank⚠️</span></li>
+        <li><code>mobile</code>：必須為 10 碼數字 | <span class="alert-text">⚠️Mobile Number must be exactly 10 digits long⚠️</span></li>
+        <li><code>subject</code>：不得為空白 | <span class="alert-text">⚠️Subject must not be blank⚠️</span></li>
+        <li><code>message</code>：不得為空白 | <span class="alert-text">⚠️Message must not be blank⚠️</span></li>
+    </ul>
+
+    <p>
+        若通過驗證，<code>Contact</code> 物件將交由 <code>ContactService</code> 設定其 <code>status</code> 屬性為 <code>OPEN</code>（代表尚未讀取），
+        接著透過 <code>ContactRepository</code>，將資料儲存至 <code>contact_msg</code> 資料表中 ( Spring Data JPA ORM機制 )。完成儲存後，系統會使用 <code>RedirectAttributes</code> 設定 Flash Attribute：<code>redirectAttributes.addFlashAttribute("successfullySavedMessage", "Message successfully
+        submitted");</code> 並重執行 <code>redirect:/contact</code>， 由Thymeleaf 顯示成功提交信息 | <span class="success-text">Message successfully submitted</span>
+    </p>
+    <h3 style="color: #1e3a8a;">審計機制說明：Contact 實體的自動記錄與追蹤機制</h3>
+    <p>
+        <code>Contact</code> 類別繼承自 <code>BaseEntity</code>，作為啟用審計功能的實體類別，當 Spring Data JPA 執行 <code>repository.save()</code> 時，系統將自動產生 <code>createdAt</code>、
+        <code>createdBy</code>、<code>updatedAt</code>、<code>updatedBy</code> 等欄位，並存入資料表中。其中，時間相關欄位由資料庫的內建時間機制自動填入；而建立者與更新者資訊則由 <code>AuditorAware</code> 的實作類別決定：此實作會以 <code>Authentication</code> 物件為依據。
+        若使用者已登入，將記錄 <code>authentication.getName()</code> (這裡為使用者的 email)，否則預設為 <code>"anonymousUser"</code>。
+    </p>
+
+    <!--code-->
+    <pre><code>@Component("auditAwareImpl")
+public class AuditAwareImpl implements AuditorAware&lt;String&gt; { <span style="color:skyblue;">// 需搭配 Spring JPA 使用</span>
+
+    @Override
+    public Optional&lt;String&gt; getCurrentAuditor() {
+        <span style="color:skyblue;">// 取得當前使用者的 Authentication 物件</span>
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            <span style="color:skyblue;">// 若尚未登入，回傳 "anonymousUser"：createdBy / updatedBy 欄位將記錄此值</span>
+            return Optional.of("anonymousUser");
+        }
+
+        <span style="color:skyblue;">// 若已登入，回傳使用者名稱（通常是 email），記錄於 createdBy / updatedBy</span>
+        return Optional.of(authentication.getName());
+    }
+}
+</code></pre>
+</div>

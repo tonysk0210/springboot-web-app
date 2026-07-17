@@ -1,0 +1,202 @@
+<div th:fragment="homeDescriptionFrag">
+    <section class="home-section" style="padding: 20px; font-family: 'Segoe UI', sans-serif; line-height: 1.6;">
+        <p>
+            本Web Application以 <strong>Spring Boot</strong> 為核心開發，模擬一個線上課程教育平台系統。使用者可註冊帳號、選修課程，並依照不同權限角色進行操作。
+            系統具備學生功能與後台管理功能，實現前後端分離與角色分層控制。
+        </p>
+        <br>
+        <h2>使用者角色權限總覽：匿名訪客、學生、管理員功能區分與操作權限</h2>
+
+        <h4>【匿名訪客】可：</h4>
+        <ul>
+            <li>瀏覽公開頁面：
+                <ul>
+                    <li>首頁（Home）</li>
+                    <li>關於我們（About）</li>
+                    <li>最新消息（News）</li>
+                    <li>聯絡我們（Contact）</li>
+                </ul>
+            </li>
+            <li>透過聯絡表單提交留言</li>
+            <li>註冊成為學生帳號</li>
+        </ul>
+
+        <h4>【學生】登入後可：</h4>
+        <ul>
+            <li>進入個人 <strong>學生儀錶板（Dashboard）</strong>，顯示隸屬方案(Plan)</li>
+            <li>修改／更新個人資料(Profile)</li>
+            <li>選購課程(Courses)</li>
+            <li>查看已選購的課程(Courses)</li>
+        </ul>
+
+        <h4>【管理員】登入後可：</h4>
+        <ul>
+            <li>進入個人 <strong>管理員儀錶板（Dashboard）</strong></li>
+            <li>修改／更新管理員個人資料(Profile)</li>
+            <li>查看聯絡表單內容(Contact Message)</li>
+            <li>進行方案(Plan)管理：新增／刪除方案、設定學生方案</li>
+            <li>進行課程(Courses)管理：新增／刪除課程、指派／移除學生課程</li>
+        </ul>
+
+        <hr class="section-divider"/>
+
+        <h2>Spring Boot 架構整合與功能實作亮點</h2>
+        <ul class="outer-list">
+            <li><strong>✅ Spring Boot MVC 架構：</strong>
+                採用標準的 <code>@Controller</code>、<code>@Service</code>、<code>@Repository</code> 三層架構進行模組分離與職責劃分
+            </li>
+
+            <li><strong>✅ Spring Security 安全機制：</strong>
+                <ul>
+                    <li>實作登入／登出流程與角色授權（<code>ROLE_STUDENT</code>、<code>ROLE_ADMIN</code>）</li>
+                    <li>防範 CSRF 攻擊（預設啟用）</li>
+                    <li>使用 Bcrypt 對使用者密碼加密</li>
+                    <li>自訂登入頁面與導向邏輯，保護敏感路由並實現角色導向的頁面權限控管</li>
+                </ul>
+            </li>
+
+            <li><strong>✅ Spring Data JPA (Hibernate) 與 Spring JDBC：</strong>
+                <ul>
+                    <li>使用 <code>@Entity</code> 將 POJO 映射至資料表（ORM）</li>
+                    <li>使用 Spring Data JPA & Spring JDBC 操作 H2 Database</li>
+                    <li>建立資料表之間關聯：
+                        <ul>
+                            <li>學生(Person <code>@ManyToOne</code> <code>@JoinColumn</code> ) ↔ 角色 (Role)：單向關聯</li>
+                            <li>學生(Person <code>@OneToOne</code> <code>@JoinColumn</code>) ↔ 地址 (Address)：單向關聯</li>
+                            <li>學生(Person <code>@ManyToOne</code> <code>@JoinColumn</code>) ↔ 方案 (Plan <code>@OneToMany</code> )：雙向關聯</li>
+                            <li>學生(Person <code>@ManyToMany</code> <code>@JoinTable</code>) ↔ 課程 (Course <code>@ManyToMany</code> )：雙向關聯</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+            <li><strong>✅ 審計功能（Auditing）：</strong>
+                實作 <code>AuditorAware</code> 自動填入 <code>createdAt</code>、<code>createdBy</code>、<code>updatedAt</code>、<code>updatedBy</code>
+            </li>
+
+            <li><strong>✅ 分頁與動態排序功能：</strong>
+                使用 <code>Pageable</code> 實作 <code>contact_msg</code> 表單的分頁與排序，提升查詢效率與使用者體驗
+            </li>
+
+            <li><strong>✅ Lombok 工具套件：</strong>
+                <ul>
+                    <li>使用 <code>@Data</code> 自動產生 Getter、Setter、Constructor 等樣板程式碼</li>
+                    <li>使用 <code>@Slf4j</code> 注入日誌物件，簡化 log 管理</li>
+                </ul>
+            </li>
+
+            <li><strong>✅ AOP 切面應用：</strong>
+                使用 <code>@Around</code>、<code>@AfterThrowing</code> 實作 <code>LoggerAspect</code>，自動攔截方法執行與例外行為，統一記錄系統日誌
+            </li>
+
+            <li><strong>✅ 表單處理與資料驗證：</strong>
+                <ul>
+                    <li>整合 <code>@Valid</code> 與 <code>BindingResult</code> 實現後端驗證</li>
+                    <li>自訂驗證註解（<code>@interface</code> + <code>ConstraintValidator</code>）驗證 email/password 確認欄位</li>
+                    <li>搭配 Thymeleaf 即時回饋錯誤訊息至前端，提升使用者體驗</li>
+                </ul>
+            </li>
+
+            <li><strong>✅ Thymeleaf 模板引擎應用：</strong>
+                <ul>
+                    <li>動態渲染所有頁面內容</li>
+                    <li>使用 <code>th:replace</code> 重複利用共用元件（如 Navbar）</li>
+                    <li>使用 <code>sec:authorize</code> 控制角色導向的內容顯示（如 Dashboard）</li>
+                    <li>支援 <code>Model</code>、<code>ModelAndView</code>、<code>@PathVariable</code>、<code>@RequestParam</code> 傳遞資料</li>
+                </ul>
+            </li>
+
+            <li><strong>✅ REST API 建構：</strong>
+                客製化 <code>@RestController</code> 與 Spring Data REST 整合，提供管理員對 <code>contact_msg</code> 表單進行 CRUD 操作（兩種路徑並存）
+            </li>
+
+            <li><strong>✅ 例外處理機制：</strong>
+                使用 <code>@ControllerAdvice</code> 與 <code>@RestControllerAdvice</code>，分別處理 MVC 與 REST API 模式下的例外情況，提升系統穩定性
+            </li>
+        </ul>
+
+        <hr class="section-divider"/>
+
+        <div class="env-description">
+            <h2>Spring Boot 應用環境設定總覽</h2>
+
+            <h4>⚙️ 應用啟動設定</h4>
+            <ul>
+                <li><strong>Project：</strong>Maven</li>
+                <li><strong>Java Version：</strong>17</li>
+                <li><strong>伺服器埠號：</strong>8081</li>
+                <li>應用程式執行於 <code>localhost:8081</code>，非預設的 <code>8080</code>。</li>
+                <li><strong>測試用登入帳號/密碼：</strong>
+                    <ul>
+                        <li><strong>Admin：</strong> admin@gmail.com / admin</li>
+                        <li><strong>Student：</strong> student@gmail.com / student</li>
+                        <li><strong>Anthony：</strong> anthony@gmail.com / anthony</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>🛢️ H2 內嵌式記憶體資料庫</h4>
+            <ul>
+                <li><strong>資料庫位置：</strong><code>jdbc:h2:mem:testdb</code></li>
+                <li>使用 H2 記憶體資料庫，每次啟動應用都會重建資料。</li>
+                <li><strong>H2 Console：</strong>已啟用 👉 <a href="http://localhost:8081/h2-console" target="_blank">http://localhost:8081/h2-console</a></li>
+                <li><strong>登入資訊：</strong></li>
+                <ul>
+                    <li>使用者名稱：<code>sa</code></li>
+                    <li>密碼：<em>空白</em></li>
+                    <li>驅動類別：<code>org.h2.Driver</code></li>
+                </ul>
+            </ul>
+
+            <h4>🌐 Contact REST API 設定</h4>
+            <ul>
+                <li><strong>控制器位置：</strong><code>com.company.MyWeb.rest.ContactRestController</code></li>
+                <li><strong>對應路徑前綴：</strong><code>/api/contact</code> <strong>( 僅允許具有 ADMIN 角色的使用者存取 ) </strong><br>
+                    例如：👉 <a href="http://localhost:8081/api/contact/getContactMessageByStatus?status=OPEN" target="_blank">/api/contact/getContactMessageByStatus?status=OPEN</a>
+                </li>
+                <li><strong>支援格式：</strong></li>
+                <ul>
+                    <li><code>application/json</code></li>
+                    <li><code>application/xml</code>（若請求包含 <code>Accept: application/xml</code>）</li>
+                </ul>
+            </ul>
+
+            <h4>🌐 Spring Data REST 設定</h4>
+            <ul>
+                <li><strong>REST API 基底路徑：</strong><code>/spring-data-api</code> <strong>( 僅允許具有 ADMIN 角色的使用者存取 )</strong></li>
+                <li>所有由 Spring Data 自動產生的 REST 端點將以此為開頭：<br>
+                    例如：👉 <a href="http://localhost:8081/spring-data-api/contacts" target="_blank">/spring-data-api/contacts</a>
+                </li>
+                <li><strong>HAl Explorer：</strong> 視覺化探索 HAL 格式 API 的網頁工具<br>
+                    👉 <a href="http://localhost:8081/spring-data-api" target="_blank">/spring-data-api</a></li>
+            </ul>
+
+            <h4>📊 Spring Boot Actuator（系統監控端點）</h4>
+            <ul>
+                <li><strong>Actuator 基底路徑：</strong><code>/myWeb/actuator</code></li>
+                <li><strong>開放所有端點：</strong><code>management.endpoints.web.exposure.include=*</code></li>
+                <li><strong>執行埠號：</strong>與應用共用埠號 <code>8081</code></li>
+            </ul>
+
+            <h4>🖥️ Spring Boot Admin 客戶端</h4>
+            <ul>
+                <li><strong>註冊至 Admin Server 的位置：</strong><a href="http://localhost:8083" target="_blank">http://localhost:8083</a> ( 需同步啟動 <code><strong>AdminActuatorApplication</strong></code> 使用 )</li>
+                <li><strong>身份驗證資訊（用於監控元資料傳遞）：</strong></li>
+                <ul>
+                    <li>使用者名稱：<code>admin@gmail.com</code></li>
+                    <li>密碼：<code>admin</code></li>
+                </ul>
+            </ul>
+
+            <h4>📡 MyWeb 專案中的 REST API 客戶端（ContactRestController）</h4>
+            <ul>
+                <li><strong>ContactRestController: </strong> 一個 <strong>REST API 客戶端控制器</strong>，負責向外部 REST 服務發送請求並處理回應資料。</li>
+                <li><strong>所屬應用名稱：</strong><code><strong>ConsumingRestService</strong></code></li>
+                <li><strong>控制器位置：</strong><code>com.company.ConsumingRestService.controller</code></li>
+                <li><strong>應用預設埠號：</strong><code>8082</code></li>
+                <li><strong>實作途徑：</strong> 使用 <code>FeignClient</code> <code>RestTemplate</code> <code>WebClient</code> 實作</li>
+            </ul>
+        </div>
+
+    </section>
+</div>

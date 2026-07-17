@@ -1,0 +1,304 @@
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base Styles */
+body {
+    font-family: "Segoe UI", "Roboto", sans-serif;
+    background-color: #f4f6f8;
+    color: #2c2c2c;
+    line-height: 1.6;
+}
+
+/* Container */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 6rem 1rem 2rem; /* Top padding pushes content below fixed navbar */
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: #2e3a59;
+}
+
+/* Add Button */
+.add-button {
+    background-color: #3f51b5;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-button:hover {
+    background-color: #303f9f;
+}
+
+/* Error Messages */
+.error-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.error-list li {
+    background-color: #fdecea;
+    color: #c62828;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Modal Dialog */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+    z-index: 1000;
+}
+
+.modal-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.modal-form input[type="text"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.submit-btn {
+    background-color: #4caf50;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: #e0e0e0;
+    color: black;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+/* Table */
+.table-section {
+    margin-top: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #37474f;
+}
+
+td {
+    font-size: 0.93rem;
+}
+
+tr:hover {
+    background-color: #fafafa;
+}
+
+table td:nth-child(3),
+table th:nth-child(3) {
+    padding-left: 5rem; /* default is 1rem; reduce it slightly */
+}
+
+/* Action Buttons (View + Delete side by side) */
+.actions {
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.view-link,
+.delete-link {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.view-link {
+    background-color: #2196f3;
+    color: white;
+}
+
+.view-link:hover {
+    background-color: #1976d2;
+}
+
+.delete-link {
+    background-color: #f44336;
+    color: white;
+}
+
+.delete-link:hover {
+    background-color: #d32f2f;
+}
+
+/* Back Link */
+.back-link {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.back-link a {
+    display: inline-block;
+    padding: 10px 24px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #6fb1fc, #4364f7);
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.back-link a:hover {
+    background: linear-gradient(135deg, #4364f7, #6fb1fc);
+    box-shadow: 0 4px 8px rgba(67, 100, 247, 0.3);
+    transform: translateY(-2px);
+}
+
+.asterisk {
+    color: red;
+    margin-left: 2px;
+    font-weight: bold;
+}
+
+/*<!--coursePageDescription-->*/
+.course-section {
+    background-color: #f5f9fc;
+    border-left: 4px solid #17a2b8;
+    padding: 24px 28px;
+    border-radius: 6px;
+    font-family: "Segoe UI", Roboto, sans-serif;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin: 32px 0;
+}
+.course-section code {
+    background-color: #e3e8ee;
+    color: #c7254e;
+    padding: 2px 6px;
+    font-family: Consolas, monospace;
+    border-radius: 4px;
+    font-size: 90%;
+}
+.course-paragraph {
+    margin-bottom: 16px;
+    line-height: 1.7;
+}
+.course-subheading {
+    margin-top: 20px;
+    margin-bottom: 12px;
+}
+
+/* Multi-line code block */
+.course-section pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+}
+
+.course-section pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+}
+
+.course-section pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 12px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 14px;
+}
+
+.alert-text {
+    background-color: #f8d7da; /* light red */
+    color: #721c24;           /* dark red text */
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}

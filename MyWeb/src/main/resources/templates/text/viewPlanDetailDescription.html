@@ -1,0 +1,80 @@
+<div th:fragment="planViewDetailDescriptionFrag" class="plan-section" xmlns="http://www.w3.org/1999/html">
+    <h3 style="color: #1e3a8a;">View Plan Detail：顯示方案資訊與所屬學生清單</h3>
+    <p>
+        當管理員點選 <strong> 「View」</strong> 按鈕後，系統將導向 <code>/admin/viewPlanDetail?planId={?}</code> 路徑，<code>AdminController</code> 會透過 <code>@RequestParam</code> 接收對應的 <code>planId</code>，並呼叫 <code>planRepository.findById(planId)</code> 查詢該方案的 <code>Plan</code> 物件。
+        查詢結果將透過 <code>Model</code> 傳送至前端，用於動態渲染該方案名稱及其所屬學生清單。
+    </p>
+
+    <p>
+        學生清單為 <code>Set&lt;Person&gt;</code> 型別，透過 Thymeleaf 的迴圈語法渲染至畫面：
+    </p>
+
+    <pre><code>&lt;tr th:each="person : ${thePlan.persons}"&gt; <span style="color:skyblue;">&lt;!-- 迴圈渲染 Set&lt;Person&gt; 中的每位學生 --&gt;</span>
+    &lt;td th:text="${person.name}"&gt;&lt;/td&gt;
+    &lt;td th:text="${person.email}"&gt;&lt;/td&gt;
+    &lt;td th:text="${person.mobile}"&gt;&lt;/td&gt;
+    &lt;td class="actions"&gt;
+        &lt;a th:href="@{/admin/removeStudent(personId=${person.personId})}"
+           onclick="return confirm('Are you sure you want to remove this student?')"&gt;Remove&lt;/a&gt; <span style="color:skyblue;">&lt;!-- Remove按鈕 點擊後確認移除該學生 --&gt;</span>
+    &lt;/td&gt;
+&lt;/tr&gt;
+</code></pre>
+
+    <p>
+        此區塊將列出所有隸屬於該方案的學生資訊。
+    </p>
+
+    <p>
+        此外，系統也會建立一個新的 <code>Person</code> 物件，透過 <code>Model</code> 傳送至前端，作為 <strong>「Add Student」</strong> 表單的資料綁定對象。
+        為了能將新增的學生正確加入該方案，系統會將目前查詢到的 <code>Plan</code> 物件儲存至 <code>HttpSession</code> (<strong>"thePlanInSession</strong>") 中，方便在後續處理新增學生的流程中使用。
+    </p>
+
+    <h3 style="color: #1e3a8a;">從方案中添加學生：建立 Person 與 Plan 的關聯操作</h3>
+    <p>
+        管理員可透過輸入學生的 Email，將該學生加入至目前方案中：
+    </p>
+    <p>
+        系統會比對輸入的 Email 是否存在於 <code>Person</code> 資料表中：
+    </p>
+    <!--code-->
+    <pre><code>Person thePerson = personRepository.readByEmail(person.getEmail()); <span style="color:skyblue;">// 若找不到符合的 email，則回傳 null</span></code></pre>
+
+    <p>
+        若查無對應學生，系統將重新導向回原頁面，並附加錯誤參數 <code>?error=personNotFound</code> ，由 Thymeleaf 顯示錯誤訊息：<br>
+        <span class="alert-text">⚠️ Student not found. Please enter a valid email.</span>
+    </p>
+    <p>
+        若成功找到對應學生，系統會先呼叫：
+    </p>
+    <!--code-->
+    <pre><code>Plan thePlanInSession = (Plan) session.getAttribute("thePlanInSession"); <span style="color:skyblue;">// 取得目前參照的方案（inverse side）</span>
+thePerson.setPlan(thePlanInSession); <span style="color:skyblue;">// 由擁有端（Person）設定與方案的關聯關係</span></code></pre>
+    <p>
+        將學生與方案建立關聯後，接著透過
+    </p>
+    <!--code-->
+    <pre><code>personRepository.save(thePerson); <span style="color:skyblue;">// 由擁有端（Person）執行關聯更新</span></code></pre>
+    <p>
+        更新資料庫，此動作會同步更新 <code>Person</code> 的 <code>plan_id</code> 外鍵。 完成操作後，系統將重新導向至原頁面，並重新取得該方案的學生清單以進行渲染。
+    </p>
+
+
+    <h3 style="color: #1e3a8a;">從方案中移除學生：解除 Person 與 Plan 的關聯操作</h3>
+    <p>
+        若管理員欲移除學生，系統將執行以下操作流程：
+    </p>
+    <p>
+        根據<strong> 「Remove」</strong> 按鈕所附帶的 URL 參數 <code>personId</code>，查詢對應的 <code>Person</code> 物件。
+    </p>
+    <!--code-->
+    <pre><code>Optional&lt;Person&gt; thePersonToBeRemovedOptional = personRepository.findById(personId);
+Person thePersonToBeRemoved = thePersonToBeRemovedOptional.get(); <span style="color:skyblue;">// 取得要移除的 Person 物件</span>
+Plan thisPlanToBeRemovedFrom = thePersonToBeRemoved.getPlan(); <span style="color:skyblue;">// 取得目前所屬的 Plan 物件（Person 擁有 plan_id 作為外鍵，因此僅能隸屬於一個 Plan）</span>
+thePersonToBeRemoved.setPlan(null); <span style="color:skyblue;">// 由擁有端解除關聯</span>
+personRepository.save(thePersonToBeRemoved); <span style="color:skyblue;">// 儲存解除關聯後的變更</span></code></pre>
+
+    <p>
+        重新導向當前頁面 <code>"redirect:/admin/viewPlanDetail?planId=" + thisPlanToBeRemovedFrom.getPlanId();</code> 重新渲染所屬學生清單。
+    </p>
+
+</div>

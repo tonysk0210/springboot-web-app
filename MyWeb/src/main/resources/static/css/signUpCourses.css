@@ -1,0 +1,206 @@
+/* Base */
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9fafa;
+    color: #333;
+    margin: 0;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 6rem 1rem 2rem;
+}
+
+h1 {
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: #2e3a59;
+}
+
+/* Success and Error Messages */
+.success-message {
+    background-color: #e6f4ea;
+    color: #256029;
+    border: 1px solid #b6e2c7;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    background-color: #fdecea;
+    color: #c62828;
+    border: 1px solid #f5c6cb;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.info-message {
+    color: #666;
+    font-style: italic;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #37474f;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+/* Purchase Button */
+.submit-container {
+    text-align: right;
+    margin-top: 1rem;
+}
+
+.purchase-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.purchase-button:hover {
+    background-color: #388e3c;
+}
+
+/* Back Link */
+.back-link {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.back-link a {
+    display: inline-block;
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #6fb1fc, #4364f7);
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.back-link a:hover {
+    background: linear-gradient(135deg, #4364f7, #6fb1fc);
+    transform: translateY(-2px);
+}
+
+/*<!--signUpCoursesDescription.html-->*/
+.signup-courses-section {
+    background-color: #f5f9fc;
+    border-left: 4px solid #17a2b8;
+    padding: 24px 28px;
+    border-radius: 6px;
+    font-family: "Segoe UI", Roboto, sans-serif;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin: 32px 0;
+}
+
+.signup-courses-section p,
+.signup-courses-section li {
+    font-size: 16px;
+    line-height: 1.75;
+    color: #333;
+}
+
+.signup-courses-section ul {
+    padding-left: 20px;
+    margin-bottom: 16px;
+}
+
+.signup-courses-section code {
+    background-color: #e3e8ee;
+    color: #c7254e;
+    padding: 2px 6px;
+    font-family: Consolas, monospace;
+    border-radius: 4px;
+    font-size: 90%;
+}
+
+.signup-courses-section h2.section-title,
+.signup-courses-section h3.sub-title {
+    margin-top: 20px;
+    margin-bottom: 16px;
+    color: #2c3e50;
+}
+
+/* Multi-line code block */
+.signup-courses-section pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 16px;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+}
+
+.signup-courses-section pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+}
+
+.signup-courses-section pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 12px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 14px;
+}
+
+.alert-text {
+    background-color: #f8d7da; /* light red */
+    color: #721c24;           /* dark red text */
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.success-text {
+    background-color: #bce5c2; /* light red */
+    color: #0c691e;           /* dark red text */
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}

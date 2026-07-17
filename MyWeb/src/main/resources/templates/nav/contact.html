@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contact.css}"/>
+</head>
+
+<body>
+<!-- navbar frag -->
+<div th:replace="~{nav/navbar :: navbarFrag}">...</div>
+
+
+<div class="contact-container">
+
+    <!--validation msg-->
+    <ul>
+        <!--#fields.errors(...) is a Thymeleaf utility that retrieves validation error messages for a given field or field pattern.-->
+        <li class="alert" th:each="error : ${#fields.errors('contact.*')}"
+            th:text="${error}"></li>
+    </ul>
+
+    <!-- Form content -->
+    <form th:action="@{/saveMessage}" th:object="${contact}" method="post" class="contact-form">
+        <h1>Contact Us</h1>
+        <label for="name">Name:<span class="required-asterisk">*</span></label>
+        <input type="text" id="name" th:field="*{name}" required>
+
+        <label for="mobile">Mobile Number:<span class="required-asterisk">*</span></label>
+        <input type="tel" id="mobile" th:field="*{mobile}" required>
+
+        <label for="email">Email:<span class="required-asterisk">*</span></label>
+        <input type="email" id="email" th:field="*{email}" required>
+
+        <label for="subject">Subject:<span class="required-asterisk">*</span></label>
+        <input type="text" id="subject" th:field="*{subject}" required>
+
+        <label for="message">Message:<span class="required-asterisk">*</span></label>
+        <textarea id="message" th:field="*{message}" rows="4" required></textarea>
+
+        <button type="submit">Send</button>
+
+        <!--success msg-->
+        <!-- Renders using model contains "successfullySavedMessage"-->
+        <!--if "successfullySavedMessage" is null, false, or empty returns false and is not rendered-->
+        <div th:if="${successfullySavedMessage}" id="success-message" class="success-message">
+            <p th:text="${successfullySavedMessage}"></p>
+        </div>
+    </form>
+</div>
+
+<!--contactDescription.html-->
+<div th:insert="text/contactDescription :: contactDescriptionFrag"></div>
+
+<!--scroll to successfullySavedMessage-->
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            successMessage.scrollIntoView({behavior: 'smooth', block: 'center'});
+            // Optional: add focus for accessibility
+            successMessage.setAttribute('tabindex', '-1');
+        }
+    });
+</script>
+</body>
+</html>
