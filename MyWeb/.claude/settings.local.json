@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx ctx7@latest *)",
+      "WebSearch",
+      "Bash(.\\\\mvnw.cmd -q clean compile)",
+      "PowerShell(.\\\\mvnw.cmd -q clean compile 2>&1 | Select-Object -Last 80)",
+      "PowerShell(.\\\\mvnw.cmd clean compile 2>&1 | Select-Object -First 60)",
+      "PowerShell(.\\\\mvnw.cmd -q clean compile 2>&1 | Select-Object -Last 60)"
+    ]
+  }
+}

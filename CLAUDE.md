@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `AdminActuator` | 8083 | Spring Boot Admin **伺服器**（Codecentric），用於監控 `MyWeb` |
 | `ConsumingRestService` | 8082 | 獨立 client 端，透過 OpenFeign / RestTemplate / WebClient 呼叫 `MyWeb` 的 `/api/contact` |
 
-`MyWeb` 與 `AdminActuator` 綁定 Spring Boot **3.3.12**；`ConsumingRestService` 使用 Spring Boot **3.4.6** + Spring Cloud **2024.0.1**。三者皆使用 Java 17。
+三個模組皆綁定 Spring Boot **4.1.0** + Java **25**；`ConsumingRestService` 額外用 Spring Cloud **2025.1.2 (Oakwood)**。`MyWeb` 與 `AdminActuator` 使用 codecentric spring-boot-admin **4.1.2**。
 
 ## 常用指令
 
@@ -96,9 +96,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `@Slf4j` 取代手寫 `LoggerFactory.getLogger(...)`
 - `@RequiredArgsConstructor` 產生 final 欄位的 constructor injection（相容 Spring 4.3+ 單一 constructor 自動注入，`@Autowired` 可省）
 - Entity / DTO 常用 `@Data` + `@NoArgsConstructor`；繼承 `BaseEntity` 時搭配 `@ToString(callSuper = true)`
+- **Java 23+ 停用了預設的 classpath 隱式 annotation processing** — `MyWeb/pom.xml` 與 `ConsumingRestService/pom.xml` 內已顯式配置 `maven-compiler-plugin` 的 `<annotationProcessorPaths>` 宣告 Lombok；若你新加使用 Lombok 的第三個模組，記得複製這段設定，否則 `@Slf4j`、`@Data` 等不會生效
 
 ## ConsumingRestService 架構
 
 - `@EnableFeignClients(basePackages = "com.company.ConsumingRestService.proxy")` 啟用 `ContactProxy` Feign 介面
 - `ContactProxy` 目標網址為 `http://localhost:8081/api/contact`（**寫死** — 必須先啟動 MyWeb）
 - `config/ProjectConfiguration` 定義了三個平行的 HTTP client（Feign、`RestTemplate`、`WebClient`），全部預先設定好 Basic Auth `admin@gmail.com` / `admin` — 呼叫端可依需求選擇對應的 client
+- pom 同時引入 `spring-boot-starter-webmvc` 與 `spring-boot-starter-webflux`（因為同時用 `RestTemplate` 阻塞式與 `WebClient` 反應式）；另外 `spring-boot-starter-restclient` 是 Boot 4 拆分後 `RestTemplateBuilder` 的所在模組
+
+## Boot 4 / Java 25 建置注意事項
+
+以下是升級到 Spring Boot 4.1 + Java 25 過程中踩過、非 obvious 的點：
+
+- **`spring-boot-starter-web` 已 deprecated** — 三個模組都改用 **`spring-boot-starter-webmvc`**（舊名仍可 delegate，但新程式碼與升級請用新名字讓 MVC vs WebFlux 意圖明確）
+- **Boot 4 拆分了 autoconfigure 模組**，多個常用類別被搬到 feature-specific 套件：
+  - `@EntityScan`：`org.springframework.boot.autoconfigure.domain` → **`org.springframework.boot.persistence.autoconfigure`**
+  - `PathRequest`（servlet）：`org.springframework.boot.autoconfigure.security.servlet` → **`org.springframework.boot.security.autoconfigure.web.servlet`**
+  - `RestTemplateBuilder`：`org.springframework.boot.web.client` → **`org.springframework.boot.restclient`**（需明確引入 `spring-boot-starter-restclient`）
+- **Hibernate groupId 變更**：`hibernate-micrometer` 的 groupId 是 **`org.hibernate.orm`**（Hibernate 6+ 命名）；版本交由 Spring Boot BOM 管理，勿硬編碼
+- **Lombok annotation processor 必須顯式宣告**（見上「Lombok 慣例」段落最後一點）
+- **Spring Boot Admin (codecentric) 版本鏈**：SBA 4.1.x 對應 Boot 4.1；client（`MyWeb`）與 server（`AdminActuator`）兩邊 `spring-boot-admin.version` 必須一致

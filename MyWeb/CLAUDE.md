@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 自訂 REST API（`/api/**`）與 Spring Data REST（`/spring-data-api/**`）
 - Actuator client（向 `AdminActuator`（port 8083）註冊）
 
-服務綁定 Spring Boot **3.3.12** + Java **17**，Port **8081**。
+服務綁定 Spring Boot **4.1.0** + Java **25**，Port **8081**。
 
 本機典型啟動順序：先啟動 `../AdminActuator`（8083）讓 MyWeb 能註冊上去，再啟動 MyWeb；若要測試 Feign client，才啟動 `../ConsumingRestService`（8082）。
 
@@ -94,3 +94,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `@Slf4j` 取代手寫 `LoggerFactory.getLogger(...)`
 - `@RequiredArgsConstructor` 產生 final 欄位的 constructor injection（相容 Spring 4.3+ 單一 constructor 自動注入，`@Autowired` 可省）
 - Entity / DTO 常用 `@Data` + `@NoArgsConstructor`；繼承 `BaseEntity` 時搭配 `@ToString(callSuper = true)`
+- **Java 23+ 停用了預設的 classpath 隱式 annotation processing** — `pom.xml` 已顯式配置 `maven-compiler-plugin` 的 `<annotationProcessorPaths>` 宣告 Lombok；勿隨意移除，否則 `@Slf4j`、`@Data` 等不會生效
+
+## Boot 4 / Java 25 建置注意事項
+
+以下是升級到 Spring Boot 4.1 + Java 25 過程中踩過、非 obvious 的點：
+
+- **`spring-boot-starter-web` 已 deprecated**，改用 **`spring-boot-starter-webmvc`**（舊名仍可 delegate，但新程式碼與升級請用新名字讓 MVC vs WebFlux 意圖明確）
+- **Boot 4 拆分了 autoconfigure 模組**，多個常用類別被搬到 feature-specific 套件：
+  - `@EntityScan`：舊 `org.springframework.boot.autoconfigure.domain` → 新 **`org.springframework.boot.persistence.autoconfigure`**（`MyWebApplication.java` 使用）
+  - `PathRequest`（servlet）：舊 `org.springframework.boot.autoconfigure.security.servlet` → 新 **`org.springframework.boot.security.autoconfigure.web.servlet`**（`SpringSecurityConfig` 使用）
+- **Hibernate groupId 變更**：`hibernate-micrometer` 的 groupId 是 **`org.hibernate.orm`**；版本交由 Spring Boot BOM 管理，勿硬編碼
+- **Spring Boot Admin 版本鏈**：`spring-boot-admin.version` 屬性必須與 `AdminActuator/pom.xml` 內相同（client ↔ server）
