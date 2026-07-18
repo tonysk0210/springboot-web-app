@@ -20,7 +20,14 @@ import static com.company.MyWeb.constant.ProjectConstant.*;
 public class LoggerAspect {
 
     /**
-     * @Around 環繞通知：包住 com.company.MyWeb 底下所有方法的呼叫。
+     * @Around 環繞通知：切點涵蓋 com.company.MyWeb 底下 class 的方法呼叫。
+     *
+     * 注意：Spring AOP 是 proxy-based，只攔「經過 bean proxy 的外部呼叫」。以下情況攔不到：
+     * - 同 bean 內的 self-invocation（this.method()），因為繞過 proxy
+     * - private / static / final 方法（無法被 CGLIB 子類 override）
+     * - constructor 內部呼叫（proxy 尚未建立）
+     * - 手動 new 出、非 Spring 管理的物件
+     *
      * 職責：
      * 1. 進入方法前印出「開始執行」+ 呼叫參數
      * 2. 親自呼叫目標方法（proceed）並計時
@@ -38,7 +45,7 @@ public class LoggerAspect {
         Object[] args = joinPoint.getArgs();
         String targetClass = joinPoint.getTarget().getClass().getSimpleName();
 
-        log.info(ANSI_ORANGE + "[{}] {} 開始執行，參數 {}" + ANSI_RESET, targetClass, method, Arrays.toString(args));
+        log.info(ANSI_PINK + "[{}] {} 開始執行，參數 {}" + ANSI_RESET, targetClass, method, Arrays.toString(args));
 
         // 1. 記錄方法開始執行的時間
         Instant startTime = Instant.now();
@@ -47,7 +54,7 @@ public class LoggerAspect {
         // 3. 計算方法執行時間
         long elapsedMs = Duration.between(startTime, Instant.now()).toMillis();
 
-        log.info(ANSI_ORANGE + "[{}] {} 執行結束，耗時 {} ms，回傳 {}" + ANSI_RESET, targetClass, method, elapsedMs, result);
+        log.info(ANSI_PINK + "[{}] {} 執行結束，耗時 {} ms，回傳 {}" + ANSI_RESET, targetClass, method, elapsedMs, result);
         return result; // 一定要回傳 proceed() 的結果，否則會中斷原本的方法呼叫鏈與代理機制
     }
 

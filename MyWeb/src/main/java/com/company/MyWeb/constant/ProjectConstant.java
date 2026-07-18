@@ -10,5 +10,6 @@ public interface ProjectConstant {
     String ANSI_GREEN = "\u001B[32m";
     String ANSI_ORANGE = "\u001B[33;1m";
     String ANSI_RED = "\u001B[31m";
+    String ANSI_PINK = "\u001B[95m";       // 給 LoggerAspect 用（bright magenta / 粉紅），跟綠（業務）/紅（錯誤）區分
     String ANSI_RESET = "\u001B[0m";
 }
