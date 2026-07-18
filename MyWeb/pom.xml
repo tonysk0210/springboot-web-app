@@ -79,6 +79,13 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- H2 console autoconfig — Boot 4 拆出獨立模組；
+             spring.h2.console.enabled=true 需要此依賴才會啟用 /h2-console -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-h2console</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!-- Spring data JPA (Hibernate) — 已傳遞包含 spring-boot-starter-jdbc，
              故 NewsRepository 使用的 JdbcTemplate 也在此帶入 -->
         <dependency>
