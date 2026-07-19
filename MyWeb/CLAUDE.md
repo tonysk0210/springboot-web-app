@@ -33,22 +33,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # 執行單一測試方法
 .\mvnw.cmd test "-Dtest=SomeTestClass#someMethod"
+
+# 只更新執行中應用的 static 資源與 templates（免重啟；配合 devtools 效果更好）
+.\mvnw.cmd resources:resources
 ```
 
-`src/test/java` 目錄雖已建立但目前為空 — 尚未定義測試框架慣例。
+### 測試慣例
+- 框架：JUnit 5 + Spring Boot Test + Spring Security Test
+- 測試類命名 `*Tests`；測試方法以行為描述，例：`registerRejectsDuplicateEmail()`
+- 修改 controller、security、validation、persistence 時應涵蓋成功與失敗路徑
+- `src/test/java` 目錄目前為空（除了空的 `MyWebApplicationTests`），是接下來要補上的區塊
 
 ## 架構
 
 ### 進入點與關鍵註解
-`MyWebApplication.java` 透過註解組合了多個橫切關注點：
-- `@EnableAspectJAutoProxy` — 啟用 `aspect/LoggerAspect`，以 `@Around` 為 `com.company.MyWeb..*` 底下 **所有** 方法加上執行時間 log，並以 `@AfterThrowing` 記錄例外
-- `@EnableJpaRepositories("com.company.MyWeb.repository")` + `@EntityScan("com.company.MyWeb.model")` — 使用非預設套件，新增 Repository / Entity 時務必放在這兩個套件底下
+根 package 為 **`com.company.myweb`**（全小寫）。`MyWebApplication.java` 帶三個 class-level 註解：
+- `@SpringBootApplication` — 由於 Entity 位於 `com.company.myweb.model`、Repository 位於 `com.company.myweb.repository`，均在預設 scan 範圍內，因此 **不需要** 顯式 `@EntityScan` / `@EnableJpaRepositories`。同理 AOP（`aspect/LoggerAspect`，`@Around` 為 `com.company.myweb..*` 加上執行時間 log、`@AfterThrowing` 記錄例外）由 Boot 的 AOP autoconfigure 啟用，**不需要** `@EnableAspectJAutoProxy`
 - `@EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")` — `auditor/AuditAwareImpl` 從 `SecurityContextHolder` 取得目前使用者名稱作為 `@CreatedBy` / `@LastModifiedBy` 欄位值；若無驗證則退回為 `"anonymousUser"`（**未登入註冊** 時仍能寫入 `person.created_by` 的關鍵）
+- `@EnableConfigurationProperties(MyWebProperties.class)` — 顯式登記 `myweb.*` 屬性 bean，取代在 `MyWebProperties` 上加 `@Component`
 
 ### 資料層
-- 使用內嵌 **H2** 記憶體資料庫（`jdbc:h2:mem:testdb`），Console 位於 `http://localhost:8081/h2-console`
-- Schema **同時定義於兩處**：`src/main/resources/sql/schema.sql` 的 DDL 以及 `model/` 底下的 JPA Entity。Hibernate DDL 模式為 `update`，兩者都會生效 — 新增欄位時 **兩邊都要改**
-- 初始資料（含兩個 BCrypt 加密的預設帳號：`admin@gmail.com` / `admin` 與 `student@gmail.com` / `123`）放在 `data.sql`
+- 使用內嵌 **H2** 記憶體資料庫（`jdbc:h2:mem:mydb`，附 `DB_CLOSE_DELAY=-1` 讓 devtools restart / HikariCP 回收連線時 DB 不會被銷毀），Console 位於 `http://localhost:8081/h2-console`
+- **`schema.sql` 是 schema 的唯一真相** — `spring.jpa.hibernate.ddl-auto=validate`，Hibernate 只在啟動時對照 `src/main/resources/sql/schema.sql` **驗證** JPA Entity（型別、欄位缺失就啟動失敗），**不會** 依 Entity 修改 DB。新增/變更欄位時：改 `schema.sql` DDL **並** 同步 `model/` 底下 Entity 標註，兩邊不一致啟動就會炸
+- 初始資料（含兩個 BCrypt 加密的預設帳號：`admin@gmail.com` / `admin` 與 `student@gmail.com` / `123`）放在 `src/main/resources/sql/data.sql`；路徑透過 `spring.sql.init.{schema,data}-locations` 明確指定
 - JPA Entity：`Person`、`Roles`、`Address`、`Plan`、`Courses`、`Contact`。`Person` 擁有到 `Roles`、`Address`、`Plan` 的外鍵，並透過 `person_courses` 中介表對 `Courses` 做多對多 — 全部為 `FetchType.EAGER`
 - 稽核欄位來自 `model/BaseEntity`；`Person` **刻意覆蓋** `createdBy` 欄位，以避免未登入註冊時 insert 失敗
 - `model/` 底下有 **兩個非 JPA 類別**，勿誤加 `@Entity`：
@@ -81,10 +88,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 自訂 REST：`/api/contact/*`（見 `ContactRestController`）
 - Spring Data REST 自動端點：`/spring-data-api/**`（HAL Explorer 位於 `/spring-data-api/`）
 - Actuator：`/myWeb/actuator/**`（所有端點皆開啟 — `management.endpoints.web.exposure.include=*`）
-- Boot Admin client 以 `admin@gmail.com` / `admin`（放在 instance metadata）向 `http://localhost:8083` 註冊
+- Boot Admin client **預設關閉**（`spring.boot.admin.client.enabled=false`），避免 `AdminActuator` 未啟動時 log 洗版。要恢復監控：把該屬性改成 `true` 並先啟動 `../AdminActuator`（8083）。註冊時使用 instance metadata 內的 `admin@gmail.com` / `admin` 做 Basic Auth 讓 Admin server 回呼健康檢查
 
 ### 自訂應用程式屬性
 前綴為 `myweb.*`，於 `config/MyWebProperties` 以 `@Validated` 綁定。目前只有 `myweb.paginationPageSize`（範圍 5–10）。新增可調參數請集中在此處，不要用 `@Value` 到處散落。
+
+### 前端 CSS / JS 分層
+`templates/` 只 link `static/css/app.css`；`app.css` **以 `@import` 串接三個 layer**（順序即優先序）：
+
+1. `foundation.css` — 設計 token（顏色、字級、間距、breakpoint 等）
+2. `components.css` — 跨頁重用的 BEM 元件（navbar、卡片、表單元件⋯）
+3. `pages.css` — 只針對單一頁面的樣式覆寫
+
+新增樣式時按語意選層：新的 design token → `foundation.css`；跨頁 reusable 元件 → `components.css`；只有某頁在用 → `pages.css`。避免 inline style 與重複 selector。共用 JS 行為統一放 `static/js/app.js`。
 
 ### Log 顏色
 `constant/ProjectConstant` 定義了 ANSI 顏色碼，供 `LoggerAspect` 與部分 controller 使用。`application.properties` 內的 console log pattern 使用了 Logback 顏色轉換器 — 終端機會有彩色輸出。
@@ -102,7 +118,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **`spring-boot-starter-web` 已 deprecated**，改用 **`spring-boot-starter-webmvc`**（舊名仍可 delegate，但新程式碼與升級請用新名字讓 MVC vs WebFlux 意圖明確）
 - **Boot 4 拆分了 autoconfigure 模組**，多個常用類別被搬到 feature-specific 套件：
-  - `@EntityScan`：舊 `org.springframework.boot.autoconfigure.domain` → 新 **`org.springframework.boot.persistence.autoconfigure`**（`MyWebApplication.java` 使用）
+  - `@EntityScan`：舊 `org.springframework.boot.autoconfigure.domain` → 新 **`org.springframework.boot.persistence.autoconfigure`**（本專案 Entity 已在預設 scan 範圍所以未用到，但若日後把 model 移出 root package 需要顯式匯入時要走新路徑）
   - `PathRequest`（servlet）：舊 `org.springframework.boot.autoconfigure.security.servlet` → 新 **`org.springframework.boot.security.autoconfigure.web.servlet`**（`SpringSecurityConfig` 使用）
 - **Hibernate groupId 變更**：`hibernate-micrometer` 的 groupId 是 **`org.hibernate.orm`**；版本交由 Spring Boot BOM 管理，勿硬編碼
 - **Spring Boot Admin 版本鏈**：`spring-boot-admin.version` 屬性必須與 `AdminActuator/pom.xml` 內相同（client ↔ server）

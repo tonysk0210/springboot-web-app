@@ -12,7 +12,10 @@
       "Bash(grep -rn -E \"^\\\\s*//.*\\(  the |  a |  is | are | of | for | to | in | that | this | with \\)\" 'D:/IdeaProjects/springboot-web-app/MyWeb/src/main/java')",
       "Bash(xargs grep -l -E \"<!--[^-]*[a-zA-Z]{3,}\")",
       "Bash(grep -vE \"^[^:]+:[0-9]+:$\")",
-      "Bash(grep -E \"[a-zA-Z]{4,}\")"
+      "Bash(grep -E \"[a-zA-Z]{4,}\")",
+      "Bash(git -C D:/IdeaProjects/springboot-web-app status)",
+      "Bash(git -C D:/IdeaProjects/springboot-web-app diff -- AGENTS.md)",
+      "Bash(git *)"
     ]
   }
 }
