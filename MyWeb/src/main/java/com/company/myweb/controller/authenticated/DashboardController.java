@@ -23,16 +23,16 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication, HttpSession session) {
-        //1) retrieve logged-in person via the Authentication object.
-        Person person = personRepository.readByEmail(authentication.getName()); //email
+        // 1) 從 Authentication 取當前使用者 email（即 authentication.getName()），查 DB 拿 Person
+        Person person = personRepository.readByEmail(authentication.getName());
 
-        //2) display the logged-in person's name, role, major on the page
+        // 2) 把使用者資訊塞進 model 給前端顯示
         model.addAttribute("username", person.getName());
         model.addAttribute("role", authentication.getAuthorities().toString());
         if (person.getPlan() != null) model.addAttribute("plan", person.getPlan().getName());
-        //be careful with transactional context is closed when plan field of Person set LAZY resulting in LAZY exception
+        // 注意：若 Person.plan 是 LAZY，transaction 結束後存取會拋 LazyInitializationException
 
-        //3) stores the login user detail in session with the person object for later use: Profile Controller
+        // 3) 把 Person 存進 session，供 ProfilePageController 等後續 handler 使用
         session.setAttribute("loggedInPerson", person);
 
         return "authenticated/dashboard";

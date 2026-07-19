@@ -27,7 +27,7 @@ public class StudentController {
     }
 
     /**
-     * This method is to show all the courses a person is enrolled by sending the loggedInPerson object to view using session
+     * 顯示登入使用者已選修的所有課程 — 從 session 取 loggedInPerson 塞給模板
      */
     @GetMapping("/viewEnrolledCourses")
     public String viewEnrolledCourses(HttpSession session, Model model) {
@@ -37,8 +37,8 @@ public class StudentController {
     }
 
     /**
-     * This method is to show all available courses created by Admin for person to register using checked box
-     * and to disable the checked box for the courses the person has previously registered. Hence sending courseList and a set of alreadyRegisterdCourses to the view
+     * 顯示所有可選課程 + 標記已選修的（讓 checkbox 停用）
+     * 送 courseList 給模板做全部清單；送 alreadyRegisteredCourses 給模板做 disable 判斷
      */
     @GetMapping("/signUpCourses")
     public String signUpCourses(Model model, HttpSession session) {
@@ -50,30 +50,29 @@ public class StudentController {
     }
 
     /**
-     * This method is to receive the courseId of the courses a user selected via @RequestParam. If not selected, redirect and display error message.
-     * Store the courses into a person's courses' list using the list of courseIds from the form
-     * update the loggInPerson for the change
+     * 接收使用者勾選的課程 ID 清單並加到其 courses set，最後更新 session
+     * 沒選任何一門 → 回原頁並顯示錯誤
      */
     @PostMapping("/purchaseSelectedCourse")
     public String purchaseSelectedCourses(@RequestParam(value = "selectedCourses", required = false) List<Integer> listOfCourseIds, HttpSession session, RedirectAttributes redirectAttributes) {
         if (listOfCourseIds == null || listOfCourseIds.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please select at least one course");
+            redirectAttributes.addFlashAttribute("error", "請至少選擇一門課程");
             return "redirect:/student/signUpCourses";
         }
-        //1) fetch the person from either session or Authentication
+        // 1) 從 session 取當前使用者
         Person person = (Person) session.getAttribute("loggedInPerson");
 
-        //2) fetch the courses the person has selected and add them to person's course set
+        // 2) 把選到的每門課程加到 person.courses（owning side of 多對多，負責寫 person_courses 中介表）
         for (Integer courseId : listOfCourseIds) {
             person.getCourses().add(coursesRepository.findById(courseId).get());
         }
-        //3) persist to the person object
+        // 3) 儲存 person → JPA 依 owning side 更新中介表
         Person updatedPerson = personRepository.save(person);
 
-        //4) update the loggedInPerson session to be consistent
+        // 4) 更新 session 內的 loggedInPerson，保持資料一致
         session.setAttribute("loggedInPerson", updatedPerson);
 
-        //5) redirect with a success query
+        // 5) 帶 ?success 導回頁面顯示成功訊息
         return "redirect:/student/signUpCourses?success";
     }
 

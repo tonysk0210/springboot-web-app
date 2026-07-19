@@ -35,103 +35,105 @@ public class ProfilePageController {
     }
 
     /**
-     * This method is to load the authenticated user detail on the profile page before update
+     * 顯示個人資料頁 — 把 session 內 Person 的欄位複製到 Profile DTO 送給前端顯示
      */
     @GetMapping("/profilePage")
     public String displayProfile(Model model, HttpSession session) {
-        //1) Fetch the person object from session and copy its corresponding fields to the profile object.
+        // 1) 從 session 取 Person，把基本欄位複製到 Profile
         Person person = (Person) session.getAttribute("loggedInPerson");
         Profile profile = new Profile();
         profile.setName(person.getName());
         profile.setMobile(person.getMobile());
         profile.setEmail(person.getEmail());
 
-        //2) Copy all address fields to the profile object if it exists. (Initially Address in Person is null when a new user is first created)
+        // 2) 若已有 Address，把地址欄位也複製過去（新使用者首次註冊時 Address 為 null）
         if (person.getAddress() != null) {
             profile.setAddress1(person.getAddress().getAddress1());
             profile.setAddress2(person.getAddress().getAddress2());
             profile.setCity(person.getAddress().getCity());
             profile.setZipcode(person.getAddress().getZipCode());
         }
-        //3 Send profile object to the front-end for display and to perform later update
+        // 3) 送 Profile DTO 給前端表單綁定，用來顯示與後續更新
         model.addAttribute("profile", profile);
         return "authenticated/profile";
     }
 
     /**
-     * This method is to update the authenticated user detail by copying the data from Profile object to the Person object and save it.
+     * 更新個人資料 — 把 Profile DTO 的欄位複製回 Person 並存檔
      */
     @PostMapping("/updateProfile")
     public String updateProfile(@Valid @ModelAttribute("profile") Profile profile, BindingResult result, HttpSession session) {
-        //1) Validate the input based on the rules defined in Profile class.
+        // 1) Bean Validation 檢查失敗回原表單
         if (result.hasErrors()) return "authenticated/profile";
 
-        //2) Fetch the person object from session.
+        // 2) 從 session 取 Person
         Person person = (Person) session.getAttribute("loggedInPerson");
 
-        //3) Check if the email entered by user from the profile object already exists in the database, if true display error message.
+        // 3) 檢查新 email 是否已被別的 Person 使用（排除自己）→ 是則綁欄位錯誤回表單
         if (personRepository.existsByEmailAndPersonIdNot(profile.getEmail(), person.getPersonId())) {
             result.rejectValue(
                     "email",
                     "profile.email.exists",
-                    "An account with email " + profile.getEmail() + " already exists."
+                    "此 Email（" + profile.getEmail() + "）已被其他帳號使用"
             );
             return "authenticated/profile";
         }
 
-        //Store old email for comparison
+        // 保存舊 email 供之後比對是否改動
         String oldEmail = person.getEmail();
 
-        //4) Update the person object field
+        // 4) 更新 Person 基本欄位
         person.setName(profile.getName());
         person.setMobile(profile.getMobile());
         person.setEmail(profile.getEmail());
 
-        //5) If this is the user's first time updating the address detail, initialize an Address object
+        // 5) 若使用者首次填地址，new 一個 Address（先前註冊時未建立）
         if (person.getAddress() == null) person.setAddress(new Address());
 
-        //6) Update the person's address object field
+        // 6) 更新 Person 關聯的 Address 欄位
         person.getAddress().setAddress1(profile.getAddress1());
         person.getAddress().setAddress2(profile.getAddress2());
         person.getAddress().setCity(profile.getCity());
         person.getAddress().setZipCode(profile.getZipcode());
 
-        //7) If email changed, update authentication BEFORE saving, so the AuditorAware reflects to the new email when handling updatedBy
+        // 7) 若 email 有變 → 在 save 前先更新 SecurityContext 的 Authentication
+        //    這樣 AuditorAware 取 authentication.getName() 時拿到「新」email，updatedBy 才會記錄正確
         if (!oldEmail.equals(profile.getEmail())) {
             updateAuthentication(person);
-        } else {
-            // Force dirty mark so Hibernate performs an update if Person field is no modified (this is solved)
-//            person.setName(person.getName());
         }
 
-        //AuditorAware will handle updatedBy and UpdatedAt when an UPDATE is performed
+        // AuditorAware 會自動處理 UPDATE 時的 updatedBy / updatedAt
         Person savedPerson = personRepository.save(person);
         log.info(ANSI_GREEN + Thread.currentThread().getStackTrace()[1].getMethodName() + " savedPerson: " + savedPerson + ANSI_RESET);
         log.info(ANSI_GREEN + Thread.currentThread().getStackTrace()[1].getMethodName() + " savedPerson.getAddress(): " + savedPerson.getAddress() + ANSI_RESET);
 
-        //8) Update the session with the user's up-to-date information for later use
+        // 8) 更新 session 內的 loggedInPerson，保持資料一致
         session.setAttribute("loggedInPerson", savedPerson);
         return "redirect:/profilePage?updated=true";
     }
 
+    /**
+     * 若 email 變更，同步更新 SecurityContext 內的 Authentication（因為 authentication.getName() = 舊 email）
+     * 否則 AuditorAware 之後拿到的還是舊 email
+     */
     private void updateAuthentication(Person person) {
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 
-        //1) Create new UserDetail with new email
+        // 1) 用新 email 建 UserDetails
         UserDetails newUserDetails = User.builder()
-                .username(person.getEmail())  // Use new email as username
-                .password(person.getPassword()) //?
+                .username(person.getEmail())
+                .password(person.getPassword())
                 .authorities(currentAuth.getAuthorities())
                 .build();
 
-        //2) Create new Authentication with new UserDetail
+        // 2) 用新 UserDetails 建新 Authentication
         Authentication newAuth = new UsernamePasswordAuthenticationToken(
                 newUserDetails,
                 currentAuth.getCredentials(),
                 currentAuth.getAuthorities()
         );
 
-        //3) Set new Authentication
+        // 3) 覆蓋 SecurityContext 內的 Authentication
         SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 }

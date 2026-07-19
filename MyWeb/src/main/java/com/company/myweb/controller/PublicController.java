@@ -31,18 +31,18 @@ public class PublicController {
 
     @PostMapping("/createUser")
     public String createUser(@Valid @ModelAttribute("person") Person person, BindingResult result) {
-        if (result.hasErrors()) return "register"; //1) validation check via MVC.
+        if (result.hasErrors()) return "register"; // 1) Bean Validation 檢查失敗回原表單
 
         try {
-            personService.savePerson(person); // 2) Attempt to save; PersonService throws EmailAlreadyExistsException if found duplicate.
+            personService.savePerson(person); // 2) 嘗試存檔；PersonService 遇重複 email 會拋 EmailAlreadyExistsException
         } catch (EmailAlreadyExistsException ex) {
-            // 3) Bind a field‐error on "email" with the exception message.
+            // 3) 把 exception 訊息綁定到 "email" 欄位的錯誤上
             result.rejectValue(
-                    "email",            // the field in the Person object
-                    null,                    // a message code (It can be defined in messages.properties if desired)
-                    ex.getMessage()          // default message ("An account with email " + person.getEmail() + " already exists.")
+                    "email",            // Person 上要標記錯誤的欄位名
+                    null,                    // message code（若要 i18n 可在 messages.properties 定義）
+                    ex.getMessage()          // fallback 訊息（從 exception 取）
             );
-            // 4) Return to the registration page. The 'person' instance and BindingResult are still in the model.
+            // 4) 回註冊頁；person 與 BindingResult 已在 model 內，Thymeleaf 會顯示錯誤
             return "register";
         }
 
