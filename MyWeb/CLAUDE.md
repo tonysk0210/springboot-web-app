@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 模組定位
 
-`MyWeb` 是倉庫下三個獨立 Spring Boot 專案之一（其他兩個為 `AdminActuator`、`ConsumingRestService`，位於同層目錄）。三者 **沒有** 父層聚合 POM，各自建置與執行；MyWeb 的責任為：
+`myweb` 是倉庫下三個獨立 Spring Boot 專案之一（其他兩個為 `AdminActuator`、`ConsumingRestService`，位於同層目錄）。三者 **沒有** 父層聚合 POM，各自建置與執行；MyWeb 的責任為：
 
 - Thymeleaf 前端 + 表單登入
 - 自訂 REST API（`/api/**`）與 Spring Data REST（`/spring-data-api/**`）

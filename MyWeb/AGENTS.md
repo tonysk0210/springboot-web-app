@@ -2,7 +2,7 @@
 
 ## 專案結構與模組配置
 
-本專案是 Java 25、Spring Boot 4.1 的單一 Maven MVC 應用程式。主要程式位於 `src/main/java/com/company/MyWeb/`，依責任分為 `controller/`、`service/`、`repository/`、`model/`、`config/` 與 `rest/`。Thymeleaf 頁面放在 `src/main/resources/templates/`，CSS 與圖片放在 `static/`；資料庫初始化與應用設定分別位於 `schema.sql`、`data.sql`、`application.properties`。測試位於 `src/test/java/`，並應鏡像主程式的 package 結構。`target/` 是產物目錄，不應提交。
+本專案是 Java 25、Spring Boot 4.1 的單一 Maven MVC 應用程式。主要程式位於 `src/main/java/com/company/myweb/`，依責任分為 `controller/`、`service/`、`repository/`、`model/`、`config/` 與 `rest/`。Thymeleaf 頁面放在 `src/main/resources/templates/`，CSS 與圖片放在 `static/`；資料庫初始化與應用設定分別位於 `schema.sql`、`data.sql`、`application.properties`。測試位於 `src/test/java/`，並應鏡像主程式的 package 結構。`target/` 是產物目錄，不應提交。
 
 ## 建置、測試與本機開發
 

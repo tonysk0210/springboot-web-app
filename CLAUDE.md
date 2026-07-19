@@ -43,8 +43,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 進入點與關鍵註解
 `MyWebApplication.java` 透過註解組合了多個橫切關注點：
-- `@EnableAspectJAutoProxy` — 啟用 `aspect/LoggerAspect`，以 `@Around` 為 `com.company.MyWeb..*` 底下 **所有** 方法加上執行時間 log，並以 `@AfterThrowing` 記錄例外
-- `@EnableJpaRepositories("com.company.MyWeb.repository")` + `@EntityScan("com.company.MyWeb.model")` — 使用非預設套件，新增 Repository / Entity 時務必放在這兩個套件底下
+- `@EnableAspectJAutoProxy` — 啟用 `aspect/LoggerAspect`，以 `@Around` 為 `com.company.myweb..*` 底下 **所有** 方法加上執行時間 log，並以 `@AfterThrowing` 記錄例外
+- `@EnableJpaRepositories("com.company.myweb.repository")` + `@EntityScan("com.company.myweb.model")` — 使用非預設套件，新增 Repository / Entity 時務必放在這兩個套件底下
 - `@EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")` — `auditor/AuditAwareImpl` 從 `SecurityContextHolder` 取得目前使用者名稱作為 `@CreatedBy` / `@LastModifiedBy` 欄位值；若無驗證則退回為 `"anonymousUser"`（**未登入註冊** 時仍能寫入 `person.created_by` 的關鍵）
 
 ### 資料層
