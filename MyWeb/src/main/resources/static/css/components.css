@@ -553,6 +553,11 @@ dialog.modal::backdrop {
     background: transparent;
 }
 
+.docs pre code span {
+    color: #8ed6a8;
+    font-style: italic;
+}
+
 .docs .alert-text,
 .docs .success-text {
     padding: 0.1rem 0.3rem;
