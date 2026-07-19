@@ -4,33 +4,34 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
-//this profile class is used to store the form data and transfer it to the Person class. Entity not specified
-
 /**
- * Profile class is designed to temporarily store Person information for display and validation during the information update
- * Since it won't be stored in the database, extending BaseEntity is not required
+ * DTO（Data Transfer Object）— 用於「修改個人資料」流程中暫存表單資料 + 進行 Bean Validation
+ * 非 JPA Entity（沒 @Entity、不入庫，也不繼承 BaseEntity）
+ * 在 ProfilePageController 內接收表單輸入，經驗證後由 controller/service 手動搬到 Person Entity 存 DB
+ *
+ * 這是驗證註解「應放 DTO 而非 Entity」的正確示範，其他 Entity 上的驗證註解為權宜作法
  */
 @Data
 public class Profile {
-    @NotBlank(message = "⚠\uFE0F Name must not be blank")
+    @NotBlank(message = "⚠\uFE0F 姓名不可為空")
     private String name;
 
-    @NotBlank(message = "⚠\uFE0F Mobile number is required")
-    @Pattern(regexp = "[0-9]{10}", message = "⚠\uFE0F Mobile Number must be exactly 10 digits long")
+    @NotBlank(message = "⚠\uFE0F 手機號碼必填")
+    @Pattern(regexp = "[0-9]{10}", message = "⚠\uFE0F 手機號碼必須為 10 位數字")
     private String mobile;
 
-    @NotBlank(message = "⚠\uFE0F Email is required")
+    @NotBlank(message = "⚠\uFE0F Email 必填")
     private String email;
 
-    @NotBlank(message = "⚠\uFE0F Address1 is required")
+    @NotBlank(message = "⚠\uFE0F 地址第一行必填")
     private String address1;
 
     private String address2;
 
-    @NotBlank(message = "⚠\uFE0F City is required")
+    @NotBlank(message = "⚠\uFE0F 城市必填")
     private String city;
 
-    @NotBlank(message = "⚠\uFE0F Zip code is required")
-    @Pattern(regexp = "[0-9]{3}", message = "⚠\uFE0F Zip code must be exactly 3 digits")
+    @NotBlank(message = "⚠\uFE0F 郵遞區號必填")
+    @Pattern(regexp = "[0-9]{3}", message = "⚠\uFE0F 郵遞區號必須為 3 位數字")
     private String zipcode;
 }

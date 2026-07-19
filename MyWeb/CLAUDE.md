@@ -47,7 +47,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 資料層
 - 使用內嵌 **H2** 記憶體資料庫（`jdbc:h2:mem:testdb`），Console 位於 `http://localhost:8081/h2-console`
-- Schema **同時定義於兩處**：`src/main/resources/schema.sql` 的 DDL 以及 `model/` 底下的 JPA Entity。Hibernate DDL 模式為 `update`，兩者都會生效 — 新增欄位時 **兩邊都要改**
+- Schema **同時定義於兩處**：`src/main/resources/sql/schema.sql` 的 DDL 以及 `model/` 底下的 JPA Entity。Hibernate DDL 模式為 `update`，兩者都會生效 — 新增欄位時 **兩邊都要改**
 - 初始資料（含兩個 BCrypt 加密的預設帳號：`admin@gmail.com` / `admin` 與 `student@gmail.com` / `123`）放在 `data.sql`
 - JPA Entity：`Person`、`Roles`、`Address`、`Plan`、`Courses`、`Contact`。`Person` 擁有到 `Roles`、`Address`、`Plan` 的外鍵，並透過 `person_courses` 中介表對 `Courses` 做多對多 — 全部為 `FetchType.EAGER`
 - 稽核欄位來自 `model/BaseEntity`；`Person` **刻意覆蓋** `createdBy` 欄位，以避免未登入註冊時 insert 失敗

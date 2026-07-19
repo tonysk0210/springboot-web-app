@@ -44,7 +44,7 @@ create TABLE IF NOT EXISTS `address` (
   `address1` VARCHAR(200) NOT NULL,
   `address2` VARCHAR(200) DEFAULT NULL,
   `city` VARCHAR(50) NOT NULL,
-  `zip_code` INT NOT NULL,
+  `zip_code` VARCHAR(10) NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `updated_at` TIMESTAMP DEFAULT NULL,

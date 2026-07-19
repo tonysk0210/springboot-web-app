@@ -5,9 +5,16 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapperImpl;
 
 /**
- * Why Object? Because this validator is meant to be applied at the class level, because we are comparing two fields of the same object.
- * We’re comparing two fields of the same object, so you don’t need to know its specific type at compile time.
- * Object is preferred over Person when since it can be used across different classes, Person, Employees and so on that gives more flexibility
+ * @FieldValueMatchValidator 的實作 — 檢查同一物件內指定的兩個 field 值是否相等
+ *
+ * 為什麼泛型第二個參數是 Object（而非 Person）：
+ *   - 這個 validator 需要拿「整個物件」去比對兩個 field（跨欄位驗證）
+ *   - 不同 class（Person / RegisterDto / 其他）都可能套用，用 Object 讓 validator 通用
+ *   - 具體型別編譯期不知道 → 只能用反射（BeanWrapperImpl）取欄位值
+ *
+ * ConstraintValidator 介面要求兩個方法：
+ *   - initialize(annotation)：validator 建立時呼叫一次，讀出註解上的參數存進 field
+ *   - isValid(object, ctx)：每次驗證觸發時呼叫，回 true/false
  */
 public class FieldValueMatchValidatorImpl implements ConstraintValidator<FieldValueMatchValidator, Object> {
 
@@ -16,62 +23,50 @@ public class FieldValueMatchValidatorImpl implements ConstraintValidator<FieldVa
 
     @Override
     public void initialize(FieldValueMatchValidator constraintAnnotation) {
-        //Captures the field names to compare from the annotation (e.g., password and confirmPassword).
-        this.fieldName = constraintAnnotation.field(); //this.field = "password"
-        this.fieldMatchName = constraintAnnotation.fieldMatch(); //this.fieldMatch = "confirmPassword"
-        //They are just strings representing the names of the fields, not their actual values!
+        // 讀出註解上指定的兩個欄位名稱（純字串，不是實際值）
+        this.fieldName = constraintAnnotation.field();           // 例："password"
+        this.fieldMatchName = constraintAnnotation.fieldMatch(); // 例："confirmPassword"
     }
 
     @Override
     public boolean isValid(Object object, ConstraintValidatorContext context) {
-        //BeanWrapperImpl extracts field values from the target object.
-        Object fieldValue = new BeanWrapperImpl(object).getPropertyValue(fieldName); //abc123456789
-        Object fieldMatchValue = new BeanWrapperImpl(object).getPropertyValue(fieldMatchName); //abc123456789
+        // 用 Spring 的 BeanWrapperImpl 反射取值（背後呼叫對應的 getter）
+        Object fieldValue = new BeanWrapperImpl(object).getPropertyValue(fieldName);
+        Object fieldMatchValue = new BeanWrapperImpl(object).getPropertyValue(fieldMatchName);
+        // 兩個值必須非 null 且相等
         return fieldValue != null && fieldValue.equals(fieldMatchValue);
     }
 }
-/**
- * +---------------------------------------------------------+
- * |                  UserRegistrationDto (Object)            |
- * |---------------------------------------------------------|
- * | password = "MyPassword123!"                             |
- * | confirmPassword = "MyPassword123!"                      |
- * | email = "user@example.com"                              |
- * | confirmEmail = "user@example.com"                       |
- * +---------------------------------------------------------+
- * |
- * |
+/*
+ * 執行時流程圖示：
  *
- * @FieldValueMatch(field="password", fieldMatch="confirmPassword")
- * |
- * @FieldValueMatch(field="email", fieldMatch="confirmEmail")
- * |
- * V
  * +---------------------------------------------------------+
- * |                 FieldValueMatchValidator                 |
+ * |            Person（或任何套用此註解的物件）              |
  * |---------------------------------------------------------|
- * | initialize()                                             |
- * |  field = "password"                                      |
- * |  fieldMatch = "confirmPassword"                          |
+ * | password        = "MyPassword123!"                      |
+ * | confirmPassword = "MyPassword123!"                      |
+ * | email           = "user@example.com"                    |
+ * | confirmEmail    = "user@example.com"                    |
+ * +---------------------------------------------------------+
+ *              |
+ *              v
+ * @FieldValueMatchValidator(field="password", fieldMatch="confirmPassword")
+ * @FieldValueMatchValidator(field="email",    fieldMatch="confirmEmail")
+ *              |
+ *              v
+ * +---------------------------------------------------------+
+ * |          FieldValueMatchValidatorImpl                   |
  * |---------------------------------------------------------|
- * | isValid(Object object)                                   |
- * |   BeanWrapperImpl(object).getPropertyValue("password")   |
- * |     => returns "MyPassword123!"                          |
- * |   BeanWrapperImpl(object).getPropertyValue("confirmPassword")|
- * |     => returns "MyPassword123!"                          |
- * |   Compare: Objects.equals("MyPassword123!", "MyPassword123!")|
- * |     => returns true                                      |
+ * | 第一次 initialize(): field=password, fieldMatch=confirmPassword
+ * | isValid(person):                                        |
+ * |   BeanWrapperImpl 讀 "password"        -> "MyPassword123!"
+ * |   BeanWrapperImpl 讀 "confirmPassword" -> "MyPassword123!"
+ * |   equals -> true -> 通過                                |
  * |---------------------------------------------------------|
- * | initialize()                                             |
- * |  field = "email"                                         |
- * |  fieldMatch = "confirmEmail"                             |
- * |---------------------------------------------------------|
- * | isValid(Object object)                                   |
- * |   BeanWrapperImpl(object).getPropertyValue("email")      |
- * |     => returns "user@example.com"                        |
- * |   BeanWrapperImpl(object).getPropertyValue("confirmEmail")|
- * |     => returns "user@example.com"                        |
- * |   Compare: Objects.equals("user@example.com", "user@example.com")|
- * |     => returns true                                      |
+ * | 第二次 initialize(): field=email, fieldMatch=confirmEmail
+ * | isValid(person):                                        |
+ * |   BeanWrapperImpl 讀 "email"        -> "user@example.com"
+ * |   BeanWrapperImpl 讀 "confirmEmail" -> "user@example.com"
+ * |   equals -> true -> 通過                                |
  * +---------------------------------------------------------+
  */

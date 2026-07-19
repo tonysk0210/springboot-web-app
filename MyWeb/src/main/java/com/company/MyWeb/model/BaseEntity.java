@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -14,19 +16,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * when calling repository.save(), it triggers auditing via AuditingEntityLister
- * then...
- * 1) createdAt and updatedAt are filled with LocalDateTime.now().
- * 2) createdBy and updatedBy are filled by the AuditorAware bean.
+ * 呼叫 repository.save() 時，會透過 AuditingEntityListener 觸發稽核填欄位：
+ * 1) createdAt 與 updatedAt 由 Spring 自動填 LocalDateTime.now()
+ * 2) createdBy 與 updatedBy 由 AuditorAware bean（AuditAwareImpl）提供的值填入
  */
-@Data
-@MappedSuperclass //JPA annotation - define common properties for subclasses, without creating separate table
-@EntityListeners(AuditingEntityListener.class) //enable JPA auditing - entity level
+@Getter
+@Setter
+@ToString
+@MappedSuperclass // JPA 註解：定義子類別共用欄位，但本身不會產生對應資料表
+@EntityListeners(AuditingEntityListener.class)
+// Spring Data JPA 提供的 JPA 監聽器，在 INSERT / UPDATE 之前自動偵測 Entity 內的 @CreatedDate / @CreatedBy / @LastModifiedDate / @LastModifiedBy
+// 欄位，並填入時間戳與稽核者名字（後者透過你註冊的 AuditorAware bean 提供）。要三個元件配合：@EntityListeners（Entity 上）+ @EnableJpaAuditing（啟動類上）+ AuditorAware bean（提供 auditor 名字）。
 public class BaseEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    @JsonIgnore
+    @JsonIgnore // @JsonIgnore = 這個欄位在 JSON（或 XML）序列化 / 反序列化時被 Jackson 完全忽略
     private LocalDateTime createdAt;
 
     @CreatedBy
