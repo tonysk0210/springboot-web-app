@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Plan Management</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/planPage.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -15,7 +14,7 @@
     <!-- 頁面標題 -->
     <header class="page-header">
         <h1>Plan Management</h1>
-        <button id="openModalBtn" class="add-button">＋ Add Plan</button>
+        <button class="button button--primary" type="button" data-dialog-open="planModal"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add Plan</button>
     </header>
 
     <!-- 驗證錯誤訊息 -->
@@ -32,8 +31,8 @@
             <input type="text" id="planName" th:field="*{name}" required/>
 
             <div class="modal-actions">
-                <button type="submit" class="submit-btn">Create</button>
-                <button type="button" class="cancel-btn" onclick="document.getElementById('planModal').close()">Cancel</button>
+                <button type="submit" class="button button--primary">Create</button>
+                <button type="button" class="button button--secondary" data-dialog-close>Cancel</button>
             </div>
         </form>
     </dialog>
@@ -41,7 +40,7 @@
     <!-- 方案表 -->
     <section class="table-section">
         <h2>Current Plans</h2>
-        <table>
+        <table class="data-table">
             <thead>
             <tr>
                 <th>Plan ID</th>
@@ -53,9 +52,9 @@
             <tr th:each="plan : ${planList}">
                 <td th:text="${plan.planId}"></td>
                 <td><strong th:text="${plan.name}"></strong></td>
-                <td><a th:href="@{/admin/viewPlanDetail(planId=${plan.planId})}" class="view-link">View</a></td>
-                <td><a th:href="@{/admin/deletePlan(planId=${plan.planId})}" class="delete-link"
-                       onclick="return confirm('Are you sure you want to delete this Plan? This will remove all Students from the plan')">Delete</a></td>
+                <td><a th:href="@{/admin/viewPlanDetail(planId=${plan.planId})}" class="button button--primary">View</a></td>
+                <td><a th:href="@{/admin/deletePlan(planId=${plan.planId})}" class="button button--danger"
+                       data-confirm="Are you sure you want to delete this Plan? This will remove all Students from the plan">Delete</a></td>
             </tr>
             </tbody>
         </table>
@@ -63,18 +62,12 @@
 
     <!-- 返回按鈕 -->
     <div class="back-to-dashboard-container">
-        <a th:href="@{/dashboard}" class="back-to-dashboard">← Back to Dashboard</a>
+        <a th:href="@{/dashboard}" class="button button--secondary">← Back to Dashboard</a>
     </div>
 </main>
 
 <!-- 方案頁說明區塊 -->
 <div th:insert="text/planPageDescription :: planPageDescriptionFrag"></div>
-
-<script>
-    document.getElementById('openModalBtn').addEventListener('click', function () {
-        document.getElementById('planModal').showModal();
-    });
-</script>
 
 </body>
 </html>

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Course Students</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/viewCourseDetail.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -15,15 +14,15 @@
     <!-- 頁首 -->
     <div class="page-header">
         <h1 th:text="'Course: ' + ${course.name} + ' - Student List'"></h1> <!--model("course")-->
-        <button id="openModalBtn" class="add-button">＋ Add Student</button>
+        <button class="button button--primary" type="button" data-dialog-open="classModal"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Add Student</button>
     </div>
 
     <!-- 驗證錯誤訊息 -->
     <!-- param.error 回傳 String[]；${param} 是 Map<String, String[]> -->
-    <div class="error-message" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
+    <div class="alert alert--error" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
         ⚠️ Student not found
     </div>
-    <div class="error-message" th:if="${param.error != null and param.error[0] == 'alreadyEnrolled'}">
+    <div class="alert alert--error" th:if="${param.error != null and param.error[0] == 'alreadyEnrolled'}">
         ⚠️ Student is already enrolled in this course
     </div>
 
@@ -36,15 +35,15 @@
             <input type="text" id="studentEmail" th:field="*{email}" required placeholder="e.g. student@example.com"/>
 
             <div class="modal-actions">
-                <button type="submit" class="submit-btn">Submit</button>
-                <button type="button" class="cancel-btn" onclick="document.getElementById('classModal').close()">Cancel</button>
+                <button type="submit" class="button button--primary">Submit</button>
+                <button type="button" class="button button--secondary" data-dialog-close>Cancel</button>
             </div>
         </form>
     </dialog>
 
     <!-- 顯示學生表 -->
     <section class="table-section">
-        <table>
+        <table class="data-table">
             <thead>
             <tr>
                 <th>Name</th>
@@ -59,8 +58,8 @@
                 <td th:text="${person.email}"></td>
                 <td th:text="${person.mobile}"></td>
                 <td class="actions">
-                    <a th:href="@{/admin/deleteCourseStudent(personId=${person.personId})}" class="delete-link"
-                       onclick="return confirm('Are you sure you want to remove this student from the course?')">
+                    <a th:href="@{/admin/deleteCourseStudent(personId=${person.personId})}" class="button button--danger"
+                       data-confirm="Are you sure you want to remove this student from the course?">
                         Remove
                     </a>
                 </td>
@@ -70,19 +69,13 @@
     </section>
 
     <!-- 返回按鈕 -->
-    <div class="back-link">
-        <a th:href="@{/admin/coursePage}">← Back to Course Management</a>
+    <div class="back-to-dashboard-container">
+        <a class="button button--secondary" th:href="@{/admin/coursePage}">← Back to Course Management</a>
     </div>
 </main>
 
 <!-- 課程詳情頁說明區塊 -->
 <div th:replace="~{text/viewCourseDetailDescription :: viewCourseDetailDescriptionFrag}"></div>
-
-<script>
-    document.getElementById('openModalBtn').addEventListener('click', function () {
-        document.getElementById('classModal').showModal();
-    });
-</script>
 
 </body>
 </html>

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Contact Us</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/contact.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 
 <body>
@@ -12,57 +11,46 @@
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 
-<div class="contact-container">
+<main class="page-shell page-shell--narrow">
 
     <!-- 驗證錯誤訊息 -->
-    <ul>
+    <ul class="alert-list">
         <!-- #fields.errors(...) 是 Thymeleaf 工具，回傳指定 field 的驗證錯誤訊息清單 -->
-        <li class="alert" th:each="error : ${#fields.errors('contact.*')}"
+        <li class="alert alert--error" th:each="error : ${#fields.errors('contact.*')}"
             th:text="${error}"></li>
     </ul>
 
     <!-- 表單內容 -->
-    <form th:action="@{/saveMessage}" th:object="${contact}" method="post" class="contact-form">
+    <form th:action="@{/saveMessage}" th:object="${contact}" method="post" class="form-panel contact-form">
         <h1>Contact Us</h1>
         <label for="name">Name:<span class="required-asterisk">*</span></label>
-        <input type="text" id="name" th:field="*{name}" required>
+        <input class="form-field__control" type="text" id="name" th:field="*{name}" required>
 
         <label for="mobile">Mobile Number:<span class="required-asterisk">*</span></label>
-        <input type="tel" id="mobile" th:field="*{mobile}" required>
+        <input class="form-field__control" type="tel" id="mobile" th:field="*{mobile}" required>
 
         <label for="email">Email:<span class="required-asterisk">*</span></label>
-        <input type="email" id="email" th:field="*{email}" required>
+        <input class="form-field__control" type="email" id="email" th:field="*{email}" required>
 
         <label for="subject">Subject:<span class="required-asterisk">*</span></label>
-        <input type="text" id="subject" th:field="*{subject}" required>
+        <input class="form-field__control" type="text" id="subject" th:field="*{subject}" required>
 
         <label for="message">Message:<span class="required-asterisk">*</span></label>
-        <textarea id="message" th:field="*{message}" rows="4" required></textarea>
+        <textarea class="form-field__control" id="message" th:field="*{message}" rows="4" required></textarea>
 
-        <button type="submit">Send</button>
+        <button class="button button--primary" type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send</button>
 
         <!-- 成功訊息 -->
         <!-- 當 model 內含 "successfullySavedMessage" 才渲染 -->
         <!-- 若 "successfullySavedMessage" 為 null / false / 空字串，Thymeleaf 判定為 false 不渲染 -->
-        <div th:if="${successfullySavedMessage}" id="success-message" class="success-message">
+        <div th:if="${successfullySavedMessage}" id="success-message" class="alert alert--success">
             <p th:text="${successfullySavedMessage}"></p>
         </div>
     </form>
-</div>
+</main>
 
 <!-- 聯絡頁說明區塊 -->
 <div th:insert="text/contactDescription :: contactDescriptionFrag"></div>
 
-<!-- 捲動到 successfullySavedMessage 位置 -->
-<script>
-    window.addEventListener('DOMContentLoaded', (event) => {
-        const successMessage = document.getElementById('success-message');
-        if (successMessage) {
-            successMessage.scrollIntoView({behavior: 'smooth', block: 'center'});
-            // 可選：加 focus 提升 accessibility
-            successMessage.setAttribute('tabindex', '-1');
-        }
-    });
-</script>
 </body>
 </html>

@@ -1,6 +1,6 @@
-<div th:fragment="AboutDescriptionFrag" class="about-section">
+<div th:fragment="AboutDescriptionFrag" class="docs">
     <!--title-->
-    <h3 style="color: #1e3a8a;">使用 WebMvcConfigurer 映射 /about 至 Thymeleaf 視圖</h3>
+    <h3>使用 WebMvcConfigurer 映射 /about 至 Thymeleaf 視圖</h3>
     <p>
         透過在 <code>MyWebConfig</code> 類別中實作 <code>WebMvcConfigurer</code> 並覆寫 <code>addViewControllers()</code> 方法，
         可將 <code>/about</code> 等路徑直接對應至視圖（view），無需經過 Controller 類別，適用於無業務邏輯的頁面；這些頁面仍可搭配 Thymeleaf 模板進行動態渲染。
@@ -10,14 +10,14 @@
     <pre><code>@Configuration
 public class MyWebConfig implements WebMvcConfigurer {
 
-    <span style="color:skyblue;">/**
+    <span>/**
      * 將 URL 路徑 /about 映射至 Thymeleaf 視圖 nav/about.html，
      * 無需透過 Controller 類別處理。
      */</span>
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/about")
-                .setViewName("nav/about"); <span style="color:skyblue;">// 對應 src/main/resources/templates/nav/about.html</span>
+                .setViewName("nav/about"); <span>// 對應 src/main/resources/templates/nav/about.html</span>
     }
 }
 </code></pre>

@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Student Registration</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/register.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
-<div class="register-container">
+<main class="page-shell page-shell--narrow">
+<div class="form-panel register-container">
     <h2>Student Registration</h2>
 
     <!-- 顯示 Bean Validation 錯誤訊息清單 -->
-    <ul>
+    <ul class="alert-list">
         <li th:each="error : ${#fields.errors('person.*')}"
             th:classappend="${error.contains('already exists') ? 'email-error' : 'alert'}"
             th:text="${error}">
@@ -25,35 +25,36 @@
     <form th:action="@{/public/createUser}" method="post" th:object="${person}">
         <!-- CSRF Token -->
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <div>
+        <div class="form-field">
             <label for="name">Name:<span class="required-asterisk">*</span></label>
-            <input type="text" th:field="*{name}" id="name" required/>
+            <input class="form-field__control" type="text" th:field="*{name}" id="name" required/>
         </div>
-        <div>
+        <div class="form-field">
             <label for="mobile">Mobile Number:<span class="required-asterisk">*</span></label>
-            <input type="text" th:field="*{mobile}" id="mobile" required/>
+            <input class="form-field__control" type="text" th:field="*{mobile}" id="mobile" required/>
         </div>
-        <div>
+        <div class="form-field">
             <label for="email">Email:<span class="required-asterisk">*</span></label>
-            <input type="email" th:field="*{email}" id="email" required/>
+            <input class="form-field__control" type="email" th:field="*{email}" id="email" required/>
         </div>
-        <div>
+        <div class="form-field">
             <label for="confirmEmail">Confirm Email:</label>
-            <input type="email" th:field="*{confirmEmail}" id="confirmEmail" required/>
+            <input class="form-field__control" type="email" th:field="*{confirmEmail}" id="confirmEmail" required/>
         </div>
-        <div>
+        <div class="form-field">
             <label for="password">Password:<span class="required-asterisk">*</span></label>
-            <input type="password" th:field="*{password}" id="password" required/>
+            <input class="form-field__control" type="password" th:field="*{password}" id="password" required/>
         </div>
-        <div>
+        <div class="form-field">
             <label for="confirmPassword">Confirm Password:</label>
-            <input type="password" th:field="*{confirmPassword}" id="confirmPassword" required/>
+            <input class="form-field__control" type="password" th:field="*{confirmPassword}" id="confirmPassword" required/>
         </div>
-        <div>
-            <button type="submit">Register</button>
+        <div class="form-actions">
+            <button class="button button--primary" type="submit"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Register</button>
         </div>
     </form>
 </div>
+</main>
 
 <!--registerDescription.html-->
 <div th:insert="~{text/registerDescription :: registerDescriptionFrag}"></div>

@@ -1,6 +1,6 @@
-<div th:fragment="viewCourseDetailDescriptionFrag" class="course-detail-section">
+<div th:fragment="viewCourseDetailDescriptionFrag" class="docs">
     <!-- View Course -->
-    <h3 class="sub-title" style="color: #1e3a8a;"> 課程詳細頁：載入課程資料與準備新增學生流程</h3>
+    <h3 class="sub-title"> 課程詳細頁：載入課程資料與準備新增學生流程</h3>
     <p>
         當管理員點選 <strong>「View」</strong> 按鈕時，系統會透過 URL 參數中的 <code>courseId</code>，
         由 <code>AdminController</code> 使用 <code>@RequestParam("courseId")</code> 取得對應的課程 ID，
@@ -24,42 +24,42 @@
     </p>
 
     <!-- Add Student -->
-    <h3 class="sub-title" style="color: #1e3a8a;">課程學生新增邏輯說明與錯誤處理機制（Add Student）</h3>
+    <h3 class="sub-title">課程學生新增邏輯說明與錯誤處理機制（Add Student）</h3>
     <p>由 <code>addCourseStudent(Person person, HttpSession session)</code> 處理新增學生邏輯：</p>
     <pre><code>@PostMapping("/addCourseStudent")
 public String addCourseStudent(Person person, HttpSession session) {
 
-    Courses courseInSession = (Courses) session.getAttribute("courseInSession"); <span style="color:skyblue;">// 從 Session 取得當前要新增學生的 Course 物件</span>
+    Courses courseInSession = (Courses) session.getAttribute("courseInSession"); <span>// 從 Session 取得當前要新增學生的 Course 物件</span>
 
-    Person thePerson = personRepository.readByEmail(person.getEmail()); <span style="color:skyblue;">// 根據輸入的 email 查詢學生是否存在（驗證學生帳號）</span>
+    Person thePerson = personRepository.readByEmail(person.getEmail()); <span>// 根據輸入的 email 查詢學生是否存在（驗證學生帳號）</span>
 
     if (thePerson == null)
-        return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId() + "&error=personNotFound"; <span style="color:skyblue;">// 若學生不存在，重新導向回課程頁面並附帶 error=personNotFound，顯示「學生不存在」</span>
+        return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId() + "&error=personNotFound"; <span>// 若學生不存在，重新導向回課程頁面並附帶 error=personNotFound，顯示「學生不存在」</span>
     if (courseInSession.getPersons().contains(thePerson)) {
-        return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId() + "&error=alreadyEnrolled"; <span style="color:skyblue;">// 若該學生已註冊此課程，重新導向並附帶 error=alreadyEnrolled，顯示「學生已註冊」</span>
+        return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId() + "&error=alreadyEnrolled"; <span>// 若該學生已註冊此課程，重新導向並附帶 error=alreadyEnrolled，顯示「學生已註冊」</span>
     }
 
-    thePerson.getCourses().add(courseInSession); <span style="color:skyblue;">// 由擁有端 Person 設定關聯（此為有效的資料操作端）</span>
-    courseInSession.getPersons().add(thePerson); <span style="color:skyblue;">// 同步更新被參照端以維持物件模型一致性（可選擇性加入）</span>
-    personRepository.save(thePerson); <span style="color:skyblue;">// 儲存變更，更新資料庫中的關聯資料</span>
+    thePerson.getCourses().add(courseInSession); <span>// 由擁有端 Person 設定關聯（此為有效的資料操作端）</span>
+    courseInSession.getPersons().add(thePerson); <span>// 同步更新被參照端以維持物件模型一致性（可選擇性加入）</span>
+    personRepository.save(thePerson); <span>// 儲存變更，更新資料庫中的關聯資料</span>
 
-    return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId(); <span style="color:skyblue;">// 新增成功後，重新導向至當前課程頁面並刷新學生清單</span>
+    return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId(); <span>// 新增成功後，重新導向至當前課程頁面並刷新學生清單</span>
 }</code></pre>
 
     <P><strong>「學生不存在」</strong>　錯誤信息：　<span class="alert-text">⚠️ Student not found</span><br/>
         <strong>「學生已註冊」</strong>　錯誤信息：　<span class="alert-text">⚠️ Student is already enrolled in this course</span><br/></P>
 
     <!-- Remove Student -->
-    <h3 class="sub-title" style="color: #1e3a8a;">課程學生移除功能邏輯說明（Remove Student）</h3>
+    <h3 class="sub-title">課程學生移除功能邏輯說明（Remove Student）</h3>
 <pre><code>@GetMapping("/deleteCourseStudent")
 public String deleteCourseStudent(@RequestParam int personId, HttpSession session) {
     Optional&lt;Person&gt; personTobeRemovedOptional = personRepository.findById(personId);
-    Person personTobeRemoved = personTobeRemovedOptional.get(); <span style="color:skyblue;">// 根據「Remove」傳入的 personId 取得對應的 Person 物件</span>
+    Person personTobeRemoved = personTobeRemovedOptional.get(); <span>// 根據「Remove」傳入的 personId 取得對應的 Person 物件</span>
 
-    Courses courseInSession = (Courses) session.getAttribute("courseInSession"); <span style="color:skyblue;">// 取得當前課程 Course 物件</span>
+    Courses courseInSession = (Courses) session.getAttribute("courseInSession"); <span>// 取得當前課程 Course 物件</span>
 
-    personTobeRemoved.getCourses().remove(courseInSession); <span style="color:skyblue;">// 由擁有端 Person 解除與 Course 的關聯</span>
-    personRepository.save(personTobeRemoved); <span style="color:skyblue;">//　儲存變更，更新資料庫中的關聯資訊</span>
-    return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId();　<span style="color:skyblue;">// 關聯解除後，重新導向回當前課程頁面並刷新學生清單</span>
+    personTobeRemoved.getCourses().remove(courseInSession); <span>// 由擁有端 Person 解除與 Course 的關聯</span>
+    personRepository.save(personTobeRemoved); <span>//　儲存變更，更新資料庫中的關聯資訊</span>
+    return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId();　<span>// 關聯解除後，重新導向回當前課程頁面並刷新學生清單</span>
 }</code></pre>
 </div>

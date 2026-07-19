@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>News</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/news.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -12,16 +11,20 @@
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <!-- 新聞內容 -->
+<main class="page-shell">
 <div class="news-container">
     <h1>Latest News</h1>
 
     <!-- 顯示每則新聞 -->
-    <div th:each="newsItem : ${newsList}" class="news-item">
+    <div class="news-list">
+    <article th:each="newsItem : ${newsList}" class="news-item">
         <h2 th:text="${newsItem.title}"></h2>
         <p><em th:text="${newsItem.releasedDate}"></em></p>
         <p th:text="${newsItem.content}"></p>
+    </article>
     </div>
 </div>
+</main>
 
 <!--newsDescription.html-->
 <div th:insert="~{text/newsDescription :: NewsDescriptionFrag}"></div>

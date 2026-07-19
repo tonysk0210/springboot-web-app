@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>View Plan Details</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/viewPlanDetail.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -15,11 +14,11 @@
     <!-- 頁面標題 -->
     <div class="page-header">
         <h1 th:text="'Plan: ' + ${thePlan.name}"></h1> <!--model("thePlan")-->
-        <button id="openModalBtn" class="add-button">＋ Add Student</button>
+        <button class="button button--primary" type="button" data-dialog-open="studentModal"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Add Student</button>
     </div>
 
     <!-- 驗證錯誤訊息 -->
-    <div class="error-message" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
+    <div class="alert alert--error" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
         ⚠️ Student not found. Please enter a valid email.
     </div>
 
@@ -33,15 +32,15 @@
             <input type="text" id="studentEmail" th:field="*{email}" placeholder="e.g. student@example.com" required/>
 
             <div class="modal-actions">
-                <button type="submit" class="submit-btn">Add</button>
-                <button type="button" class="cancel-btn" onclick="document.getElementById('studentModal').close()">Cancel</button>
+                <button type="submit" class="button button--primary">Add</button>
+                <button type="button" class="button button--secondary" data-dialog-close>Cancel</button>
             </div>
         </form>
     </dialog>
 
     <!-- 表格內容 -->
     <section class="table-section">
-        <table>
+        <table class="data-table">
             <thead>
             <tr>
                 <th>Name</th>
@@ -56,8 +55,8 @@
                 <td th:text="${person.email}"></td>
                 <td th:text="${person.mobile}"></td>
                 <td class="actions">
-                    <a th:href="@{/admin/removeStudent(personId=${person.personId})}" class="delete-link"
-                       onclick="return confirm('Are you sure you want to remove this student?')">Remove</a>
+                    <a th:href="@{/admin/removeStudent(personId=${person.personId})}" class="button button--danger"
+                       data-confirm="Are you sure you want to remove this student?">Remove</a>
                 </td>
             </tr>
 
@@ -66,20 +65,13 @@
     </section>
 
     <!-- 返回連結 -->
-    <div class="back-link">
-        <a th:href="@{/admin/planPage}">← Back to Plan Management</a>
+    <div class="back-to-dashboard-container">
+        <a class="button button--secondary" th:href="@{/admin/planPage}">← Back to Plan Management</a>
     </div>
 </main>
 
 <!-- 方案詳情頁說明區塊 -->
 <div th:replace="~{text/viewPlanDetailDescription :: planViewDetailDescriptionFrag}"></div>
-
-<!-- 開啟 Modal 的 script -->
-<script>
-    document.getElementById('openModalBtn').addEventListener('click', function () {
-        document.getElementById('studentModal').showModal();
-    });
-</script>
 
 </body>
 </html>

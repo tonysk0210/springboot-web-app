@@ -3,18 +3,23 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <title>SpringWise</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
 <!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}"></div>
 
-<!-- 首頁內容 -->
-<h1>Welcome to the MyWeb</h1>
-<p>SpringWise is a focused learning platform designed to help developers master the Spring Framework through guided projects, expert insights, and real-world application.</p>
+<main>
+    <section class="hero" aria-labelledby="hero-title">
+        <img class="hero__image" th:src="@{/images/aboutUs.jpg}" alt="People gathered around an inspiring message">
+        <div class="hero__content">
+            <h1 id="hero-title" class="hero__title">SpringWise</h1>
+            <p class="hero__copy">A focused learning platform designed to help developers master the Spring Framework through guided projects, expert insights, and real-world application.</p>
+        </div>
+    </section>
+</main>
 
 <!-- 首頁說明 fragment -->
 <div th:replace="~{text/homeDescription :: homeDescriptionFrag}"></div>

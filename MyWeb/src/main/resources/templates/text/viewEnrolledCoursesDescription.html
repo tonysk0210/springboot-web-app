@@ -1,5 +1,5 @@
-<div th:fragment="viewEnrolledCoursesDescriptionFrag" class="course-section">
-    <h3 class="section-title" style="color: #1e3a8a;">學生已選課程查詢功能</h3>
+<div th:fragment="viewEnrolledCoursesDescriptionFrag" class="docs">
+    <h3 class="section-title">學生已選課程查詢功能</h3>
 
     <p class="course-paragraph">
         當學生登入系統並進入課程頁面時，系統會從 <code>HttpSession</code> 中取得先前在 Dashboard 中儲存的 <strong> "loggedInPerson" </strong> 物件，代表當前登入的學生。
@@ -10,8 +10,8 @@
 
     <pre><code>@GetMapping("/viewEnrolledCourses")
 public String viewEnrolledCourses(HttpSession session, Model model) {
-    Person person = (Person) session.getAttribute("loggedInPerson"); <span style="color:skyblue;">// 從 Session 取得當前登入的 Person 物件</span>
-    model.addAttribute("person", person); <span style="color:skyblue;">// 將 Person 物件加入 Model，供前端透過 person.name、person.courses 等屬性渲染</span>
-    return "authenticated/studentOnly/viewEnrolledCourses"; <span style="color:skyblue;">// 返回學生專屬的課程查詢頁面</span>
+    Person person = (Person) session.getAttribute("loggedInPerson"); <span>// 從 Session 取得當前登入的 Person 物件</span>
+    model.addAttribute("person", person); <span>// 將 Person 物件加入 Model，供前端透過 person.name、person.courses 等屬性渲染</span>
+    return "authenticated/studentOnly/viewEnrolledCourses"; <span>// 返回學生專屬的課程查詢頁面</span>
 }</code></pre>
 </div>

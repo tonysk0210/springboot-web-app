@@ -1,5 +1,5 @@
-<div th:fragment="dashboardDescriptionFrag" class="dashboard-section">
-    <h3 style="color: #1e3a8a;">Spring Security 登入後導向 Dashboard 並載入使用者資料</h3>
+<div th:fragment="dashboardDescriptionFrag" class="docs">
+    <h3>Spring Security 登入後導向 Dashboard 並載入使用者資料</h3>
     <p>
         登入成功後，使用者將依其角色（Admin 或 Student）導向個人 <code>Dashboard</code>，該頁面由 <code>DashboardController</code> 負責處理。
     </p>
@@ -8,26 +8,26 @@
     </p>
 
     <!--code-->
-    <pre><code>Person person = personRepository.readByEmail(authentication.getName()); <span style="color:skyblue;">// 根據登入的 email 從資料庫取得 Person 物件</span>
+    <pre><code>Person person = personRepository.readByEmail(authentication.getName()); <span>// 根據登入的 email 從資料庫取得 Person 物件</span>
 
-model.addAttribute("username", person.getName()); <span style="color:skyblue;">// 將使用者名稱傳送至前端作為 username</span>
-model.addAttribute("role", authentication.getAuthorities().toString()); <span style="color:skyblue;">// 傳送使用者角色集合至前端作為 role</span>
+model.addAttribute("username", person.getName()); <span>// 將使用者名稱傳送至前端作為 username</span>
+model.addAttribute("role", authentication.getAuthorities().toString()); <span>// 傳送使用者角色集合至前端作為 role</span>
 if (person.getPlan() != null)
-    model.addAttribute("plan", person.getPlan().getName()); <span style="color:skyblue;">// 若使用者有加入方案，傳送方案名稱至前端作為 plan</span>
+    model.addAttribute("plan", person.getPlan().getName()); <span>// 若使用者有加入方案，傳送方案名稱至前端作為 plan</span>
 </code></pre>
 
-    <h3 style="color: #1e3a8a;">Thymeleaf 與 Spring Security：依角色/登入狀態動態顯示內容</h3>
+    <h3>Thymeleaf 與 Spring Security：依角色/登入狀態動態顯示內容</h3>
     <p>
         為實現依角色呈現功能模組，前端畫面透過 Thymeleaf 的 Spring Security 擴充屬性 <code>sec:authorize</code> 進行條件判斷，例如：
     </p>
 
     <!--code-->
     <pre><code>&lt;div sec:authorize="hasRole('ROLE_ADMIN')"&gt;
-    <span style="color:skyblue;">&lt;!-- 只有管理者角色可見的區塊 --&gt;</span>
+    <span>&lt;!-- 只有管理者角色可見的區塊 --&gt;</span>
 &lt;/div&gt;
 
 &lt;div sec:authorize="hasRole('ROLE_STUDENT')"&gt;
-    <span style="color:skyblue;">&lt;!-- 只有學生角色可見的區塊 --&gt;</span>
+    <span>&lt;!-- 只有學生角色可見的區塊 --&gt;</span>
 &lt;/div&gt;</code></pre>
 
 
@@ -36,18 +36,18 @@ if (person.getPlan() != null)
     </p>
 
     <!--code-->
-    <pre><code>&lt;a sec:authorize="isAnonymous()" th:href="@{/login}"&gt;Login&lt;/a&gt; <span style="color:skyblue;">&lt;!-- 僅限匿名訪客可見 --&gt;</span>
+    <pre><code>&lt;a sec:authorize="isAnonymous()" th:href="@{/login}"&gt;Login&lt;/a&gt; <span>&lt;!-- 僅限匿名訪客可見 --&gt;</span>
 
-&lt;a sec:authorize="isAuthenticated()" th:href="@{/logout}"&gt;Logout&lt;/a&gt; <span style="color:skyblue;">&lt;!-- 僅限已登入使用者（包含管理員與學生）可見 --&gt;</span></code></pre>
+&lt;a sec:authorize="isAuthenticated()" th:href="@{/logout}"&gt;Logout&lt;/a&gt; <span>&lt;!-- 僅限已登入使用者（包含管理員與學生）可見 --&gt;</span></code></pre>
 
-    <h3 style="color: #1e3a8a;">登入者資訊保存至 Session</h3>
+    <h3>登入者資訊保存至 Session</h3>
     <p>
         為提升資料重用性與操作效率，系統會將登入者的 <code>Person</code> 物件儲存至 <code>HttpSession</code> <strong>("loggedInPerson")</strong> 中，讓後續其他 Controller 可直接從 Session 中取得使用者資訊，避免重複查詢資料庫。
     </p>
 
-    <pre><code>session.setAttribute("loggedInPerson", person); <span style="color:skyblue;">// 將登入成功的使用者資訊存入 Session 中</span></code></pre>
+    <pre><code>session.setAttribute("loggedInPerson", person); <span>// 將登入成功的使用者資訊存入 Session 中</span></code></pre>
 
-    <h3 style="color: #1e3a8a;">實現非表單（非 POST）的登出邏輯</h3>
+    <h3>實現非表單（非 POST）的登出邏輯</h3>
     <p>
         <strong>Logout</strong> — 由於 Spring Security 的內建登出機制必須透過
         <code>POST</code> 方法（表單方式）發送請求，若希望以
@@ -64,10 +64,10 @@ if (person.getPlan() != null)
     <!--code-->
     <pre><code>@GetMapping("/logout")
 public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-    <span style="color:skyblue;"> // 1) 建立 SecurityContextLogoutHandler 實例</span>
+    <span> // 1) 建立 SecurityContextLogoutHandler 實例</span>
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
-    <span style="color:skyblue;"> // 2) 呼叫 logout() 方法以：
+    <span> // 2) 呼叫 logout() 方法以：
      // - 清除 SecurityContext 中的 Authentication 物件
      // - 使 HTTP Session 失效
      // - 刪除名為 JSESSIONID 的 Cookie</span>

@@ -3,11 +3,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>錯誤</title>
-    <!-- @{/css/error.css} 是 Thymeleaf URL 表達式：
-         Thymeleaf 會自動加上 context path，產出 "/css/error.css" 之類的路徑 -->
-    <link rel="stylesheet" th:href="@{/css/error.css}"/>
+    <!-- Thymeleaf 會自動替 app.css URL 加上 context path -->
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
-<body>
+<body class="page--standalone">
+<main class="error-page">
 <div class="error-container">
     <h1>哎呀！發生錯誤了。</h1>
     <!-- th:text="..." → 用表達式運算結果覆蓋 <p> 的內文
@@ -18,5 +18,6 @@
     <!-- @{/} → 首頁的 URL，Thymeleaf 會加上 context path -->
     <a th:href="@{/}" class="home-button">回到首頁</a>
 </div>
+</main>
 </body>
 </html>

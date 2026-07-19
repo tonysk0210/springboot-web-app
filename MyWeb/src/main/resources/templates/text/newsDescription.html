@@ -1,6 +1,6 @@
-<div th:fragment="NewsDescriptionFrag" class="news-section">
+<div th:fragment="NewsDescriptionFrag" class="docs">
     <!--title-->
-    <h3 style="color: #1e3a8a;">Spring JDBC 擷取資料 + Thymeleaf 動態渲染</h3>
+    <h3>Spring JDBC 擷取資料 + Thymeleaf 動態渲染</h3>
     <p><code>/news</code> 路徑由 <code>NewsController</code> 控制，透過 Spring JDBC API（使用 <code>RowMapper</code>，
         非 ORM）呼叫 <code>newsRepository.returnAListOfAllNewsItems()</code> 擷取 <code>List&lt;News&gt;</code>，並將結果傳遞至視圖，最後由 Thymeleaf 進行畫面渲染。</p>
 
@@ -8,17 +8,17 @@
     <pre><code>public List&lt;News&gt; returnAListOfAllNewsItems() {
     String sql = "SELECT * FROM news";
 
-    <span style="color:skyblue;">// BeanPropertyRowMapper 透過 setter 方法自動將欄位對應至 News 類別屬性</span>
+    <span>// BeanPropertyRowMapper 透過 setter 方法自動將欄位對應至 News 類別屬性</span>
     return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(News.class));
 }
 </code></pre>
 
     <!--code-->
-    <pre><code><span style="color:skyblue;">// Thymeleaf 前端渲染</span>
+    <pre><code><span>// Thymeleaf 前端渲染</span>
 &lt;div th:each="newsItem : ${newsList}"&gt;
-    &lt;h2 th:text="${newsItem.title}"&gt;&lt;/h2&gt;               <span style="color:skyblue;">&lt;-- AI Revolution in Education --&gt;</span>
-    &lt;p&gt;&lt;em th:text="${newsItem.releasedDate}"&gt;&lt;/em&gt;&lt;/p&gt; <span style="color:skyblue;">&lt;-- 2025-05-01 --&gt;</span>
-    &lt;p th:text="${newsItem.content}"&gt;&lt;/p&gt;               <span style="color:skyblue;">&lt;-- AI is transforming the way students learn and teachers teach. --&gt;</span>
+    &lt;h2 th:text="${newsItem.title}"&gt;&lt;/h2&gt;               <span>&lt;-- AI Revolution in Education --&gt;</span>
+    &lt;p&gt;&lt;em th:text="${newsItem.releasedDate}"&gt;&lt;/em&gt;&lt;/p&gt; <span>&lt;-- 2025-05-01 --&gt;</span>
+    &lt;p th:text="${newsItem.content}"&gt;&lt;/p&gt;               <span>&lt;-- AI is transforming the way students learn and teachers teach. --&gt;</span>
 &lt;/div&gt;
 </code></pre>
 

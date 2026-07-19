@@ -1,12 +1,12 @@
-<div th:fragment="coursePageDescriptionFrag" class="course-section">
-    <h3 class="course-subheading" style="color: #1e3a8a;">課程資料查詢與新增表單綁定</h3>
+<div th:fragment="coursePageDescriptionFrag" class="docs">
+    <h3 class="course-subheading">課程資料查詢與新增表單綁定</h3>
     <p class="course-paragraph">
         在Course Management頁面中，<code>AdminController</code> 透過 <code>@ModelAttribute("courseList")</code> 方法 <code>displayAllCourses()</code>
         將目前所有已存在的 <code>List&lt;Course&gt;</code> 資料傳遞至前端進行渲染。
     </p>
     <pre><code>@ModelAttribute("courseList")
 public List&lt;Courses&gt; displayAllCourses() {
-    <span style="color:skyblue;">// 從資料庫中查詢所有 Course 物件，並根據 courseId 欄位以「升冪排序（ascending）」的方式回傳結果。</span>
+    <span>// 從資料庫中查詢所有 Course 物件，並根據 courseId 欄位以「升冪排序（ascending）」的方式回傳結果。</span>
     return coursesRepository.findAll(Sort.by(Sort.Direction.ASC, "courseId"));
 }</code></pre>
     <p class="course-paragraph">
@@ -14,7 +14,7 @@ public List&lt;Courses&gt; displayAllCourses() {
         供 <strong>「Add Course」</strong> 表單進行資料綁定使用，作為新增課程時的資料輸入對象。
     </p>
 
-    <h3 class="course-subheading" style="color: #1e3a8a;">課程新增流程</h3>
+    <h3 class="course-subheading">課程新增流程</h3>
     <p class="course-paragraph">
         管理員可透過表單輸入課程名稱與費用，這些欄位會綁定至 <code>Course</code> 物件。
         表單送出後，Controller 會執行後端驗證，若資料有效，則將該課程存入資料庫中的 <code>course</code> 資料表。<code>coursesRepository.save(course);</code>
@@ -27,24 +27,24 @@ public List&lt;Courses&gt; displayAllCourses() {
         每個課程項目均會附帶 <strong>「View」</strong> 與 <strong>「Delete」</strong> 按鈕，其連結中包含 <code>courseId</code> 作為 URL 查詢參數（如：<code>?courseId=123</code>）。
     </p>
 
-    <h3 class="course-subheading" style="color: #1e3a8a;">刪除課程流程：解除學生關聯後移除課程資料</h3>
+    <h3 class="course-subheading">刪除課程流程：解除學生關聯後移除課程資料</h3>
     <p class="course-paragraph">
         當管理員點選 <strong>「Delete」</strong> 後，系統會根據 URL 中的 <code>courseId</code>，透過 <code>@RequestParam</code> 取得對應的 <code>Course</code> 物件。
         隨後，系統會遍歷該課程所關聯的 <code>Set&lt;Person&gt;</code>（即所有已選修此課程的學生
         ，並逐一解除每位學生與該課程之間的關聯 <code>person.getCourses().remove(course)</code> 。
         完成關聯解除後，系統會呼叫 <code>courseRepository.delete(course)</code>，將該課程從資料庫移除。
     </p>
-    <pre><code><span style="color:skyblue;">// @ManyToMany 表示 Person 可選修多門課程，Course 也可被多位 Person 選修</span>
-@ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER) <span style="color:skyblue;">// mappedBy 表示關聯的擁有端在 Person 類別的 courses 屬性</span>
+    <pre><code><span>// @ManyToMany 表示 Person 可選修多門課程，Course 也可被多位 Person 選修</span>
+@ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER) <span>// mappedBy 表示關聯的擁有端在 Person 類別的 courses 屬性</span>
 private Set&lt;Person&gt; persons = new HashSet&lt;&gt;();
 
-<span style="color:skyblue;">// 擁有端負責維護關聯關係並主導中介表（JoinTable）的結構與更新操作</code></pre>
+<span>// 擁有端負責維護關聯關係並主導中介表（JoinTable）的結構與更新操作</code></pre>
 
     <pre><code>Optional&lt;Courses&gt;  courseToBeDeletedOptional = coursesRepository.findById(courseId);
-Courses courseToBeDeleted = courseToBeDeletedOptional.get(); <span style="color:skyblue;">// 取得要刪除的 Course 物件 </span>
-for (Person person : courseToBeDeleted.getPersons()) { <span style="color:skyblue;">      // 逐一處理所有註冊此課程的學生</span>
-    person.getCourses().remove(courseToBeDeleted); <span style="color:skyblue;">          // 從每位學生的 Courses 集合中移除該課程（解除關聯） </span>
-    personRepository.save(person); <span style="color:skyblue;">                          // 儲存變更，更新資料庫中的關聯 (可省略)</span>
+Courses courseToBeDeleted = courseToBeDeletedOptional.get(); <span>// 取得要刪除的 Course 物件 </span>
+for (Person person : courseToBeDeleted.getPersons()) { <span>      // 逐一處理所有註冊此課程的學生</span>
+    person.getCourses().remove(courseToBeDeleted); <span>          // 從每位學生的 Courses 集合中移除該課程（解除關聯） </span>
+    personRepository.save(person); <span>                          // 儲存變更，更新資料庫中的關聯 (可省略)</span>
 
-coursesRepository.deleteById(courseId);<span style="color:skyblue;">                      // 全部解除關聯後，刪除該課程</span></code></pre>
+coursesRepository.deleteById(courseId);<span>                      // 全部解除關聯後，刪除該課程</span></code></pre>
 </div>

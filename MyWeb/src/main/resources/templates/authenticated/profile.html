@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/profile.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
-<div class="profile-container">
+<main class="page-shell page-shell--narrow">
+<div class="form-panel profile-container">
     <h1>Profile</h1>
 
     <!-- 驗證錯誤訊息 -->
-    <ul class="error-list">
+    <ul class="alert-list" th:if="${#fields.hasErrors('profile.*')}">
         <li th:each="error : ${#fields.errors('profile.*')}"
-            th:class="${error.contains('already exists')} ? 'email-error' : 'error-list'"
+            class="alert alert--error"
             th:text="${error}">
         </li>
     </ul>
 
     <!-- 更新成功訊息 -->
-    <div class="success-message" th:if="${param.updated}">
+    <div class="alert alert--success" th:if="${param.updated}">
         Profile updated successfully
     </div>
 
@@ -33,15 +33,15 @@
 
             <div class="form-group">
                 <label for="name">Name:<span class="required-asterisk">*</span></label>
-                <input type="text" id="name" th:field="*{name}" required>
+                <input class="form-field__control" type="text" id="name" th:field="*{name}" required>
             </div>
             <div class="form-group">
                 <label for="mobile">Mobile:<span class="required-asterisk">*</span></label>
-                <input type="text" id="mobile" th:field="*{mobile}" required>
+                <input class="form-field__control" type="text" id="mobile" th:field="*{mobile}" required>
             </div>
             <div class="form-group">
                 <label for="email">Email:<span class="required-asterisk">*</span></label>
-                <input type="email" id="email" th:field="*{email}" required>
+                <input class="form-field__control" type="email" id="email" th:field="*{email}" required>
             </div>
         </fieldset>
 
@@ -49,22 +49,22 @@
             <legend>Address Details</legend>
             <div class="form-group">
                 <label for="address1">Address Line 1:<span class="required-asterisk">*</span></label>
-                <input type="text" id="address1" th:field="*{address1}" required>
+                <input class="form-field__control" type="text" id="address1" th:field="*{address1}" required>
             </div>
             <div class="form-group">
                 <label for="address2">Address Line 2:</label>
-                <input type="text" id="address2" th:field="*{address2}">
+                <input class="form-field__control" type="text" id="address2" th:field="*{address2}">
             </div>
             <div class="form-group">
                 <label for="city">City:<span class="required-asterisk">*</span></label>
-                <input type="text" id="city" th:field="*{city}" required>
+                <input class="form-field__control" type="text" id="city" th:field="*{city}" required>
             </div>
             <div class="form-group">
                 <label for="zipCode">Zip Code:<span class="required-asterisk">*</span></label>
-                <input type="text" id="zipCode" th:field="*{zipcode}" required>
+                <input class="form-field__control" type="text" id="zipCode" th:field="*{zipcode}" required>
             </div>
         </fieldset>
-        <button type="submit" class="submit-btn">Update</button>
+        <button type="submit" class="button button--primary"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Update</button>
     </form>
 </div>
 
@@ -72,6 +72,7 @@
 <div class="back-to-dashboard-container">
     <a th:href="@{/dashboard}" class="back-to-dashboard">← Back to Dashboard</a>
 </div>
+</main>
 
 <!-- 個人資料頁說明區塊 -->
 <div th:insert="text/profileDescription :: profileDescriptionFrag"></div>

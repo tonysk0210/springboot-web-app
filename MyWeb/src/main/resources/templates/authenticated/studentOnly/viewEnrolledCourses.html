@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Enrolled Courses</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/viewEnrolledCourses.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -17,7 +16,7 @@
 
     <!-- 顯示已選修課程表 -->
     <section class="table-section" th:if="${person.courses != null and !person.courses.isEmpty()}">
-        <table>
+        <table class="data-table">
             <thead>
             <tr>
                 <th>Course ID</th>
@@ -42,8 +41,8 @@
     </p>
 
     <!-- 返回 Dashboard -->
-    <div class="back-link">
-        <a th:href="@{/dashboard}">← Back to Dashboard</a>
+    <div class="back-to-dashboard-container">
+        <a class="button button--secondary" th:href="@{/dashboard}">← Back to Dashboard</a>
     </div>
 </main>
 

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Available Courses</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/signUpCourses.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -15,16 +14,17 @@
     <h1>Available Courses</h1>
 
     <!-- 顯示成功或錯誤訊息 -->
-    <div class="success-message" th:if="${param.success}">
+    <div class="alert alert--success" th:if="${param.success}">
         ✅ Your purchase was successful.
     </div>
 
-    <div class="error-message" th:if="${error}" th:text="'⚠️ '+ ${error}"></div> <!--model("error")-->
+    <div class="alert alert--error" th:if="${error}" th:text="'⚠️ '+ ${error}"></div> <!--model("error")-->
 
     <!-- 課程表 -->
     <div th:if="${courseList != null and !courseList.isEmpty()}">
         <form th:action="@{/student/purchaseSelectedCourse}" method="post">
-            <table>
+            <div class="table-scroll">
+            <table class="data-table">
                 <thead>
                 <tr>
                     <th>Course ID</th>
@@ -48,8 +48,9 @@
                 </tr>
                 </tbody>
             </table>
+            </div>
             <div class="submit-container">
-                <button type="submit" class="purchase-button">Purchase Selected</button>
+                <button type="submit" class="button button--primary"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> Purchase Selected</button>
             </div>
         </form>
     </div>
@@ -60,8 +61,8 @@
     </p>
 
     <!-- 返回連結 -->
-    <div class="back-link">
-        <a th:href="@{/dashboard}">← Back to Dashboard</a>
+    <div class="back-to-dashboard-container">
+        <a class="button button--secondary" th:href="@{/dashboard}">← Back to Dashboard</a>
     </div>
 </main>
 

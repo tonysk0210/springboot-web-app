@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/login.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
 <!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
-<div class="login-container">
+<main class="page-shell page-shell--narrow">
+<div class="form-panel login-container">
     <h1>Login</h1>
 
     <!-- 依 query param（error / logout / register）決定顯示的訊息 -->
     <!-- ?error=true 時顯示登入失敗訊息 -->
-    <div class="error-message" th:if="${param.error}">
+    <div class="alert alert--error" th:if="${param.error}">
         Invalid Email or Password
     </div>
     <!-- ?logout=true 時顯示登出成功訊息 -->
-    <div class="logout-message" th:if="${param.logout}">
+    <div class="alert alert--success" th:if="${param.logout}">
         You have logged out successfully
     </div>
     <!-- ?register=true 時顯示註冊成功訊息 -->
-    <div class="logout-message" th:if="${param.register}">
+    <div class="alert alert--success" th:if="${param.register}">
         Your registration is successful <br>
         Please login to continue.
     </div>
@@ -33,17 +33,26 @@
     <!-- Spring Security 啟用時，會自動由 UsernamePasswordAuthenticationFilter 攔截 POST /login 處理登入 -->
     <form th:action="@{/login}" method="post">
         <!-- Spring Security 預設的 /login handler 接收 username 與 password 兩個欄位 -->
-        <input type="text" name="username" placeholder="Email" required/>
-        <input type="password" name="password" placeholder="Password" required/>
+        <div class="form-field">
+            <label class="form-field__label" for="username">Email</label>
+            <input class="form-field__control" id="username" type="text" name="username" required/>
+        </div>
+        <div class="form-field">
+            <label class="form-field__label" for="password">Password</label>
+            <input class="form-field__control" id="password" type="password" name="password" required/>
+        </div>
 
         <!-- CSRF token 由 Thymeleaf 自動嵌入（無需手動加 hidden field） -->
         <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
 
-        <button type="submit">Login</button>
-        <button type="button" th:onclick="|window.location.href='@{/public/register}'|">Register</button>
+        <div class="form-actions">
+            <button class="button button--primary" type="submit"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Login</button>
+            <a class="button button--secondary" th:href="@{/public/register}">Register</a>
+        </div>
         <!-- Thymeleaf 的 |...| 是 literal substitution 語法：管線內文字視為字面值，但 @{...} 等表達式仍會被解析 -->
     </form>
 </div>
+</main>
 
 <!-- 登入頁說明區塊 -->
 <div th:insert="~{text/loginDescription :: loginDescriptionFrag}"></div>

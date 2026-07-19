@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Contact Messages</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/contactMessage.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -14,7 +13,8 @@
 <!-- 表格內容 -->
 <div class="contact-message-container">
     <h1>Contact Messages</h1>
-    <table>
+    <div class="table-scroll">
+    <table class="data-table data-table--contact-messages">
         <!-- 表頭 -->
         <thead>
         <tr>
@@ -74,12 +74,13 @@
             <!-- 關閉連結 -->
             <td data-label="ACTION">
                 <a th:href="@{/admin/closeMessage(contactId=${contact.contactId}, currentPageNum=${currentPageNum}, sortField=${sortField}, sortDir=${sortDir})}"
-                   onclick="return confirm('Are you sure you want to close this message?');" class="close-link">Close
+                   data-confirm="Are you sure you want to close this message?" class="button button--danger">Close
                 </a>
             </td>
         </tr>
         </tbody>
     </table>
+    </div>
     <br/>
 
     <!-- 分頁列 -->
@@ -101,7 +102,7 @@
 
     <!-- 返回 dashboard -->
     <div class="back-to-dashboard-container">
-        <a th:href="@{/dashboard}" class="back-to-dashboard">← Back to Dashboard</a>
+        <a th:href="@{/dashboard}" class="button button--secondary">← Back to Dashboard</a>
     </div>
 </div>
 

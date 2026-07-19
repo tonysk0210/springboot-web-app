@@ -1,14 +1,14 @@
-<div th:fragment="signUpCoursesDescriptionFrag" class="signup-courses-section">
-    <h3 class="section-title" style="color: #1e3a8a;">學生選課頁面渲染與已註冊課程判斷邏輯</h3>
+<div th:fragment="signUpCoursesDescriptionFrag" class="docs">
+    <h3 class="section-title">學生選課頁面渲染與已註冊課程判斷邏輯</h3>
 
     <pre><code>@GetMapping("/signUpCourses")
 public String signUpCourses(Model model, HttpSession session) {
-    List&lt;Courses&gt; courseList = coursesRepository.findAll(); <span style="color:skyblue;"> // 取得所有已開設的課程 List&lt;Courses&gt;</span>
-    model.addAttribute("courseList", courseList); <span style="color:skyblue;"> // 將 courseList 加入 Model，供前端顯示課程清單供學生選購</span>
+    List&lt;Courses&gt; courseList = coursesRepository.findAll(); <span> // 取得所有已開設的課程 List&lt;Courses&gt;</span>
+    model.addAttribute("courseList", courseList); <span> // 將 courseList 加入 Model，供前端顯示課程清單供學生選購</span>
 
-    Person person = (Person) session.getAttribute("loggedInPerson"); <span style="color:skyblue;"> // 從 Session 中取得當前登入的學生 Person 物件 </span>
-    model.addAttribute("alreadyRegisteredCourses", person.getCourses()); <span style="color:skyblue;"> // 將學生已註冊的課程集合（Set&lt;Courses&gt;）加入 Model，供前端與開設課程對照使用</span>
-    return "/authenticated/studentOnly/signUpCourses"; <span style="color:skyblue;"> // 導向學生專屬的選課頁面</span>
+    Person person = (Person) session.getAttribute("loggedInPerson"); <span> // 從 Session 中取得當前登入的學生 Person 物件 </span>
+    model.addAttribute("alreadyRegisteredCourses", person.getCourses()); <span> // 將學生已註冊的課程集合（Set&lt;Courses&gt;）加入 Model，供前端與開設課程對照使用</span>
+    return "/authenticated/studentOnly/signUpCourses"; <span> // 導向學生專屬的選課頁面</span>
 }</code></pre>
     <p>
         此時前端頁面會以迴圈方式渲染所有課程。若某課程已存在於學生的 <code>Set&lt;Course&gt;</code> 中，則代表該課程已被此學生註冊，
@@ -16,35 +16,35 @@ public String signUpCourses(Model model, HttpSession session) {
         每個 checkbox 的 <code>value</code> 對應該課程的 <code>courseId</code>。
     </p>
 
-    <pre><code>&lt;tr th:each="course : ${courseList}"&gt; <span style="color:skyblue;">&lt;!-- 對所有課程進行迴圈，依序顯示每門課的 courseId、name 與 fees --&gt;</span>
+    <pre><code>&lt;tr th:each="course : ${courseList}"&gt; <span>&lt;!-- 對所有課程進行迴圈，依序顯示每門課的 courseId、name 與 fees --&gt;</span>
     &lt;td th:text="${course.courseId}"&gt;&lt;/td&gt;
     &lt;td th:text="${course.name}"&gt;&lt;/td&gt;
     &lt;td th:text="${course.fees}"&gt;&lt;/td&gt;
     &lt;td&gt;
         &lt;input type="checkbox" name="selectedCourses"
-           th:value="${course.courseId}" <span style="color:skyblue;">&lt;!-- 每個勾選框代表一個 courseId --&gt;</span>
-           th:disabled="${#lists.contains(alreadyRegisteredCourses, course)}"/&gt; <span style="color:skyblue;">&lt;!-- 若學生已註冊此課程，則禁用該勾選框（避免重複選課）--&gt;</span>
+           th:value="${course.courseId}" <span>&lt;!-- 每個勾選框代表一個 courseId --&gt;</span>
+           th:disabled="${#lists.contains(alreadyRegisteredCourses, course)}"/&gt; <span>&lt;!-- 若學生已註冊此課程，則禁用該勾選框（避免重複選課）--&gt;</span>
     &lt;/td&gt;
 &lt;/tr&gt;</code></pre>
 
-    <h3 class="sub-title" style="color: #1e3a8a;">學生選課提交處理流程與成功／錯誤訊息呈現邏輯</h3>
+    <h3 class="sub-title">學生選課提交處理流程與成功／錯誤訊息呈現邏輯</h3>
 
     <pre><code>@PostMapping("/purchaseSelectedCourse")
 public String purchaseSelectedCourses(@RequestParam(value = "selectedCourses", required = false) List&lt;Integer&gt; listOfCourseIds, HttpSession session, RedirectAttributes redirectAttributes) {
-    if (listOfCourseIds == null || listOfCourseIds.isEmpty()) { <span style="color:skyblue;">// 若學生沒有勾選任何課程(listOfCourseIds 為 courseId集合)</span>
-        redirectAttributes.addFlashAttribute("error", "Please select at least one course"); <span style="color:skyblue;">// 顯示錯誤訊息「請至少勾選一門課程」</span>
+    if (listOfCourseIds == null || listOfCourseIds.isEmpty()) { <span>// 若學生沒有勾選任何課程(listOfCourseIds 為 courseId集合)</span>
+        redirectAttributes.addFlashAttribute("error", "Please select at least one course"); <span>// 顯示錯誤訊息「請至少勾選一門課程」</span>
         return "redirect:/student/signUpCourses";
     }
 
-    Person person = (Person) session.getAttribute("loggedInPerson");　<span style="color:skyblue;">// 從 Session 中取得當前登入的學生 Person 物件</span>
+    Person person = (Person) session.getAttribute("loggedInPerson");　<span>// 從 Session 中取得當前登入的學生 Person 物件</span>
 
     for (Integer courseId : listOfCourseIds) {
-        person.getCourses().add(coursesRepository.findById(courseId).get()); <span style="color:skyblue;">// 根據所選的 courseId，將課程加入 Person 的課程清單（由關聯的擁有端進行維護）</span>
+        person.getCourses().add(coursesRepository.findById(courseId).get()); <span>// 根據所選的 courseId，將課程加入 Person 的課程清單（由關聯的擁有端進行維護）</span>
     }
 
-    Person updatedPerson = personRepository.save(person); <span style="color:skyblue;">// 儲存更新後的 Person（即課程關聯變更）至資料庫</span>
-    session.setAttribute("loggedInPerson", updatedPerson); <span style="color:skyblue;">// 更新 Session 中的 loggedInPerson 為最新狀態</span>
-    return "redirect:/student/signUpCourses?success"; <span style="color:skyblue;">// 重新導向回選課頁面，並透過 URL 參數通知前端顯示「選課成功」訊息</span>
+    Person updatedPerson = personRepository.save(person); <span>// 儲存更新後的 Person（即課程關聯變更）至資料庫</span>
+    session.setAttribute("loggedInPerson", updatedPerson); <span>// 更新 Session 中的 loggedInPerson 為最新狀態</span>
+    return "redirect:/student/signUpCourses?success"; <span>// 重新導向回選課頁面，並透過 URL 參數通知前端顯示「選課成功」訊息</span>
 }</code></pre>
     <p>
         若該列表為 <code>null</code> 或為空（代表未選課），系統會 <code>redirect</code> 回同一頁，

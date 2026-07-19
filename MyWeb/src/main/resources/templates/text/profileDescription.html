@@ -1,5 +1,5 @@
-<div th:fragment="profileDescriptionFrag" class="profile-section">
-    <h3 style="color: #1e3a8a;">個人資料更新流程與雙重驗證機制說明（格式驗證 + 帳號唯一性）</h3>
+<div th:fragment="profileDescriptionFrag" class="docs">
+    <h3>個人資料更新流程與雙重驗證機制說明（格式驗證 + 帳號唯一性）</h3>
     <p>
         使用者進入 <code>/profilePage</code> 時，系統會透過 <code>ProfilePageController</code> 從 <code>HttpSession</code> 中取得目前登入的 <code>Person</code> <strong>("loggedInPerson")</strong> 物件，
         並將其屬性複製至 <code>Profile</code> 物件。再透過 <code>Model</code> 將 <code>Profile</code> 傳遞至前端表單，用於資料顯示與修改。待表單提交後，系統將執行兩層驗證流程：資料格式驗證與 Email 唯一性檢查。
@@ -33,28 +33,28 @@
         系統將檢查 Email 是否與其他帳號重複，避免使用者更新為已註冊的 Email：
     </p>
     <!--code-->
-    <pre><code><span style="color:skyblue;">// 檢查資料庫中是否已存在其他使用者使用相同的 email（但不是目前這位使用者）</span>
+    <pre><code><span>// 檢查資料庫中是否已存在其他使用者使用相同的 email（但不是目前這位使用者）</span>
 if (personRepository.existsByEmailAndPersonIdNot(profile.getEmail(), person.getPersonId())) {
     result.rejectValue(
-        "email",                                     <span style="color:skyblue;">// 指定要綁定錯誤的欄位為 email</span>
-        "profile.email.exists",                      <span style="color:skyblue;">// 錯誤訊息代碼，可對應 messages.properties</span>
-        "An account with email " + profile.getEmail() + " already exists." <span style="color:skyblue;">// 預設錯誤訊息內容</span>
+        "email",                                     <span>// 指定要綁定錯誤的欄位為 email</span>
+        "profile.email.exists",                      <span>// 錯誤訊息代碼，可對應 messages.properties</span>
+        "An account with email " + profile.getEmail() + " already exists." <span>// 預設錯誤訊息內容</span>
     );
-    return "authenticated/profile"; <span style="color:skyblue;">// 回傳至個人資料頁面並顯示錯誤</span>
+    return "authenticated/profile"; <span>// 回傳至個人資料頁面並顯示錯誤</span>
 }
 </code></pre>
     <p>
         若Email已重複存在顯示 <span class="alert-text">⚠️ An account with email " + profile.getEmail() + " already exists.</span> 若無重複，系統則會同步更新 Spring Security 中的 <code>Authentication</code> 資訊，將 <code>principal</code> 更新為新的 Email。
     </p>
 
-    <h3 style="color: #1e3a8a;">更新與稽核：保存最新個人資料並同步 Session 狀態</h3>
+    <h3>更新與稽核：保存最新個人資料並同步 Session 狀態</h3>
     <p>
         修改完成後，系統會透過 <code>personRepository.save(person)</code> 將更新後的 <code>Person</code> 物件儲存至資料庫。此時，<code>AuditorAware</code> 會在執行資料更新（UPDATE）時，依據更新後的<code>Authentication</code> 自動填入 <code>updatedBy</code> 和 <code>updatedAt</code> 欄位，完成使用者資料的稽核更新。
         此外，為確保後續操作中使用的是最新的使用者資訊，系統亦會同步更新 <code>HttpSession</code> 中的 <code>Person</code> <strong>("loggedInPerson")</strong> 物件，以反映此次變更。
         最後，系統會重新導向至 <code>redirect:/profilePage?updated=true</code>，由前端畫面根據 URL 參數顯示成功訊息：<br><span class="success-text">Profile updated successfully.</span>
     </p>
 
-    <pre><code>Person savedPerson = personRepository.save(person); <span style="color:skyblue;">// 將更新後的 Person 實體儲存至資料庫</span>
+    <pre><code>Person savedPerson = personRepository.save(person); <span>// 將更新後的 Person 實體儲存至資料庫</span>
 
-session.setAttribute("loggedInPerson", savedPerson); <span style="color:skyblue;">// 同步更新 Session 中的 loggedInPerson 物件</span></code></pre>
+session.setAttribute("loggedInPerson", savedPerson); <span>// 同步更新 Session 中的 loggedInPerson 物件</span></code></pre>
 </div>

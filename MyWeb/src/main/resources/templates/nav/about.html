@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>About Us</title>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/about.css}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 
@@ -12,16 +11,17 @@
 <div th:replace="~{nav/navbar :: navbarFrag}"></div>
 
 <!-- 關於頁內容 -->
-<div class="container">
-    <h1>About Us</h1>
-    <!-- 靜態資源 root = localhost:8081 -->
-    <img th:src="@{/images/aboutUs.jpg}" alt="About Us Image">
-    <p>
-        Welcome to our website! We are passionate about delivering quality content and services.
-        Our team is dedicated to continuous improvement and customer satisfaction. Whether you’re
-        here to learn more about us or to explore what we offer, we’re glad to have you on board.
-    </p>
-</div>
+<main class="page-shell">
+    <div class="about-layout">
+        <div>
+            <h1>About SpringWise</h1>
+            <p>Welcome to our website! We are passionate about delivering quality content and services.
+                Our team is dedicated to continuous improvement and customer satisfaction. Whether you’re
+                here to learn more about us or to explore what we offer, we’re glad to have you on board.</p>
+        </div>
+        <img class="about-layout__image" th:src="@{/images/aboutUs.jpg}" alt="Passion led us here">
+    </div>
+</main>
 
 <!-- 關於頁說明 fragment -->
 <div th:insert="~{text/aboutDescription :: AboutDescriptionFrag}"></div>
