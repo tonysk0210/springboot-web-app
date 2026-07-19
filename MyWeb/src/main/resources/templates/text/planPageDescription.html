@@ -36,7 +36,7 @@ private Set&lt;Person&gt; persons;</code></pre>
 
 
     <h4>刪除方案前必須先解除所有 Person 的關聯：</h4>
-
++
     <p>
         若直接刪除仍有關聯的 <code>Plan</code> 物件，將會違反資料庫的外鍵約束而產生例外。
         因此，系統應先將每一位已關聯的 <code>Person</code> 的 <code>plan</code> 屬性設為 <code>null</code>，如下：
