@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Contact Messages</title>
+    <title>聯絡訊息</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -12,7 +12,7 @@
 
 <!-- 表格內容 -->
 <div class="contact-message-container">
-    <h1>Contact Messages</h1>
+    <h1>聯絡訊息</h1>
     <div class="table-scroll">
     <table class="data-table data-table--contact-messages">
         <!-- 表頭 -->
@@ -20,42 +20,42 @@
         <tr>
             <th>
                 <!--model("reversedSortDir")-->
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=contactId&sortDir=' + ${reversedSortDir}}">CONTACT_ID
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=contactId&sortDir=' + ${reversedSortDir}}">訊息編號
                     <span class="sort-symbol" th:text="${sortField == 'contactId' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=name&sortDir=' + ${reversedSortDir}}">NAME
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=name&sortDir=' + ${reversedSortDir}}">姓名
                     <span class="sort-symbol" th:text="${sortField == 'name' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=mobile&sortDir=' + ${reversedSortDir}}">MOBILE
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=mobile&sortDir=' + ${reversedSortDir}}">手機號碼
                     <span class="sort-symbol" th:text="${sortField == 'mobile' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=email&sortDir=' + ${reversedSortDir}}">EMAIL
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=email&sortDir=' + ${reversedSortDir}}">電子郵件
                     <span class="sort-symbol" th:text="${sortField == 'email' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=subject&sortDir=' + ${reversedSortDir}}">SUBJECT
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=subject&sortDir=' + ${reversedSortDir}}">主旨
                     <span class="sort-symbol" th:text="${sortField == 'subject' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=message&sortDir=' + ${reversedSortDir}}">MESSAGE
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=message&sortDir=' + ${reversedSortDir}}">訊息內容
                     <span class="sort-symbol" th:text="${sortField == 'message' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=status&sortDir=' + ${reversedSortDir}}">STATUS
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=status&sortDir=' + ${reversedSortDir}}">狀態
                     <span class="sort-symbol" th:text="${sortField == 'status' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=createdAt&sortDir=' + ${reversedSortDir}}">CREATED_AT
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=createdAt&sortDir=' + ${reversedSortDir}}">建立時間
                     <span class="sort-symbol" th:text="${sortField == 'createdAt' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
             <th>
-                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=createdBy&sortDir=' + ${reversedSortDir}}">CREATED_BY
+                <a th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum} + '?sortField=createdBy&sortDir=' + ${reversedSortDir}}">建立者
                     <span class="sort-symbol" th:text="${sortField == 'createdBy' ? (sortDir == 'asc' ? '↑' : '↓') : '↑↓'}"></span></a>
             </th>
-            <th>ACTION</th>
+            <th>操作</th>
         </tr>
         </thead>
         <!-- Table body：顯示 Page<Contact> 內每筆聯絡訊息 -->
@@ -67,14 +67,14 @@
             <td th:text="${contact.email}" data-label="EMAIL"></td>
             <td th:text="${contact.subject}" data-label="SUBJECT"></td>
             <td th:text="${contact.message}" data-label="MESSAGE"></td>
-            <td th:text="${contact.status}" data-label="STATUS"></td>
+            <td th:text="${contact.status == 'OPEN' ? '待處理' : (contact.status == 'CLOSED' ? '已關閉' : contact.status)}" data-label="STATUS"></td>
             <td th:text="${contact.createdAt}" data-label="CREATED_AT"></td>
             <td th:text="${contact.createdBy}" data-label="CREATED_BY"></td>
 
             <!-- 關閉連結 -->
             <td data-label="ACTION">
                 <a th:href="@{/admin/closeMessage(contactId=${contact.contactId}, currentPageNum=${currentPageNum}, sortField=${sortField}, sortDir=${sortDir})}"
-                   data-confirm="Are you sure you want to close this message?" class="button button--danger">Close
+                   data-confirm="確定要關閉這則訊息嗎？" class="button button--danger">關閉
                 </a>
             </td>
         </tr>
@@ -87,7 +87,7 @@
     <div class="pagination-links">
         <!-- 上一頁：僅在 currentPageNum > 1 時顯示 -->
         <a th:if="${currentPageNum > 1}"
-           th:href="@{'/admin/viewContactMessage/page/' + (${currentPageNum - 1}) + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">&laquo; Prev</a>
+           th:href="@{'/admin/viewContactMessage/page/' + (${currentPageNum - 1}) + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">&laquo; 上一頁</a>
 
         <!-- 頁碼列：對每個 i in 1..totalPage 產生連結；currentPageNum 對應的頁不加連結。[[...]] 是 Thymeleaf 的 inline text 輸出 -->
         <span th:each="i: ${#numbers.sequence(1, totalPage)}">
@@ -97,12 +97,12 @@
 
         <!-- 下一頁：僅在 currentPage < totalPage 時顯示 -->
         <a th:if="${currentPageNum < totalPage}"
-           th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum + 1}+'?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next &raquo;</a>
+           th:href="@{'/admin/viewContactMessage/page/' + ${currentPageNum + 1}+'?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">下一頁 &raquo;</a>
     </div>
 
     <!-- 返回 dashboard -->
     <div class="back-to-dashboard-container">
-        <a th:href="@{/dashboard}" class="button button--secondary">← Back to Dashboard</a>
+        <a th:href="@{/dashboard}" class="button button--secondary">← 返回控制台</a>
     </div>
 </div>
 

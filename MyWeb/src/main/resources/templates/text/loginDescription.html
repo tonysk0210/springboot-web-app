@@ -54,6 +54,6 @@ public Authentication authenticate(Authentication authentication) {
     </ul>
     <p>
         此 <code>Authentication</code> 物件隨後會被儲存至 <code>SecurityContextHolder</code>，代表使用者已成功登入並建立安全性上下文。登入成功後，系統將自動導向 <code>/dashboard</code>。
-        若無法取得對應的使用者物件，或密碼驗證失敗，則登入流程會導向 <code>/login?error=true</code>。前端登入頁面將透過 Thymeleaf 根據 URL 參數 <code>error=true</code> 顯示錯誤訊息：<br> <span class="alert-text">Invalid Email or Password</span>
+        若無法取得對應的使用者物件，或密碼驗證失敗，則登入流程會導向 <code>/login?error=true</code>。前端登入頁面將透過 Thymeleaf 根據 URL 參數 <code>error=true</code> 顯示錯誤訊息：<br> <span class="alert-text">電子郵件或密碼錯誤</span>
     </p>
 </div>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Available Courses</title>
+    <title>可選課程</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -11,11 +11,11 @@
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <main class="container">
-    <h1>Available Courses</h1>
+    <h1>可選課程</h1>
 
     <!-- 顯示成功或錯誤訊息 -->
     <div class="alert alert--success" th:if="${param.success}">
-        ✅ Your purchase was successful.
+        課程選購成功。
     </div>
 
     <div class="alert alert--error" th:if="${error}" th:text="'⚠️ '+ ${error}"></div> <!--model("error")-->
@@ -27,10 +27,10 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th>Course ID</th>
-                    <th>Name</th>
-                    <th>Fees</th>
-                    <th>Select</th>
+                    <th>課程編號</th>
+                    <th>課程名稱</th>
+                    <th>費用</th>
+                    <th>選擇</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -50,19 +50,19 @@
             </table>
             </div>
             <div class="submit-container">
-                <button type="submit" class="button button--primary"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> Purchase Selected</button>
+                <button type="submit" class="button button--primary"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> 選購所選課程</button>
             </div>
         </form>
     </div>
 
     <!-- 無課程訊息 -->
     <p class="info-message" th:unless="${courseList != null and !courseList.isEmpty()}">
-        No courses available at the moment.
+        目前沒有可選課程。
     </p>
 
     <!-- 返回連結 -->
     <div class="back-to-dashboard-container">
-        <a class="button button--secondary" th:href="@{/dashboard}">← Back to Dashboard</a>
+        <a class="button button--secondary" th:href="@{/dashboard}">← 返回控制台</a>
     </div>
 </main>
 

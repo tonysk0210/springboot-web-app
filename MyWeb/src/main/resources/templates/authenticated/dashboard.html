@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>控制台</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -14,30 +14,30 @@
 <!-- 頁首 -->
 <main class="dashboard">
     <header class="dashboard__intro">
-        <h1 th:text="${'Welcome, ' + username}"></h1>
-        <p th:text="${'Signed in as ' + role}"></p>
+        <h1 th:text="${'歡迎，' + username}"></h1>
+        <p th:text="${'目前角色：' + (#strings.contains(role, 'ADMIN') ? '管理員' : (#strings.contains(role, 'STUDENT') ? '學生' : role))}"></p>
         <div class="alert alert--info" th:if="${!#strings.isEmpty(plan)}"
-             th:text="${'You have subscribed to the ' + plan + ' plan.'}"></div>
+             th:text="${'你目前使用「' + plan + '」方案。'}"></div>
     </header>
 
     <!-- 個人資料區塊 -->
     <div class="profile-section">
-        <a th:href="@{/profilePage}"><i class="fa-regular fa-address-card"></i> Edit Profile</a>
+        <a th:href="@{/profilePage}"><i class="fa-regular fa-address-card"></i> 編輯個人資料</a>
     </div>
 
     <div class="divider"></div>
 
     <!-- 學生專屬區塊 -->
     <div class="section-block" sec:authorize="hasRole('ROLE_STUDENT')">
-        <a th:href="@{/student/viewEnrolledCourses}"><i class="fa-solid fa-list-ul"></i> View Enrolled Courses</a>
-        <a th:href="@{/student/signUpCourses}"><i class="fa-solid fa-user-plus"></i> Sign Up Courses</a>
+        <a th:href="@{/student/viewEnrolledCourses}"><i class="fa-solid fa-list-ul"></i> 查看已選課程</a>
+        <a th:href="@{/student/signUpCourses}"><i class="fa-solid fa-user-plus"></i> 選修課程</a>
     </div>
 
     <!-- 管理員專屬區塊 -->
     <div class="section-block" sec:authorize="hasRole('ROLE_ADMIN')">
-        <a th:href="@{/admin/viewContactMessage/page/1(sortField='name', sortDir='asc')}"><i class="fa-solid fa-envelope"></i> View Contact Messages</a>
-        <a th:href="@{/admin/planPage}"><i class="fa-solid fa-clipboard"></i> Manage Plans</a>
-        <a th:href="@{/admin/coursePage}"><i class="fa-solid fa-book-open"></i> Manage Courses</a>
+        <a th:href="@{/admin/viewContactMessage/page/1(sortField='name', sortDir='asc')}"><i class="fa-solid fa-envelope"></i> 查看聯絡訊息</a>
+        <a th:href="@{/admin/planPage}"><i class="fa-solid fa-clipboard"></i> 管理方案</a>
+        <a th:href="@{/admin/coursePage}"><i class="fa-solid fa-book-open"></i> 管理課程</a>
     </div>
 </main>
 

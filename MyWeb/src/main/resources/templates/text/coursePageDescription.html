@@ -1,7 +1,7 @@
 <div th:fragment="coursePageDescriptionFrag" class="docs">
     <h3 class="course-subheading">課程資料查詢與新增表單綁定</h3>
     <p class="course-paragraph">
-        在Course Management頁面中，<code>AdminController</code> 透過 <code>@ModelAttribute("courseList")</code> 方法 <code>displayAllCourses()</code>
+        在課程管理頁面中，<code>AdminController</code> 透過 <code>@ModelAttribute("courseList")</code> 方法 <code>displayAllCourses()</code>
         將目前所有已存在的 <code>List&lt;Course&gt;</code> 資料傳遞至前端進行渲染。
     </p>
     <pre><code>@ModelAttribute("courseList")
@@ -11,7 +11,7 @@ public List&lt;Courses&gt; displayAllCourses() {
 }</code></pre>
     <p class="course-paragraph">
         此外，系統也會透過 <code>Model</code> 提供一個新的 <code>Course</code> 物件，
-        供 <strong>「Add Course」</strong> 表單進行資料綁定使用，作為新增課程時的資料輸入對象。
+        供<strong>「新增課程」</strong>表單進行資料綁定使用，作為新增課程時的資料輸入對象。
     </p>
 
     <h3 class="course-subheading">課程新增流程</h3>
@@ -19,17 +19,17 @@ public List&lt;Courses&gt; displayAllCourses() {
         管理員可透過表單輸入課程名稱與費用，這些欄位會綁定至 <code>Course</code> 物件。
         表單送出後，Controller 會執行後端驗證，若資料有效，則將該課程存入資料庫中的 <code>course</code> 資料表。<code>coursesRepository.save(course);</code>
         驗證條件如下： <br>
-        <code>name</code> : <span class="alert-text">⚠️ Course name is required</span> <br>
-        <code>fees</code> : <span class="alert-text">⚠️ Course fees is required</span> | <span class="alert-text">⚠️ Numeric digits only</span>
+        <code>name</code>：<span class="alert-text">課程名稱必填</span><br>
+        <code>fees</code>：<span class="alert-text">課程費用必填</span>｜<span class="alert-text">僅允許純數字</span>
     </p>
     <p class="course-paragraph">
         課程新增成功後，系統將重新導向至課程管理頁面，並重新渲染更新後的課程清單。
-        每個課程項目均會附帶 <strong>「View」</strong> 與 <strong>「Delete」</strong> 按鈕，其連結中包含 <code>courseId</code> 作為 URL 查詢參數（如：<code>?courseId=123</code>）。
+        每個課程項目均會附帶<strong>「查看」</strong>與<strong>「刪除」</strong>按鈕，其連結中包含 <code>courseId</code> 作為 URL 查詢參數（如：<code>?courseId=123</code>）。
     </p>
 
     <h3 class="course-subheading">刪除課程流程：解除學生關聯後移除課程資料</h3>
     <p class="course-paragraph">
-        當管理員點選 <strong>「Delete」</strong> 後，系統會根據 URL 中的 <code>courseId</code>，透過 <code>@RequestParam</code> 取得對應的 <code>Course</code> 物件。
+        當管理員點選<strong>「刪除」</strong>後，系統會根據 URL 中的 <code>courseId</code>，透過 <code>@RequestParam</code> 取得對應的 <code>Course</code> 物件。
         隨後，系統會遍歷該課程所關聯的 <code>Set&lt;Person&gt;</code>（即所有已選修此課程的學生
         ，並逐一解除每位學生與該課程之間的關聯 <code>person.getCourses().remove(course)</code> 。
         完成關聯解除後，系統會呼叫 <code>courseRepository.delete(course)</code>，將該課程從資料庫移除。

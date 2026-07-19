@@ -2,7 +2,7 @@
     <!-- View Course -->
     <h3 class="sub-title"> 課程詳細頁：載入課程資料與準備新增學生流程</h3>
     <p>
-        當管理員點選 <strong>「View」</strong> 按鈕時，系統會透過 URL 參數中的 <code>courseId</code>，
+        當管理員點選<strong>「查看」</strong>按鈕時，系統會透過 URL 參數中的 <code>courseId</code>，
         由 <code>AdminController</code> 使用 <code>@RequestParam("courseId")</code> 取得對應的課程 ID，
         並透過 <code>coursesRepository.findById(courseId)</code> 查詢目標 <code>Course</code> 物件。
     </p>
@@ -14,7 +14,7 @@
     </p>
 
     <p>
-        此外，系統也會提供一個新的 <code>Person</code> 物件，作為 <strong>「Add Student」</strong> 表單的綁定對象，
+        此外，系統也會提供一個新的 <code>Person</code> 物件，作為<strong>「新增學生」</strong>表單的綁定對象，
         供管理員輸入欲加入此課程的學生 Email。
     </p>
 
@@ -24,7 +24,7 @@
     </p>
 
     <!-- Add Student -->
-    <h3 class="sub-title">課程學生新增邏輯說明與錯誤處理機制（Add Student）</h3>
+    <h3 class="sub-title">課程學生新增邏輯說明與錯誤處理機制</h3>
     <p>由 <code>addCourseStudent(Person person, HttpSession session)</code> 處理新增學生邏輯：</p>
     <pre><code>@PostMapping("/addCourseStudent")
 public String addCourseStudent(Person person, HttpSession session) {
@@ -46,11 +46,11 @@ public String addCourseStudent(Person person, HttpSession session) {
     return "redirect:/admin/viewCourseDetail?courseId=" + courseInSession.getCourseId(); <span>// 新增成功後，重新導向至當前課程頁面並刷新學生清單</span>
 }</code></pre>
 
-    <P><strong>「學生不存在」</strong>　錯誤信息：　<span class="alert-text">⚠️ Student not found</span><br/>
-        <strong>「學生已註冊」</strong>　錯誤信息：　<span class="alert-text">⚠️ Student is already enrolled in this course</span><br/></P>
+    <P><strong>「學生不存在」</strong>錯誤訊息：<span class="alert-text">找不到學生</span><br/>
+        <strong>「學生已註冊」</strong>錯誤訊息：<span class="alert-text">此學生已選修本課程</span><br/></P>
 
     <!-- Remove Student -->
-    <h3 class="sub-title">課程學生移除功能邏輯說明（Remove Student）</h3>
+    <h3 class="sub-title">課程學生移除功能邏輯說明</h3>
 <pre><code>@GetMapping("/deleteCourseStudent")
 public String deleteCourseStudent(@RequestParam int personId, HttpSession session) {
     Optional&lt;Person&gt; personTobeRemovedOptional = personRepository.findById(personId);

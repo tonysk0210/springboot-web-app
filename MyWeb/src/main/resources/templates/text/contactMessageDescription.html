@@ -1,10 +1,10 @@
 <div th:fragment="contactMessageDescriptionFrag" class="docs">
     <h3>聯絡訊息分頁與排序管理 — Spring Data JPA 與 Thymeleaf 整合應用</h3>
     <p>
-        View Contact Page 頁面僅顯示 <code>status</code> 為 <code>OPEN</code> 的 <code>Contact</code> 物件，並由 <code>AdminController</code> 負責處理對 <code>/viewContactMessage/page/{currentPageNum}</code> 的請求。
+        聯絡訊息頁面僅顯示 <code>status</code> 為 <code>OPEN</code> 的 <code>Contact</code> 物件，並由 <code>AdminController</code> 負責處理對 <code>/viewContactMessage/page/{currentPageNum}</code> 的請求。
     </p>
     <p>
-        系統利用 Spring Data JPA 的內建分頁 <strong>Pagination</strong> 和 <strong>Sorting</strong> 機制，從 <code>contact_msg</code> 資料表建立 <code>Page&lt;Contact&gt;</code> 物件。
+        系統利用 Spring Data JPA 的內建<strong>分頁</strong>和<strong>排序</strong>機制，從 <code>contact_msg</code> 資料表建立 <code>Page&lt;Contact&gt;</code> 物件。
         接著，從中擷取當前頁面的 <code>List&lt;Contact&gt;</code>　資料，並透過 Thymeleaf 將結果渲染至前端。
     </p>
     <p>
@@ -57,10 +57,10 @@
     </p>
     <h3>聯絡訊息關閉流程與頁面重導機制</h3>
     <p>
-        前端的 <strong>「Close」</strong> 按鈕會附帶 <code>contactId</code> 及當前的分頁參數（如 <code>pageNum</code>、<code>sortField</code>、<code>sortDir</code>），確保完成關閉操作後能正確導回原頁面，維持良好的使用者瀏覽體驗。
+        前端的<strong>「關閉」</strong>按鈕會附帶 <code>contactId</code> 及當前的分頁參數（如 <code>pageNum</code>、<code>sortField</code>、<code>sortDir</code>），確保完成關閉操作後能正確導回原頁面，維持良好的使用者瀏覽體驗。
     </p>
     <p>
-        當管理者點選 <strong>「Close」</strong> 後，系統會依據 <code>contactId</code> 取得該筆 <code>Contact</code>，並將其 <code>status</code> 設為 <code>CLOSED</code>，再執行儲存。
+        當管理者點選<strong>「關閉」</strong>後，系統會依據 <code>contactId</code> 取得該筆 <code>Contact</code>，並將其 <code>status</code> 設為 <code>CLOSED</code>，再執行儲存。
     </p>
     <p>
         最後進行 <code>redirect</code> 返回聯絡訊息頁面，並保留分頁與排序參數，重新查詢並渲染更新後結果。

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Plan Management</title>
+    <title>方案管理</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -13,8 +13,8 @@
 <main class="container">
     <!-- 頁面標題 -->
     <header class="page-header">
-        <h1>Plan Management</h1>
-        <button class="button button--primary" type="button" data-dialog-open="planModal"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add Plan</button>
+        <h1>方案管理</h1>
+        <button class="button button--primary" type="button" data-dialog-open="planModal"><i class="fa-solid fa-plus" aria-hidden="true"></i> 新增方案</button>
     </header>
 
     <!-- 驗證錯誤訊息 -->
@@ -25,36 +25,36 @@
     <!-- 新增方案 Modal -->
     <dialog id="planModal" class="modal">
         <form method="post" th:action="@{/admin/addNewPlan}" th:object="${plan}" class="modal-form">
-            <h2>Create New Plan</h2>
+            <h2>建立新方案</h2>
 
-            <label for="planName">Plan Name:</label>
+            <label for="planName">方案名稱：</label>
             <input type="text" id="planName" th:field="*{name}" required/>
 
             <div class="modal-actions">
-                <button type="submit" class="button button--primary">Create</button>
-                <button type="button" class="button button--secondary" data-dialog-close>Cancel</button>
+                <button type="submit" class="button button--primary">建立</button>
+                <button type="button" class="button button--secondary" data-dialog-close>取消</button>
             </div>
         </form>
     </dialog>
 
     <!-- 方案表 -->
     <section class="table-section">
-        <h2>Current Plans</h2>
+        <h2>目前方案</h2>
         <table class="data-table">
             <thead>
             <tr>
-                <th>Plan ID</th>
-                <th>Plan Name</th>
-                <th colspan="2">Actions</th>
+                <th>方案編號</th>
+                <th>方案名稱</th>
+                <th colspan="2">操作</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="plan : ${planList}">
                 <td th:text="${plan.planId}"></td>
                 <td><strong th:text="${plan.name}"></strong></td>
-                <td><a th:href="@{/admin/viewPlanDetail(planId=${plan.planId})}" class="button button--primary">View</a></td>
+                <td><a th:href="@{/admin/viewPlanDetail(planId=${plan.planId})}" class="button button--primary">查看</a></td>
                 <td><a th:href="@{/admin/deletePlan(planId=${plan.planId})}" class="button button--danger"
-                       data-confirm="Are you sure you want to delete this Plan? This will remove all Students from the plan">Delete</a></td>
+                       data-confirm="確定要刪除此方案嗎？這會同時移除方案內的所有學生。">刪除</a></td>
             </tr>
             </tbody>
         </table>
@@ -62,7 +62,7 @@
 
     <!-- 返回按鈕 -->
     <div class="back-to-dashboard-container">
-        <a th:href="@{/dashboard}" class="button button--secondary">← Back to Dashboard</a>
+        <a th:href="@{/dashboard}" class="button button--secondary">← 返回控制台</a>
     </div>
 </main>
 

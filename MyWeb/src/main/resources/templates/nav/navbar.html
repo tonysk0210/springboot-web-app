@@ -2,7 +2,7 @@
 <!-- 啟用 Thymeleaf Spring Security 屬性（xmlns:sec） -->
 <div th:fragment="navbarFrag" xmlns:th="http://www.thymeleaf.org"
      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-    <nav class="site-nav" aria-label="Primary navigation">
+    <nav class="site-nav" aria-label="主要導覽列">
         <div class="site-nav__inner">
             <a class="site-nav__brand" th:href="@{/home}">
                 <span class="site-nav__brand-mark" aria-hidden="true">S</span>
@@ -11,19 +11,19 @@
             <button class="site-nav__toggle" type="button" data-nav-toggle
                     aria-expanded="false" aria-controls="site-navigation">
                 <i class="fa-solid fa-bars" aria-hidden="true"></i>
-                <span class="visually-hidden">Toggle navigation</span>
+                <span class="visually-hidden">切換導覽列</span>
             </button>
             <div id="site-navigation" class="site-nav__menu" data-nav-menu>
                 <div class="site-nav__group">
-                    <a class="site-nav__link" th:href="@{/home}">Home</a>
-                    <a class="site-nav__link" th:href="@{/about}">About</a>
-                    <a class="site-nav__link" th:href="@{/news}">News</a>
-                    <a class="site-nav__link" th:href="@{/contact}">Contact</a>
-                    <a class="site-nav__link site-nav__link--accent" sec:authorize="isAuthenticated()" th:href="@{/dashboard}">Dashboard</a>
+                    <a class="site-nav__link" th:href="@{/home}">首頁</a>
+                    <a class="site-nav__link" th:href="@{/about}">關於我們</a>
+                    <a class="site-nav__link" th:href="@{/news}">最新消息</a>
+                    <a class="site-nav__link" th:href="@{/contact}">聯絡我們</a>
+                    <a class="site-nav__link site-nav__link--accent" sec:authorize="isAuthenticated()" th:href="@{/dashboard}">控制台</a>
                 </div>
                 <div class="site-nav__group">
-                    <a class="site-nav__link" sec:authorize="isAnonymous()" th:href="@{/login}">Login</a>
-                    <a class="site-nav__link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
+                    <a class="site-nav__link" sec:authorize="isAnonymous()" th:href="@{/login}">登入</a>
+                    <a class="site-nav__link" sec:authorize="isAuthenticated()" th:href="@{/logout}">登出</a>
                 </div>
             </div>
         </div>

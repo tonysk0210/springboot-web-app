@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>登入</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -12,21 +12,21 @@
 
 <main class="page-shell page-shell--narrow">
 <div class="form-panel login-container">
-    <h1>Login</h1>
+    <h1>登入</h1>
 
     <!-- 依 query param（error / logout / register）決定顯示的訊息 -->
     <!-- ?error=true 時顯示登入失敗訊息 -->
     <div class="alert alert--error" th:if="${param.error}">
-        Invalid Email or Password
+        電子郵件或密碼錯誤
     </div>
     <!-- ?logout=true 時顯示登出成功訊息 -->
     <div class="alert alert--success" th:if="${param.logout}">
-        You have logged out successfully
+        你已成功登出
     </div>
     <!-- ?register=true 時顯示註冊成功訊息 -->
     <div class="alert alert--success" th:if="${param.register}">
-        Your registration is successful <br>
-        Please login to continue.
+        註冊成功<br>
+        請登入以繼續使用。
     </div>
 
     <!-- 表單內容 -->
@@ -34,11 +34,11 @@
     <form th:action="@{/login}" method="post">
         <!-- Spring Security 預設的 /login handler 接收 username 與 password 兩個欄位 -->
         <div class="form-field">
-            <label class="form-field__label" for="username">Email</label>
+            <label class="form-field__label" for="username">電子郵件</label>
             <input class="form-field__control" id="username" type="text" name="username" required/>
         </div>
         <div class="form-field">
-            <label class="form-field__label" for="password">Password</label>
+            <label class="form-field__label" for="password">密碼</label>
             <input class="form-field__control" id="password" type="password" name="password" required/>
         </div>
 
@@ -46,8 +46,8 @@
         <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
 
         <div class="form-actions">
-            <button class="button button--primary" type="submit"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Login</button>
-            <a class="button button--secondary" th:href="@{/public/register}">Register</a>
+            <button class="button button--primary" type="submit"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> 登入</button>
+            <a class="button button--secondary" th:href="@{/public/register}">註冊</a>
         </div>
         <!-- Thymeleaf 的 |...| 是 literal substitution 語法：管線內文字視為字面值，但 @{...} 等表達式仍會被解析 -->
     </form>

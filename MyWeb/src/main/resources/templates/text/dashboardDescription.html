@@ -36,7 +36,7 @@ if (person.getPlan() != null)
     </p>
 
     <!--code-->
-    <pre><code>&lt;a sec:authorize="isAnonymous()" th:href="@{/login}"&gt;Login&lt;/a&gt; <span>&lt;!-- 僅限匿名訪客可見 --&gt;</span>
+    <pre><code>&lt;a sec:authorize="isAnonymous()" th:href="@{/login}"&gt;登入&lt;/a&gt; <span>&lt;!-- 僅限匿名訪客可見 --&gt;</span>
 
 &lt;a sec:authorize="isAuthenticated()" th:href="@{/logout}"&gt;Logout&lt;/a&gt; <span>&lt;!-- 僅限已登入使用者（包含管理員與學生）可見 --&gt;</span></code></pre>
 
@@ -49,7 +49,7 @@ if (person.getPlan() != null)
 
     <h3>實現非表單（非 POST）的登出邏輯</h3>
     <p>
-        <strong>Logout</strong> — 由於 Spring Security 的內建登出機制必須透過
+        <strong>登出</strong>：由於 Spring Security 的內建登出機制必須透過
         <code>POST</code> 方法（表單方式）發送請求，若希望以
         <strong>連結（超連結）方式</strong> 實現登出功能，可改為透過
         <code>@Controller</code> 手動處理。
@@ -58,7 +58,7 @@ if (person.getPlan() != null)
         透過建立 <code>SecurityContextLogoutHandler</code>，並傳入當前使用者的
         <code>Authentication</code> 物件，即可完成登出流程。
         完成後，系統會 <strong>redirect 至</strong>
-        <code>/login?logout=true</code>，由前端判斷 URL 參數，顯示 <span class="success-text">You have logged out successfully</span> 訊息。
+        <code>/login?logout=true</code>，由前端判斷 URL 參數，顯示 <span class="success-text">你已成功登出</span> 訊息。
     </p>
 
     <!--code-->

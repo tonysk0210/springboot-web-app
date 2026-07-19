@@ -10,17 +10,17 @@ public List&lt;Plan&gt; displayAllPlans() {
 }
 </code></pre>
     <p>
-        上述方法將所有 <code>Plan</code> 物件以 <code>List&lt;Plan&gt;</code> 型態傳遞至前端進行渲染。前端頁面將顯示所有方案資訊，並為每筆資料提供<strong>「VIEW」</strong> 與 <strong>「DELETE」</strong> 操作，每個按鈕皆附帶對應的 <code>planId</code> 作為查詢參數。
+        上述方法將所有 <code>Plan</code> 物件以 <code>List&lt;Plan&gt;</code> 型態傳遞至前端進行渲染。前端頁面將顯示所有方案資訊，並為每筆資料提供<strong>「查看」</strong>與<strong>「刪除」</strong>操作，每個按鈕皆附帶對應的 <code>planId</code> 作為查詢參數。
     </p>
     <p>
-        此外，系統會提供一個空的 <code>Plan</code> 物件，作為 <strong> 「Add Plan」</strong> 表單的綁定對象。一旦表單送出後 <code>Plan</code> 物件將會觸發後端驗證。
-        <code>name</code> : <span class="alert-text">⚠️ Plan name is required</span>
+        此外，系統會提供一個空的 <code>Plan</code> 物件，作為<strong>「新增方案」</strong>表單的綁定對象。一旦表單送出後 <code>Plan</code> 物件將會觸發後端驗證。
+        <code>name</code>：<span class="alert-text">方案名稱不可為空</span>
     </p>
     <p>
         若驗證通過，系統將該方案儲存至資料庫中的 <code>plan</code> 資料表( <code>planRepository.save(plan);</code> )，並執行 <code>redirect:/admin/planPage</code> 導回當前頁面。此時，<code>displayAllPlans()</code> 方法會再次執行，重新載入並渲染最新的方案清單。
     </p>
 
-    <h3>刪除 Plan 前的關聯解除處理</h3>
+    <h3>刪除方案前的關聯解除處理</h3>
     <p>當管理員執行刪除操作時，系統會根據傳入的 <code>planId</code>，透過下列程式碼查詢對應的 <code>Plan</code> 物件：</p>
     <pre><code>Optional&lt;Plan&gt; planToBeDeleted = planRepository.findById(planId);</code></pre>
 
@@ -35,7 +35,7 @@ private Set&lt;Person&gt; persons;</code></pre>
     </p>
 
 
-    <h4>🚨 刪除 Plan 前必須先解除所有 Person 的關聯：</h4>
+    <h4>刪除方案前必須先解除所有 Person 的關聯：</h4>
 
     <p>
         若直接刪除仍有關聯的 <code>Plan</code> 物件，將會違反資料庫的外鍵約束而產生例外。

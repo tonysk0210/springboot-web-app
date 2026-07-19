@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title>個人資料</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -11,7 +11,7 @@
 
 <main class="page-shell page-shell--narrow">
 <div class="form-panel profile-container">
-    <h1>Profile</h1>
+    <h1>個人資料</h1>
 
     <!-- 驗證錯誤訊息 -->
     <ul class="alert-list" th:if="${#fields.hasErrors('profile.*')}">
@@ -23,54 +23,54 @@
 
     <!-- 更新成功訊息 -->
     <div class="alert alert--success" th:if="${param.updated}">
-        Profile updated successfully
+        個人資料已成功更新
     </div>
 
     <!-- 表單內容 -->
     <form th:action="@{/updateProfile}" method="post" th:object="${profile}">
         <fieldset>
-            <legend>Personal Details</legend>
+            <legend>基本資料</legend>
 
             <div class="form-group">
-                <label for="name">Name:<span class="required-asterisk">*</span></label>
+                <label for="name">姓名：<span class="required-asterisk">*</span></label>
                 <input class="form-field__control" type="text" id="name" th:field="*{name}" required>
             </div>
             <div class="form-group">
-                <label for="mobile">Mobile:<span class="required-asterisk">*</span></label>
+                <label for="mobile">手機號碼：<span class="required-asterisk">*</span></label>
                 <input class="form-field__control" type="text" id="mobile" th:field="*{mobile}" required>
             </div>
             <div class="form-group">
-                <label for="email">Email:<span class="required-asterisk">*</span></label>
+                <label for="email">電子郵件：<span class="required-asterisk">*</span></label>
                 <input class="form-field__control" type="email" id="email" th:field="*{email}" required>
             </div>
         </fieldset>
 
         <fieldset>
-            <legend>Address Details</legend>
+            <legend>地址資料</legend>
             <div class="form-group">
-                <label for="address1">Address Line 1:<span class="required-asterisk">*</span></label>
+                <label for="address1">地址第一行：<span class="required-asterisk">*</span></label>
                 <input class="form-field__control" type="text" id="address1" th:field="*{address1}" required>
             </div>
             <div class="form-group">
-                <label for="address2">Address Line 2:</label>
+                <label for="address2">地址第二行：</label>
                 <input class="form-field__control" type="text" id="address2" th:field="*{address2}">
             </div>
             <div class="form-group">
-                <label for="city">City:<span class="required-asterisk">*</span></label>
+                <label for="city">城市：<span class="required-asterisk">*</span></label>
                 <input class="form-field__control" type="text" id="city" th:field="*{city}" required>
             </div>
             <div class="form-group">
-                <label for="zipCode">Zip Code:<span class="required-asterisk">*</span></label>
+                <label for="zipCode">郵遞區號：<span class="required-asterisk">*</span></label>
                 <input class="form-field__control" type="text" id="zipCode" th:field="*{zipcode}" required>
             </div>
         </fieldset>
-        <button type="submit" class="button button--primary"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Update</button>
+        <button type="submit" class="button button--primary"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> 更新</button>
     </form>
 </div>
 
 <!-- 返回 dashboard -->
 <div class="back-to-dashboard-container">
-    <a th:href="@{/dashboard}" class="back-to-dashboard">← Back to Dashboard</a>
+    <a th:href="@{/dashboard}" class="back-to-dashboard">← 返回控制台</a>
 </div>
 </main>
 

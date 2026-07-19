@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Student Registration</title>
+    <title>學生註冊</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -11,7 +11,7 @@
 
 <main class="page-shell page-shell--narrow">
 <div class="form-panel register-container">
-    <h2>Student Registration</h2>
+    <h2>學生註冊</h2>
 
     <!-- 顯示 Bean Validation 錯誤訊息清單 -->
     <ul class="alert-list">
@@ -26,31 +26,31 @@
         <!-- CSRF Token -->
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="form-field">
-            <label for="name">Name:<span class="required-asterisk">*</span></label>
+            <label for="name">姓名：<span class="required-asterisk">*</span></label>
             <input class="form-field__control" type="text" th:field="*{name}" id="name" required/>
         </div>
         <div class="form-field">
-            <label for="mobile">Mobile Number:<span class="required-asterisk">*</span></label>
+            <label for="mobile">手機號碼：<span class="required-asterisk">*</span></label>
             <input class="form-field__control" type="text" th:field="*{mobile}" id="mobile" required/>
         </div>
         <div class="form-field">
-            <label for="email">Email:<span class="required-asterisk">*</span></label>
+            <label for="email">電子郵件：<span class="required-asterisk">*</span></label>
             <input class="form-field__control" type="email" th:field="*{email}" id="email" required/>
         </div>
         <div class="form-field">
-            <label for="confirmEmail">Confirm Email:</label>
+            <label for="confirmEmail">確認電子郵件：</label>
             <input class="form-field__control" type="email" th:field="*{confirmEmail}" id="confirmEmail" required/>
         </div>
         <div class="form-field">
-            <label for="password">Password:<span class="required-asterisk">*</span></label>
+            <label for="password">密碼：<span class="required-asterisk">*</span></label>
             <input class="form-field__control" type="password" th:field="*{password}" id="password" required/>
         </div>
         <div class="form-field">
-            <label for="confirmPassword">Confirm Password:</label>
+            <label for="confirmPassword">確認密碼：</label>
             <input class="form-field__control" type="password" th:field="*{confirmPassword}" id="confirmPassword" required/>
         </div>
         <div class="form-actions">
-            <button class="button button--primary" type="submit"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Register</button>
+            <button class="button button--primary" type="submit"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> 註冊</button>
         </div>
     </form>
 </div>

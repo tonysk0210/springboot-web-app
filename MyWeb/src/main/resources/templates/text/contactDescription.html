@@ -9,16 +9,16 @@
     <p>Spring Boot Validation 套件根據 <code>Contact</code> 類別中針對所定義的驗證條件進行驗證。
         驗證條件如下：若驗證未通過，將於前端顯示相對應的錯誤信息並要求重新輸入；</p>
     <ul>
-        <li><code>name</code>：不得為空白 | <span class="alert-text">⚠️Name must not be blank⚠️</span></li>
-        <li><code>mobile</code>：必須為 10 碼數字 | <span class="alert-text">⚠️Mobile Number must be exactly 10 digits long⚠️</span></li>
-        <li><code>subject</code>：不得為空白 | <span class="alert-text">⚠️Subject must not be blank⚠️</span></li>
-        <li><code>message</code>：不得為空白 | <span class="alert-text">⚠️Message must not be blank⚠️</span></li>
+        <li><code>name</code>：不得為空白｜<span class="alert-text">姓名不可為空</span></li>
+        <li><code>mobile</code>：必須為 10 碼數字｜<span class="alert-text">手機號碼必須為 10 位數字</span></li>
+        <li><code>subject</code>：不得為空白｜<span class="alert-text">主旨不可為空</span></li>
+        <li><code>message</code>：不得為空白｜<span class="alert-text">訊息內容不可為空</span></li>
     </ul>
 
     <p>
         若通過驗證，<code>Contact</code> 物件將交由 <code>ContactService</code> 設定其 <code>status</code> 屬性為 <code>OPEN</code>（代表尚未讀取），
         接著透過 <code>ContactRepository</code>，將資料儲存至 <code>contact_msg</code> 資料表中 ( Spring Data JPA ORM機制 )。完成儲存後，系統會使用 <code>RedirectAttributes</code> 設定 Flash Attribute：<code>redirectAttributes.addFlashAttribute("successfullySavedMessage", "Message successfully
-        submitted");</code> 並重執行 <code>redirect:/contact</code>， 由Thymeleaf 顯示成功提交信息 | <span class="success-text">Message successfully submitted</span>
+        submitted");</code> 並重執行 <code>redirect:/contact</code>，由 Thymeleaf 顯示成功提交訊息｜<span class="success-text">訊息已成功送出</span>
     </p>
     <h3>審計機制說明：Contact 實體的自動記錄與追蹤機制</h3>
     <p>

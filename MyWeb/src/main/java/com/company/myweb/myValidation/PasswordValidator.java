@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)                    // 執行時保留，反射才讀得到
 public @interface PasswordValidator {
     // ===== JSR-380 必要元素 =====
-    String message() default "Please choose a stronger password"; // 預設訊息（會被 Impl 內的 buildViolation 動態覆寫）
+    String message() default "請設定更安全的密碼"; // 預設訊息（會被 Impl 內的 buildViolation 動態覆寫）
     Class<?>[] groups() default {};                                // 分組驗證
     Class<? extends Payload>[] payload() default {};               // 附加 metadata
 }

@@ -10,16 +10,16 @@
         表單提交後，資料將綁定至 <code>Profile</code> 物件，並由後端進行驗證與帳號唯一性檢查。
     </p>
     <ul>
-        <li><code>name</code>：<span class="alert-text">⚠️ Name must not be blank</span></li>
+        <li><code>name</code>：<span class="alert-text">姓名不可為空</span></li>
         <li><code>mobile</code>：
             <ul>
-                <li><span class="alert-text">⚠️ Mobile number is required</span></li>
-                <li><span class="alert-text">⚠️ Mobile Number must be exactly 10 digits long</span></li>
+                <li><span class="alert-text">手機號碼必填</span></li>
+                <li><span class="alert-text">手機號碼必須為 10 位數字</span></li>
             </ul>
         </li>
-        <li><code>email</code>：<span class="alert-text">⚠️ Email is required</span></li>
-        <li><code>address1</code>：<span class="alert-text">⚠️ Address1 is required</span></li>
-        <li><code>city</code>：<span class="alert-text">⚠️ City is required</span></li>
+        <li><code>email</code>：<span class="alert-text">電子郵件必填</span></li>
+        <li><code>address1</code>：<span class="alert-text">地址第一行必填</span></li>
+        <li><code>city</code>：<span class="alert-text">城市必填</span></li>
         <li><code>zipcode</code>：
             <ul>
                 <li><span class="alert-text">⚠️ Zip code is required</span></li>
@@ -44,14 +44,14 @@ if (personRepository.existsByEmailAndPersonIdNot(profile.getEmail(), person.getP
 }
 </code></pre>
     <p>
-        若Email已重複存在顯示 <span class="alert-text">⚠️ An account with email " + profile.getEmail() + " already exists.</span> 若無重複，系統則會同步更新 Spring Security 中的 <code>Authentication</code> 資訊，將 <code>principal</code> 更新為新的 Email。
+        若 Email 已被使用，畫面會顯示<span class="alert-text">此 Email 已被其他帳號使用</span>；若無重複，系統則會同步更新 Spring Security 中的 <code>Authentication</code> 資訊，將 <code>principal</code> 更新為新的 Email。
     </p>
 
     <h3>更新與稽核：保存最新個人資料並同步 Session 狀態</h3>
     <p>
         修改完成後，系統會透過 <code>personRepository.save(person)</code> 將更新後的 <code>Person</code> 物件儲存至資料庫。此時，<code>AuditorAware</code> 會在執行資料更新（UPDATE）時，依據更新後的<code>Authentication</code> 自動填入 <code>updatedBy</code> 和 <code>updatedAt</code> 欄位，完成使用者資料的稽核更新。
         此外，為確保後續操作中使用的是最新的使用者資訊，系統亦會同步更新 <code>HttpSession</code> 中的 <code>Person</code> <strong>("loggedInPerson")</strong> 物件，以反映此次變更。
-        最後，系統會重新導向至 <code>redirect:/profilePage?updated=true</code>，由前端畫面根據 URL 參數顯示成功訊息：<br><span class="success-text">Profile updated successfully.</span>
+        最後，系統會重新導向至 <code>redirect:/profilePage?updated=true</code>，由前端畫面根據 URL 參數顯示成功訊息：<br><span class="success-text">個人資料已成功更新</span>
     </p>
 
     <pre><code>Person savedPerson = personRepository.save(person); <span>// 將更新後的 Person 實體儲存至資料庫</span>

@@ -7,30 +7,30 @@
 
     <strong>✅ 第一層：Spring Boot Validation 套件內建驗證</strong>
     <ul>
-        <li><code>name</code>：不得為空白 | <span class="alert-text">⚠️ Name must not be blank</span></li>
-        <li><code>mobile</code>：必須為 10 碼數字| <span class="alert-text">⚠️ Mobile Number must be exactly 10 digits long</span></li>
+        <li><code>name</code>：不得為空白｜<span class="alert-text">姓名不可為空</span></li>
+        <li><code>mobile</code>：必須為 10 碼數字｜<span class="alert-text">手機號碼必須為 10 位數字</span></li>
     </ul>
 
     <strong>✅ 第二層：自訂驗證條件</strong>
     <ul>
         <li><code>@PasswordValidator</code> ：
             <ul>
-                <li>密碼不得為 null | <span class="alert-text">⚠️ Password cannot be null</span></li>
-                <li>不得為「123456」、「qwer」、「asdf」等弱密碼 | <span class="alert-text">⚠️ Password is too common or weak</span></li>
-                <li>至少 8 個字元以上 | <span class="alert-text">⚠️ Password must be at least 8 characters long</span></li>
+                <li>密碼不得為 null｜<span class="alert-text">密碼不可為空</span></li>
+                <li>不得為「123456」、「qwer」、「asdf」等弱密碼｜<span class="alert-text">密碼過於簡單或常見</span></li>
+                <li>至少 8 個字元以上｜<span class="alert-text">密碼長度需至少 8 個字元</span></li>
             </ul>
         </li>
         <li><code>@FieldValueMatchValidator</code> ：
             <ul>
-                <li><code>password</code> 和 <code>confirmPassword</code> 必須一致 | <span class="alert-text">⚠️ Passwords do not match</span></li>
-                <li><code>email</code> 和 <code>confirmEmail</code> 必須一致 | <span class="alert-text">⚠️ Emails do not match</span></li>
+                <li><code>password</code> 和 <code>confirmPassword</code> 必須一致｜<span class="alert-text">密碼與確認密碼不一致</span></li>
+                <li><code>email</code> 和 <code>confirmEmail</code> 必須一致｜<span class="alert-text">Email 與確認 Email 不一致</span></li>
             </ul>
         </li>
     </ul>
     <strong>✅ 第三層：Email 重複驗證</strong>
     <p>
         兩段驗證通過後，系統將透過 <code>PersonRepository</code> 檢查使用者輸入的 Email (為系統username) 是否已存在資料庫中。
-        若有重複帳號，系統會拋出 <code>EmailAlreadyExistsException</code> <span class="warning-text">⚠️ An account with email " + person.getEmail() + " already exists.</span> 並透過 <code>BindingResult</code> 回傳錯誤訊息至前端表單，由 Thymeleaf 進行渲染。
+        若有重複帳號，系統會拋出 <code>EmailAlreadyExistsException</code>，並顯示<span class="warning-text">此 Email 已被其他帳號使用</span>，再透過 <code>BindingResult</code> 回傳錯誤訊息至前端表單，由 Thymeleaf 進行渲染。
     </p>
     <!--code-->
     <pre><code><span>&lt;!-- 渲染驗證失敗信息顯示 --&gt;</span>
@@ -55,8 +55,8 @@
     <pre><code>person.setCreatedBy(person.getEmail()); <span>// Person 類別必須重新宣告String createdBy - Variable hiding（變數遮蔽）</span></code></pre>
 
     <p>
-        最後，透過 Spring Data JPA 執行 <code>personRepository.save(person)</code>，將註冊資料保存至 <code>person</code> 資料表中。完成註冊後，系統會回傳 <code>redirect:/login?register=true</code>，導向 Login 頁面。前端頁面由 Thymeleaf 根據 URL 參數 <code>register=true</code> 顯示註冊成功訊息：
-        <span class="success-text">Your registration is successful. Please login to continue.</span>
+        最後，透過 Spring Data JPA 執行 <code>personRepository.save(person)</code>，將註冊資料保存至 <code>person</code> 資料表中。完成註冊後，系統會回傳 <code>redirect:/login?register=true</code>，導向登入頁面。前端頁面由 Thymeleaf 根據 URL 參數 <code>register=true</code> 顯示註冊成功訊息：
+        <span class="success-text">註冊成功，請登入以繼續使用。</span>
     </p>
 
     <!--code-->

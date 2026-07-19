@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>View Plan Details</title>
+    <title>方案詳細資料</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -13,27 +13,27 @@
 <main class="container">
     <!-- 頁面標題 -->
     <div class="page-header">
-        <h1 th:text="'Plan: ' + ${thePlan.name}"></h1> <!--model("thePlan")-->
-        <button class="button button--primary" type="button" data-dialog-open="studentModal"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Add Student</button>
+        <h1 th:text="'方案：' + ${thePlan.name}"></h1> <!--model("thePlan")-->
+        <button class="button button--primary" type="button" data-dialog-open="studentModal"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> 新增學生</button>
     </div>
 
     <!-- 驗證錯誤訊息 -->
     <div class="alert alert--error" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
-        ⚠️ Student not found. Please enter a valid email.
+        找不到學生，請輸入有效的電子郵件。
     </div>
 
-    <h2>Student Information: </h2>
+    <h2>學生資料</h2>
     <!-- 新增學生 Modal -->
     <dialog id="studentModal" class="modal">
         <form method="post" th:action="@{/admin/addStudent}" th:object="${person}" class="modal-form"> <!--model("person")-->
-            <h2>Add New Student</h2>
+            <h2>新增學生</h2>
 
-            <label for="studentEmail">Student Email:</label>
-            <input type="text" id="studentEmail" th:field="*{email}" placeholder="e.g. student@example.com" required/>
+            <label for="studentEmail">學生電子郵件：</label>
+            <input type="text" id="studentEmail" th:field="*{email}" placeholder="例如：student@example.com" required/>
 
             <div class="modal-actions">
-                <button type="submit" class="button button--primary">Add</button>
-                <button type="button" class="button button--secondary" data-dialog-close>Cancel</button>
+                <button type="submit" class="button button--primary">新增</button>
+                <button type="button" class="button button--secondary" data-dialog-close>取消</button>
             </div>
         </form>
     </dialog>
@@ -43,10 +43,10 @@
         <table class="data-table">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Action</th>
+                <th>姓名</th>
+                <th>電子郵件</th>
+                <th>手機號碼</th>
+                <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -56,7 +56,7 @@
                 <td th:text="${person.mobile}"></td>
                 <td class="actions">
                     <a th:href="@{/admin/removeStudent(personId=${person.personId})}" class="button button--danger"
-                       data-confirm="Are you sure you want to remove this student?">Remove</a>
+                       data-confirm="確定要移除此學生嗎？">移除</a>
                 </td>
             </tr>
 
@@ -66,7 +66,7 @@
 
     <!-- 返回連結 -->
     <div class="back-to-dashboard-container">
-        <a class="button button--secondary" th:href="@{/admin/planPage}">← Back to Plan Management</a>
+        <a class="button button--secondary" th:href="@{/admin/planPage}">← 返回方案管理</a>
     </div>
 </main>
 

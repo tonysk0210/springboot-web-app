@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Enrolled Courses</title>
+    <title>已選課程</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -12,16 +12,16 @@
 
 <main class="container">
     <!-- 動態頁面標題 -->
-    <h1 th:text="${person.name} + ' - Enrolled Courses'"></h1>
+    <h1 th:text="${person.name} + '－已選課程'"></h1>
 
     <!-- 顯示已選修課程表 -->
     <section class="table-section" th:if="${person.courses != null and !person.courses.isEmpty()}">
         <table class="data-table">
             <thead>
             <tr>
-                <th>Course ID</th>
-                <th>Course Name</th>
-                <th>Fees</th>
+                <th>課程編號</th>
+                <th>課程名稱</th>
+                <th>費用</th>
             </tr>
             </thead>
             <tbody>
@@ -42,7 +42,7 @@
 
     <!-- 返回 Dashboard -->
     <div class="back-to-dashboard-container">
-        <a class="button button--secondary" th:href="@{/dashboard}">← Back to Dashboard</a>
+        <a class="button button--secondary" th:href="@{/dashboard}">← 返回控制台</a>
     </div>
 </main>
 

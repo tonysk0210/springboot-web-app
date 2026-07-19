@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Course Students</title>
+    <title>課程學生</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -13,30 +13,30 @@
 <main class="container">
     <!-- 頁首 -->
     <div class="page-header">
-        <h1 th:text="'Course: ' + ${course.name} + ' - Student List'"></h1> <!--model("course")-->
-        <button class="button button--primary" type="button" data-dialog-open="classModal"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Add Student</button>
+        <h1 th:text="'課程：' + ${course.name} + '－學生名單'"></h1> <!--model("course")-->
+        <button class="button button--primary" type="button" data-dialog-open="classModal"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> 新增學生</button>
     </div>
 
     <!-- 驗證錯誤訊息 -->
     <!-- param.error 回傳 String[]；${param} 是 Map<String, String[]> -->
     <div class="alert alert--error" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
-        ⚠️ Student not found
+        找不到學生
     </div>
     <div class="alert alert--error" th:if="${param.error != null and param.error[0] == 'alreadyEnrolled'}">
-        ⚠️ Student is already enrolled in this course
+        此學生已選修本課程
     </div>
 
     <!-- 新增學生 Modal -->
     <dialog id="classModal" class="modal">
         <form method="post" th:action="@{/admin/addCourseStudent}" th:object="${person}" class="modal-form"> <!--model("person")-->
-            <h2>Add New Student</h2>
+            <h2>新增學生</h2>
 
-            <label for="studentEmail">Student Email:</label>
-            <input type="text" id="studentEmail" th:field="*{email}" required placeholder="e.g. student@example.com"/>
+            <label for="studentEmail">學生電子郵件：</label>
+            <input type="text" id="studentEmail" th:field="*{email}" required placeholder="例如：student@example.com"/>
 
             <div class="modal-actions">
-                <button type="submit" class="button button--primary">Submit</button>
-                <button type="button" class="button button--secondary" data-dialog-close>Cancel</button>
+                <button type="submit" class="button button--primary">送出</button>
+                <button type="button" class="button button--secondary" data-dialog-close>取消</button>
             </div>
         </form>
     </dialog>
@@ -46,10 +46,10 @@
         <table class="data-table">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Action</th>
+                <th>姓名</th>
+                <th>電子郵件</th>
+                <th>手機號碼</th>
+                <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -59,8 +59,8 @@
                 <td th:text="${person.mobile}"></td>
                 <td class="actions">
                     <a th:href="@{/admin/deleteCourseStudent(personId=${person.personId})}" class="button button--danger"
-                       data-confirm="Are you sure you want to remove this student from the course?">
-                        Remove
+                       data-confirm="確定要將此學生移出課程嗎？">
+                        移除
                     </a>
                 </td>
             </tr>
@@ -70,7 +70,7 @@
 
     <!-- 返回按鈕 -->
     <div class="back-to-dashboard-container">
-        <a class="button button--secondary" th:href="@{/admin/coursePage}">← Back to Course Management</a>
+        <a class="button button--secondary" th:href="@{/admin/coursePage}">← 返回課程管理</a>
     </div>
 </main>
 

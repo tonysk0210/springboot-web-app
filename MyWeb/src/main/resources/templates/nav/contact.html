@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Contact Us</title>
+    <title>聯絡我們</title>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 
@@ -22,23 +22,23 @@
 
     <!-- 表單內容 -->
     <form th:action="@{/saveMessage}" th:object="${contact}" method="post" class="form-panel contact-form">
-        <h1>Contact Us</h1>
-        <label for="name">Name:<span class="required-asterisk">*</span></label>
+        <h1>聯絡我們</h1>
+        <label for="name">姓名：<span class="required-asterisk">*</span></label>
         <input class="form-field__control" type="text" id="name" th:field="*{name}" required>
 
-        <label for="mobile">Mobile Number:<span class="required-asterisk">*</span></label>
+        <label for="mobile">手機號碼：<span class="required-asterisk">*</span></label>
         <input class="form-field__control" type="tel" id="mobile" th:field="*{mobile}" required>
 
-        <label for="email">Email:<span class="required-asterisk">*</span></label>
+        <label for="email">電子郵件：<span class="required-asterisk">*</span></label>
         <input class="form-field__control" type="email" id="email" th:field="*{email}" required>
 
-        <label for="subject">Subject:<span class="required-asterisk">*</span></label>
+        <label for="subject">主旨：<span class="required-asterisk">*</span></label>
         <input class="form-field__control" type="text" id="subject" th:field="*{subject}" required>
 
-        <label for="message">Message:<span class="required-asterisk">*</span></label>
+        <label for="message">訊息內容：<span class="required-asterisk">*</span></label>
         <textarea class="form-field__control" id="message" th:field="*{message}" rows="4" required></textarea>
 
-        <button class="button button--primary" type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send</button>
+        <button class="button button--primary" type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> 送出</button>
 
         <!-- 成功訊息 -->
         <!-- 當 model 內含 "successfullySavedMessage" 才渲染 -->
