@@ -30,26 +30,25 @@ public class PersonService {
 
     public Person savePerson(Person person) {
 
-        //1) check if entered email already exists, and throw EmailAlreadyExistsException if it does.
+        // 1) 檢查 email 是否已被使用；已存在則拋 EmailAlreadyExistsException（由 controller 攔並顯示錯誤訊息）
         if (personRepository.existsByEmail(person.getEmail())) {
-            throw new EmailAlreadyExistsException("⚠\uFE0F An account with email " + person.getEmail() + " already exists.");
+            throw new EmailAlreadyExistsException("⚠\uFE0F 此 Email（" + person.getEmail() + "）已被其他帳號使用");
         }
 
-        /* At this point, name, mobile, email, password are already set by user via the registration form*/
+        // 至此 name、mobile、email、password 都是使用者透過註冊表單填的原始值
         Roles roles = rolesRepository.getByRoleName(ProjectConstant.STUDENT_ROLE);
-        person.setRoles(roles); //2) assign role.
-        person.setPassword(passwordEncoder.encode(person.getPassword())); //3) set encoded password.
+        person.setRoles(roles);                                          // 2) 指派 STUDENT 角色
+        person.setPassword(passwordEncoder.encode(person.getPassword())); // 3) 密碼 BCrypt 加密
 
-        /*At this point, new user has no authenticationToken established, and we do not want AuditorAware to intercept and assign anonymousUser to createdBy field.
-         Instead, we intercept AuditorAware by hiding createdBy field in BaseEntity and manually set createdBy with user email
-        */
-        person.setCreatedBy(person.getEmail()); //4) set createdBy manually with user email
+        // 註冊當下使用者尚未登入 → SecurityContext 內沒 Authentication → AuditorAware 會回 "anonymousUser"
+        // 但我們希望 createdBy 記錄成使用者自己的 email，故：
+        //   - Person 上 shadow field 遮蔽父類 BaseEntity.createdBy（見 Person.java 註釋）
+        //   - 這裡手動 setCreatedBy(email)，Hibernate 寫 DB 時拿子類 field 的值 → email 落地 DB
+        person.setCreatedBy(person.getEmail()); // 4) 手動填 createdBy = 使用者 email
 
-        log.info(ANSI_GREEN + "Current method: " + Thread.currentThread().getStackTrace()[1].getMethodName() + "| Person before saved: " + person + ANSI_RESET);
-        //Person(super=BaseEntity(createdAt=null, createdBy=a@a, updatedAt=null, updatedBy=null), personId=0, name=aaa, mobile=1234567890, email=a@a, confirmEmail=a@a, password=$2a$10$rSQ9YKSi0986SWHh7Ok9MOZv9rK2KJoKBgqCDlYW6nGfzQ2u1BWnC, confirmPassword=1234567890, createdBy=a@a, roles=Roles(roleId=2, roleName=STUDENT), address=null, plan=null, courses=[])
-        Person savedPerson = personRepository.save(person); //5) AuditorAware handles createdAt, person_id when saved
-        log.info(ANSI_GREEN + "Current method: " + Thread.currentThread().getStackTrace()[1].getMethodName() + "| Person after saved: " + person + ANSI_RESET);
-        //Person(super=BaseEntity(createdAt=2025-06-13T01:18:52.026037300, createdBy=a@a, updatedAt=2025-06-13T01:18:52.026037300, updatedBy=anonymousUser), personId=4, name=aaa, mobile=1234567890, email=a@a, confirmEmail=a@a, password=$2a$10$rSQ9YKSi0986SWHh7Ok9MOZv9rK2KJoKBgqCDlYW6nGfzQ2u1BWnC, confirmPassword=1234567890, createdBy=a@a, roles=Roles(roleId=2, roleName=STUDENT), address=null, plan=null, courses=[])
+        log.info(ANSI_GREEN + "存檔前的 Person：" + person + ANSI_RESET);
+        Person savedPerson = personRepository.save(person); // 5) 存檔（AuditorAware 自動填 createdAt、updatedAt；personId 由 IDENTITY 產生）
+        log.info(ANSI_GREEN + "存檔後的 Person：" + savedPerson + ANSI_RESET);
 
         return savedPerson;
     }

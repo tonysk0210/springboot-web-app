@@ -8,14 +8,14 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
-<!-- News Content -->
+<!-- 新聞內容 -->
 <div class="news-container">
     <h1>Latest News</h1>
 
-    <!--display each News detail-->
+    <!-- 顯示每則新聞 -->
     <div th:each="newsItem : ${newsList}" class="news-item">
         <h2 th:text="${newsItem.title}"></h2>
         <p><em th:text="${newsItem.releasedDate}"></em></p>

@@ -20,14 +20,13 @@ import java.util.List;
 import static com.company.myweb.constant.ProjectConstant.ANSI_GREEN;
 
 /**
- * After POST /login:
- * 1. Spring Security authenticates user using the AuthenticationProvider.
- * 2. It creates an Authentication object based on UsernamePasswordAuthenticationToken with username and roles (authorities).
- * 3. Stores Authentication object in the SecurityContext and session.
- * 4. Redirects to the success URL.
- * 5. Future requests use this context for authorization decisions.
+ * 使用者提交 POST /login 後的完整流程：
+ *   1. Spring Security 透過 AuthenticationProvider 驗證使用者
+ *   2. 產生 UsernamePasswordAuthenticationToken（含 username + roles/authorities）
+ *   3. 存進 SecurityContext 與 session
+ *   4. 導向設定的 success URL（見 SpringSecurityConfig.formLogin）
+ *   5. 之後每個 request 都用這個 context 決定授權
  */
-
 @Slf4j
 @Component
 public class UsernamePwdAuthenticationProvider implements AuthenticationProvider {
@@ -42,12 +41,12 @@ public class UsernamePwdAuthenticationProvider implements AuthenticationProvider
     }
 
     /**
-     * Spring Security may have multiple AuthenticationProvider implementations registered. When a user submits a login form:
-     * 1. The AuthenticationManager tries to authenticate the request.
-     * 2. It iterates through each configured AuthenticationProvider.
-     * 3. For each provider, it calls supports() with the authentication request’s class.
-     * 4. If supports() returns true, it calls authenticate(authentication).
-     * 5. The supports() method is used internally by Spring to choose the right provider when authenticating a user.
+     * Spring Security 可能同時註冊多個 AuthenticationProvider。表單登入流程：
+     *   1. AuthenticationManager 嘗試驗證
+     *   2. 依序呼叫每個 provider 的 supports()
+     *   3. 傳入 authentication request 的 class（例如 UsernamePasswordAuthenticationToken.class）
+     *   4. supports() 回 true → 呼叫該 provider 的 authenticate()
+     *   5. supports() 用於「挑對的 provider」處理當下的 authentication 型別
      */
     @Override
     public boolean supports(Class<?> authentication) {
@@ -55,41 +54,39 @@ public class UsernamePwdAuthenticationProvider implements AuthenticationProvider
     }
 
     /**
-     * This creates an instance of Authentication using UsernamePasswordAuthenticationToken
-     * This token represents a successfully authenticated user. It is returned by your provider to tell Spring Security: "This user is authenticated."
-     * In which the credential is no longer needed hence can be set null and for better security
+     * 建立「已認證」的 UsernamePasswordAuthenticationToken 並回傳。
+     * 已認證的 token 代表 Spring Security 認可這個使用者
+     * credentials（密碼）驗證後不再需要，設 null 提高安全性
      */
     @Override
     public Authentication authenticate(Authentication authentication) {
-        //1) retrieve username and password from the login form when user tries to login
+        // 1) 從表單取出使用者輸入的 email 與密碼
         String enteredEmail = authentication.getName();
         String enteredPassword = authentication.getCredentials().toString();
-        //2) retrieve the person object based on the email entered and its role object since the fetch type is EAGER
+        // 2) 依 email 查 Person（Person.roles 是 EAGER，一併載入）
         Person person = personRepository.readByEmail(enteredEmail);
         log.info(ANSI_GREEN + "Current method: " + Thread.currentThread().getStackTrace()[1].getMethodName() + " | Person: " + person);
 
-        //3) Authentication logic starts here: if the person exists, and the enteredPassword (form input) matches the person's encodedPassword (database)
+        // 3) 認證邏輯：使用者存在 + BCrypt 比對輸入密碼與 DB 內加密密碼相符
         if (person != null && passwordEncoder.matches(enteredPassword, person.getPassword()))
-            //4) create the Authentication object for this user with principal and role after login
+            // 4) 建立已認證的 Authentication（principal + authorities，credentials 清 null）
             return new UsernamePasswordAuthenticationToken(
                     enteredEmail,
                     null,
                     getGrantedAuthorities(person.getRoles()));
 
-        else throw new BadCredentialsException("Invalid credentials");
-        /*Spring Security’s AuthenticationFailureHandler catches BadCredentialsException, and redirects to /login?error=true (as configured in .failureUrl)*/
+        else throw new BadCredentialsException("帳號或密碼錯誤");
+        // Spring Security 的 AuthenticationFailureHandler 接住此 exception → 導向 /login?error=true（見 SpringSecurityConfig）
     }
 
     /**
-     * This helper method converts a Roles object (representing a user’s role) into a list of Spring Security GrantedAuthority objects, which define the permissions for the user.
-     * Spring Security uses GrantedAuthority to control access to resources.
-     * Spring security supports multiple roles
+     * 把 Roles 物件轉為 Spring Security 的 GrantedAuthority 清單
+     * Spring Security 用 GrantedAuthority 判斷資源存取權限；可支援多角色
      */
     private List<GrantedAuthority> getGrantedAuthorities(Roles roles) {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        /*The .hasRole("ADMIN") method in security configuration checks if the List<GrantedAuthority> contains "ROLE_ADMIN".*/
+        // .hasRole("ADMIN") 內部會檢查 List<GrantedAuthority> 是否包含 "ROLE_ADMIN"，故此處加 ROLE_ 前綴
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + roles.getRoleName()));
         return grantedAuthorities;
     }
 }
-

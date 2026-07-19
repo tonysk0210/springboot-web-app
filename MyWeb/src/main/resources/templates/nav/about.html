@@ -8,13 +8,13 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}"></div>
 
-<!-- About Content -->
+<!-- 關於頁內容 -->
 <div class="container">
     <h1>About Us</h1>
-    <!--static root = localhost:8081-->
+    <!-- 靜態資源 root = localhost:8081 -->
     <img th:src="@{/images/aboutUs.jpg}" alt="About Us Image">
     <p>
         Welcome to our website! We are passionate about delivering quality content and services.
@@ -23,7 +23,7 @@
     </p>
 </div>
 
-<!--aboutDescription.html frag-->
+<!-- 關於頁說明 fragment -->
 <div th:insert="~{text/aboutDescription :: AboutDescriptionFrag}"></div>
 
 </body>

@@ -8,23 +8,23 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <main class="container">
-    <!-- page header -->
+    <!-- 頁面標題 -->
     <div class="page-header">
         <h1 th:text="'Plan: ' + ${thePlan.name}"></h1> <!--model("thePlan")-->
         <button id="openModalBtn" class="add-button">＋ Add Student</button>
     </div>
 
-    <!-- validation error msg -->
+    <!-- 驗證錯誤訊息 -->
     <div class="error-message" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
         ⚠️ Student not found. Please enter a valid email.
     </div>
 
     <h2>Student Information: </h2>
-    <!-- add Student Modal -->
+    <!-- 新增學生 Modal -->
     <dialog id="studentModal" class="modal">
         <form method="post" th:action="@{/admin/addStudent}" th:object="${person}" class="modal-form"> <!--model("person")-->
             <h2>Add New Student</h2>
@@ -39,7 +39,7 @@
         </form>
     </dialog>
 
-    <!-- table content -->
+    <!-- 表格內容 -->
     <section class="table-section">
         <table>
             <thead>
@@ -65,16 +65,16 @@
         </table>
     </section>
 
-    <!-- Back Link -->
+    <!-- 返回連結 -->
     <div class="back-link">
         <a th:href="@{/admin/planPage}">← Back to Plan Management</a>
     </div>
 </main>
 
-<!--viewPlanDetailDescription.html-->
+<!-- 方案詳情頁說明區塊 -->
 <div th:replace="~{text/viewPlanDetailDescription :: planViewDetailDescriptionFrag}"></div>
 
-<!-- Script to open modal -->
+<!-- 開啟 Modal 的 script -->
 <script>
     document.getElementById('openModalBtn').addEventListener('click', function () {
         document.getElementById('studentModal').showModal();

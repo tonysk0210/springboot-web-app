@@ -1,5 +1,5 @@
-<!--thymeleaf fragment for navbar-->
-<!--enable thymeleaf security attributes-->
+<!-- 導覽列的 Thymeleaf fragment -->
+<!-- 啟用 Thymeleaf Spring Security 屬性（xmlns:sec） -->
 <div th:fragment="navbarFrag" xmlns:th="http://www.thymeleaf.org"
      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
     <div class="navbar">
@@ -9,15 +9,15 @@
             <a th:href="@{/news}">News</a>
             <a th:href="@{/contact}">Contact</a>
             <a sec:authorize="isAuthenticated()" th:href="@{/dashboard}" style="color: #91a886;">Dashboard</a>
-            <!--Rendering only if the user is authenticated.-->
+            <!-- 只在使用者已登入時渲染 -->
         </div>
         <div class="nav-right">
             <a sec:authorize="isAnonymous()" th:href="@{/login}">Login</a>
-            <!--Rendering only if the user is NOT authenticated.-->
+            <!-- 只在使用者「未登入」時渲染 -->
             <a sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
-            <!--<a> tag sends a GET request to /logout while Spring Security handles /logout as a POST request-->
+            <!-- <a> 送出的是 GET /logout；Spring Security 預設處理 POST /logout -->
 
-            <!--this way allows Spring Security to take over /logout via Post request-->
+            <!-- 此為 Spring Security 官方推薦（POST /logout）的做法 -->
             <!--<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
             <button type="submit">Logout</button>
             </form>-->

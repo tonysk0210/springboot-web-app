@@ -7,13 +7,13 @@
     <link rel="stylesheet" th:href="@{/css/register.css}"/>
 </head>
 <body>
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <div class="register-container">
     <h2>Student Registration</h2>
 
-    <!--display list of data validation error-->
+    <!-- 顯示 Bean Validation 錯誤訊息清單 -->
     <ul>
         <li th:each="error : ${#fields.errors('person.*')}"
             th:classappend="${error.contains('already exists') ? 'email-error' : 'alert'}"
@@ -21,7 +21,7 @@
         </li>
     </ul>
 
-    <!--Form content-->
+    <!-- 表單內容 -->
     <form th:action="@{/public/createUser}" method="post" th:object="${person}">
         <!-- CSRF Token -->
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>

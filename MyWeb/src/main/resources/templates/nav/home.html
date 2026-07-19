@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Enable thymeleaf attributes-->
+<!-- 啟用 Thymeleaf 屬性（xmlns:th） -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -9,14 +9,14 @@
 </head>
 <body>
 
-<!--navbar frag-->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}"></div>
 
-<!-- Home Content -->
+<!-- 首頁內容 -->
 <h1>Welcome to the MyWeb</h1>
 <p>SpringWise is a focused learning platform designed to help developers master the Spring Framework through guided projects, expert insights, and real-world application.</p>
 
-<!--homeDescription.html frag-->
+<!-- 首頁說明 fragment -->
 <div th:replace="~{text/homeDescription :: homeDescriptionFrag}"></div>
 
 </body>

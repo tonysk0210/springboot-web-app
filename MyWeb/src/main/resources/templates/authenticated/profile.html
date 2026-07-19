@@ -7,13 +7,13 @@
     <link rel="stylesheet" th:href="@{/css/profile.css}"/>
 </head>
 <body>
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <div class="profile-container">
     <h1>Profile</h1>
 
-    <!-- validation error msg -->
+    <!-- 驗證錯誤訊息 -->
     <ul class="error-list">
         <li th:each="error : ${#fields.errors('profile.*')}"
             th:class="${error.contains('already exists')} ? 'email-error' : 'error-list'"
@@ -21,12 +21,12 @@
         </li>
     </ul>
 
-    <!-- update success msg -->
+    <!-- 更新成功訊息 -->
     <div class="success-message" th:if="${param.updated}">
         Profile updated successfully
     </div>
 
-    <!--Form content-->
+    <!-- 表單內容 -->
     <form th:action="@{/updateProfile}" method="post" th:object="${profile}">
         <fieldset>
             <legend>Personal Details</legend>
@@ -68,12 +68,12 @@
     </form>
 </div>
 
-<!--back to dashboard-->
+<!-- 返回 dashboard -->
 <div class="back-to-dashboard-container">
     <a th:href="@{/dashboard}" class="back-to-dashboard">← Back to Dashboard</a>
 </div>
 
-<!--profileDescription.html-->
+<!-- 個人資料頁說明區塊 -->
 <div th:insert="text/profileDescription :: profileDescriptionFrag"></div>
 
 </body>

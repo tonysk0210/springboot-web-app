@@ -8,44 +8,44 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <div class="login-container">
     <h1>Login</h1>
 
-    <!--rendered messages using query param: error, logout, register-->
-    <!--error=true-->
+    <!-- 依 query param（error / logout / register）決定顯示的訊息 -->
+    <!-- ?error=true 時顯示登入失敗訊息 -->
     <div class="error-message" th:if="${param.error}">
         Invalid Email or Password
     </div>
-    <!--logout=true-->
+    <!-- ?logout=true 時顯示登出成功訊息 -->
     <div class="logout-message" th:if="${param.logout}">
         You have logged out successfully
     </div>
-    <!--register=true-->
+    <!-- ?register=true 時顯示註冊成功訊息 -->
     <div class="logout-message" th:if="${param.register}">
         Your registration is successful <br>
         Please login to continue.
     </div>
 
-    <!--Form content-->
-    <!--When Spring Security is enabled (which it usually is in a login flow), it automatically configures /login POST to be handled by the UsernamePasswordAuthenticationFilter-->
+    <!-- 表單內容 -->
+    <!-- Spring Security 啟用時，會自動由 UsernamePasswordAuthenticationFilter 攔截 POST /login 處理登入 -->
     <form th:action="@{/login}" method="post">
-        <!--By default, Spring Security’s /login handler expects username and password-->
+        <!-- Spring Security 預設的 /login handler 接收 username 與 password 兩個欄位 -->
         <input type="text" name="username" placeholder="Email" required/>
         <input type="password" name="password" placeholder="Password" required/>
 
-        <!--generating csrf token-->
+        <!-- CSRF token 由 Thymeleaf 自動嵌入（無需手動加 hidden field） -->
         <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
 
         <button type="submit">Login</button>
         <button type="button" th:onclick="|window.location.href='@{/public/register}'|">Register</button>
-        <!--The pipes |...| are Thymeleaf’s literal substitution syntax. Everything between the pipes is interpreted literally, except for expressions like @{...}-->
+        <!-- Thymeleaf 的 |...| 是 literal substitution 語法：管線內文字視為字面值，但 @{...} 等表達式仍會被解析 -->
     </form>
 </div>
 
-<!--loginDescription.html-->
+<!-- 登入頁說明區塊 -->
 <div th:insert="~{text/loginDescription :: loginDescriptionFrag}"></div>
 
 </body>

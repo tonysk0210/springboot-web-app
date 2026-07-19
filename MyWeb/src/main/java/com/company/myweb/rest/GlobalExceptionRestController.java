@@ -13,24 +13,28 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import static com.company.myweb.constant.ProjectConstant.ANSI_GREEN;
 
+/**
+ * REST 端點的全域例外處理器 — 攔到 REST controller 拋出的例外時，統一回 JSON/XML Response
+ * 對照：MVC 例外由 config/GlobalExceptionHandler（@ControllerAdvice）處理，會回 HTML errorPage
+ */
 @Slf4j
-@RestControllerAdvice("com.company.myweb.rest") //applied to com.company.myweb.rest
+@RestControllerAdvice("com.company.myweb.rest") // 只套用到 rest package 底下的 @RestController
 public class GlobalExceptionRestController extends ResponseEntityExceptionHandler {
 
-    //this handler specifically handles throws MethodArgumentNotValidException when a method parameter annotated with @Valid or @Validated fails validation by extending ResponseEntityExceptionHandler class
+    // 覆寫父類方法 — 專門處理 @Valid / @Validated 驗證失敗拋出的 MethodArgumentNotValidException
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException methodArgumentNotValidException, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         Response response = new Response(statusCode.toString(), methodArgumentNotValidException.getBindingResult().toString());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); //code 400
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400
     }
 
-    //This handler handles global Exception
+    // 全域例外處理（處理其餘未被特別分類的 Exception）
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response> handleException(Exception ex) {
         log.error(ANSI_GREEN + Thread.currentThread().getStackTrace()[1].getMethodName() + ex.getMessage());
 
-        //this returns a ResponseEntity wrapping Response object with only body and status WITHOUT a header.
+        // 回傳只帶 body + status 的 ResponseEntity，不加自訂 header
         Response response = new Response("500", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); //code 500 (Internal Server Error)
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
     }
 }

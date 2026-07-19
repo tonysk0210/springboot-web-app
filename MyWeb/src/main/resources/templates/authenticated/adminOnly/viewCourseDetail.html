@@ -8,18 +8,18 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <main class="container">
-    <!-- header -->
+    <!-- 頁首 -->
     <div class="page-header">
         <h1 th:text="'Course: ' + ${course.name} + ' - Student List'"></h1> <!--model("course")-->
         <button id="openModalBtn" class="add-button">＋ Add Student</button>
     </div>
 
-    <!-- validation error msg-->
-    <!-- param.error returns String[], ${param} is a Map<String, String[]> -->
+    <!-- 驗證錯誤訊息 -->
+    <!-- param.error 回傳 String[]；${param} 是 Map<String, String[]> -->
     <div class="error-message" th:if="${param.error != null and param.error[0] == 'personNotFound'}">
         ⚠️ Student not found
     </div>
@@ -27,7 +27,7 @@
         ⚠️ Student is already enrolled in this course
     </div>
 
-    <!-- add student modal dialog -->
+    <!-- 新增學生 Modal -->
     <dialog id="classModal" class="modal">
         <form method="post" th:action="@{/admin/addCourseStudent}" th:object="${person}" class="modal-form"> <!--model("person")-->
             <h2>Add New Student</h2>
@@ -42,7 +42,7 @@
         </form>
     </dialog>
 
-    <!-- Display student Table -->
+    <!-- 顯示學生表 -->
     <section class="table-section">
         <table>
             <thead>
@@ -69,13 +69,13 @@
         </table>
     </section>
 
-    <!-- Back Button -->
+    <!-- 返回按鈕 -->
     <div class="back-link">
         <a th:href="@{/admin/coursePage}">← Back to Course Management</a>
     </div>
 </main>
 
-<!--viewCourseDetailDescription.html-->
+<!-- 課程詳情頁說明區塊 -->
 <div th:replace="~{text/viewCourseDetailDescription :: viewCourseDetailDescriptionFrag}"></div>
 
 <script>

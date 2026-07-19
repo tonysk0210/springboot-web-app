@@ -8,14 +8,14 @@
 </head>
 <body>
 
-<!-- Navbar fragment -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <main class="container">
-    <!-- Dynamic page header -->
+    <!-- 動態頁面標題 -->
     <h1 th:text="${person.name} + ' - Enrolled Courses'"></h1>
 
-    <!-- display enrolled courses table -->
+    <!-- 顯示已選修課程表 -->
     <section class="table-section" th:if="${person.courses != null and !person.courses.isEmpty()}">
         <table>
             <thead>
@@ -35,20 +35,19 @@
         </table>
     </section>
 
-    <!-- No courses message -->
-    <!--    Show this element unless the courses list is non-null and not empty =
-            Show this element when courses is null OR empty (i.e., person has no courses)   -->
+    <!-- 無課程訊息 -->
+    <!-- 當 courses 為 null 或空清單時顯示（即該學生尚未選任何課程） -->
     <p class="info-message" th:unless="${person.courses != null and !person.courses.isEmpty()}">
-        This student is not enrolled in any courses yet.
+        該學生尚未選修任何課程
     </p>
 
-    <!-- Back to Dashboard -->
+    <!-- 返回 Dashboard -->
     <div class="back-link">
         <a th:href="@{/dashboard}">← Back to Dashboard</a>
     </div>
 </main>
 
-<!--viewEnrolledCoursesDescription-->
+<!-- 已選修課程頁說明區塊 -->
 <div th:insert="~{text/viewEnrolledCoursesDescription :: viewEnrolledCoursesDescriptionFrag}">...</div>
 
 </body>

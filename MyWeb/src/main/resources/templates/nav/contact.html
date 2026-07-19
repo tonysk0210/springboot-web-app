@@ -8,20 +8,20 @@
 </head>
 
 <body>
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 
 <div class="contact-container">
 
-    <!--validation msg-->
+    <!-- 驗證錯誤訊息 -->
     <ul>
-        <!--#fields.errors(...) is a Thymeleaf utility that retrieves validation error messages for a given field or field pattern.-->
+        <!-- #fields.errors(...) 是 Thymeleaf 工具，回傳指定 field 的驗證錯誤訊息清單 -->
         <li class="alert" th:each="error : ${#fields.errors('contact.*')}"
             th:text="${error}"></li>
     </ul>
 
-    <!-- Form content -->
+    <!-- 表單內容 -->
     <form th:action="@{/saveMessage}" th:object="${contact}" method="post" class="contact-form">
         <h1>Contact Us</h1>
         <label for="name">Name:<span class="required-asterisk">*</span></label>
@@ -41,25 +41,25 @@
 
         <button type="submit">Send</button>
 
-        <!--success msg-->
-        <!-- Renders using model contains "successfullySavedMessage"-->
-        <!--if "successfullySavedMessage" is null, false, or empty returns false and is not rendered-->
+        <!-- 成功訊息 -->
+        <!-- 當 model 內含 "successfullySavedMessage" 才渲染 -->
+        <!-- 若 "successfullySavedMessage" 為 null / false / 空字串，Thymeleaf 判定為 false 不渲染 -->
         <div th:if="${successfullySavedMessage}" id="success-message" class="success-message">
             <p th:text="${successfullySavedMessage}"></p>
         </div>
     </form>
 </div>
 
-<!--contactDescription.html-->
+<!-- 聯絡頁說明區塊 -->
 <div th:insert="text/contactDescription :: contactDescriptionFrag"></div>
 
-<!--scroll to successfullySavedMessage-->
+<!-- 捲動到 successfullySavedMessage 位置 -->
 <script>
     window.addEventListener('DOMContentLoaded', (event) => {
         const successMessage = document.getElementById('success-message');
         if (successMessage) {
             successMessage.scrollIntoView({behavior: 'smooth', block: 'center'});
-            // Optional: add focus for accessibility
+            // 可選：加 focus 提升 accessibility
             successMessage.setAttribute('tabindex', '-1');
         }
     });

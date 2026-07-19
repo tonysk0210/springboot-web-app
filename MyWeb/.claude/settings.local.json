@@ -6,7 +6,13 @@
       "Bash(.\\\\mvnw.cmd -q clean compile)",
       "PowerShell(.\\\\mvnw.cmd -q clean compile 2>&1 | Select-Object -Last 80)",
       "PowerShell(.\\\\mvnw.cmd clean compile 2>&1 | Select-Object -First 60)",
-      "PowerShell(.\\\\mvnw.cmd -q clean compile 2>&1 | Select-Object -Last 60)"
+      "PowerShell(.\\\\mvnw.cmd -q clean compile 2>&1 | Select-Object -Last 60)",
+      "Bash(grep -rn -E \"^\\\\s*\\(//|\\\\*|<!--\\).*[a-zA-Z]{4,}\" 'D:/IdeaProjects/springboot-web-app/MyWeb/src/main/resources' --include='*.html' --include='*.sql' --include='*.properties')",
+      "Bash(grep -rn -E \"^\\\\s*\\(//|\\\\*|<!--\\).*\\(This|The|is a|for|Note:|TODO|will|should\\)\" 'D:/IdeaProjects/springboot-web-app/MyWeb/src')",
+      "Bash(grep -rn -E \"^\\\\s*//.*\\(  the |  a |  is | are | of | for | to | in | that | this | with \\)\" 'D:/IdeaProjects/springboot-web-app/MyWeb/src/main/java')",
+      "Bash(xargs grep -l -E \"<!--[^-]*[a-zA-Z]{3,}\")",
+      "Bash(grep -vE \"^[^:]+:[0-9]+:$\")",
+      "Bash(grep -E \"[a-zA-Z]{4,}\")"
     ]
   }
 }

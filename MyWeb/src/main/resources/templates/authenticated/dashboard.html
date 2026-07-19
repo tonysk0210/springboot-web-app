@@ -9,10 +9,10 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}"></div>
 
-<!-- header display -->
+<!-- 頁首 -->
 <div class="dashboard-content">
     <h1 th:text="${'Welcome to Your Dashboard - ' + username}"></h1>  <!--model("username")-->
     <h2 th:text="${'You logged in as '+ role}"></h2>                  <!--model("role")-->
@@ -21,20 +21,20 @@
     <p>This is a simple dashboard page. You can customize this area to display user-specific data, account settings, or
         system stats.</p>
 
-    <!--Profile section-->
+    <!-- 個人資料區塊 -->
     <div class="profile-section">
         <a th:href="@{/profilePage}"><i class="fa-regular fa-address-card"></i> Edit Profile</a>
     </div>
 
     <div class="divider"></div>
 
-    <!--Student authorized section-->
+    <!-- 學生專屬區塊 -->
     <div class="section-block" sec:authorize="hasRole('ROLE_STUDENT')">
         <a th:href="@{/student/viewEnrolledCourses}"><i class="fa-solid fa-list-ul"></i> View Enrolled Courses</a>
         <a th:href="@{/student/signUpCourses}"><i class="fa-solid fa-user-plus"></i> Sign Up Courses</a>
     </div>
 
-    <!-- Admin authorized section-->
+    <!-- 管理員專屬區塊 -->
     <div class="section-block" sec:authorize="hasRole('ROLE_ADMIN')">
         <a th:href="@{/admin/viewContactMessage/page/1(sortField='name', sortDir='asc')}"><i class="fa-solid fa-envelope"></i> View Contact Messages</a>
         <a th:href="@{/admin/planPage}"><i class="fa-solid fa-clipboard"></i> Manage Plans</a>
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<!--dashboardDescription.html-->
+<!-- Dashboard 頁說明區塊 -->
 <div th:insert="text/dashboardDescription :: dashboardDescriptionFrag"></div>
 
 <script src="https://kit.fontawesome.com/a75d89fa9f.js" crossorigin="anonymous"></script>

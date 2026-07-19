@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <main class="container">
@@ -17,12 +17,12 @@
         <button id="openModalBtn" class="add-button">＋ Add Course</button>
     </div>
 
-    <!-- Add-course validation error messages via MVC @Valid in Course class, #fields.hasErrors() returns List<String> -->
+    <!-- 新增課程的驗證錯誤訊息（透過 Courses 上的 @Valid 觸發）；#fields.hasErrors() 回 List<String> -->
     <ul class="error-list" th:if="${#fields.hasErrors('course.*')}">
         <li th:each="error : ${#fields.errors('course.*')}" th:text="${error}"></li>
     </ul>
 
-    <!-- Add new course Modal dialog -->
+    <!-- 新增課程 Modal -->
     <dialog id="courseModal" class="modal">
         <form method="post" th:action="@{/admin/addNewCourse}" th:object="${course}" class="modal-form"> <!--model("course")-->
             <h2>Create New Course</h2>
@@ -40,7 +40,7 @@
         </form>
     </dialog>
 
-    <!-- Display course table -->
+    <!-- 顯示課程表 -->
     <section class="table-section">
         <table>
             <thead>
@@ -68,13 +68,13 @@
         </table>
     </section>
 
-    <!-- Back button -->
+    <!-- 返回按鈕 -->
     <div class="back-link">
         <a th:href="@{/dashboard}">← Back to Dashboard</a>
     </div>
 </main>
 
-<!--coursePageDescription-->
+<!-- 課程頁說明區塊 -->
 <div th:replace="~{text/coursePageDescription :: coursePageDescriptionFrag}"></div>
 
 <script>

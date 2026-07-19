@@ -8,22 +8,22 @@
 </head>
 <body>
 
-<!-- navbar frag -->
+<!-- 導覽列 fragment -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <main class="container">
-    <!-- Page Header -->
+    <!-- 頁面標題 -->
     <header class="page-header">
         <h1>Plan Management</h1>
         <button id="openModalBtn" class="add-button">＋ Add Plan</button>
     </header>
 
-    <!-- validation error msg -->
+    <!-- 驗證錯誤訊息 -->
     <ul class="error-list" th:if="${#fields.hasErrors('plan.*')}">
         <li th:each="error : ${#fields.errors('plan.*')}" th:text="${error}"></li>
     </ul>
 
-    <!-- Modal Dialog for New Plan -->
+    <!-- 新增方案 Modal -->
     <dialog id="planModal" class="modal">
         <form method="post" th:action="@{/admin/addNewPlan}" th:object="${plan}" class="modal-form">
             <h2>Create New Plan</h2>
@@ -38,7 +38,7 @@
         </form>
     </dialog>
 
-    <!-- Plan Table -->
+    <!-- 方案表 -->
     <section class="table-section">
         <h2>Current Plans</h2>
         <table>
@@ -61,13 +61,13 @@
         </table>
     </section>
 
-    <!-- Back Button -->
+    <!-- 返回按鈕 -->
     <div class="back-to-dashboard-container">
         <a th:href="@{/dashboard}" class="back-to-dashboard">← Back to Dashboard</a>
     </div>
 </main>
 
-<!--planPageDescription.html-->
+<!-- 方案頁說明區塊 -->
 <div th:insert="text/planPageDescription :: planPageDescriptionFrag"></div>
 
 <script>

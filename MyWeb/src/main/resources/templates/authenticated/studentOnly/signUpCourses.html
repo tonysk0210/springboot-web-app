@@ -8,20 +8,20 @@
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- 導覽列 -->
 <div th:replace="~{nav/navbar :: navbarFrag}">...</div>
 
 <main class="container">
     <h1>Available Courses</h1>
 
-    <!-- Show success or error messages -->
+    <!-- 顯示成功或錯誤訊息 -->
     <div class="success-message" th:if="${param.success}">
         ✅ Your purchase was successful.
     </div>
 
     <div class="error-message" th:if="${error}" th:text="'⚠️ '+ ${error}"></div> <!--model("error")-->
 
-    <!-- Courses Table -->
+    <!-- 課程表 -->
     <div th:if="${courseList != null and !courseList.isEmpty()}">
         <form th:action="@{/student/purchaseSelectedCourse}" method="post">
             <table>
@@ -39,8 +39,8 @@
                     <td><strong th:text="${course.name}"></strong></td>
                     <td th:text="'$ ' + ${course.fees}"></td>
                     <td>
-                        <!--each checked box represents the courseId
-                            if alreadyRegisteredCourses contains course, then disable the checked box-->
+                        <!-- 每個 checkbox 值即該 course 的 courseId
+                             若 alreadyRegisteredCourses 已包含此 course，checkbox 設 disabled -->
                         <input type="checkbox" name="selectedCourses"
                                th:value="${course.courseId}"
                                th:disabled="${#lists.contains(alreadyRegisteredCourses, course)}"/>
@@ -54,18 +54,18 @@
         </form>
     </div>
 
-    <!-- No Courses Message -->
+    <!-- 無課程訊息 -->
     <p class="info-message" th:unless="${courseList != null and !courseList.isEmpty()}">
         No courses available at the moment.
     </p>
 
-    <!-- Back Link -->
+    <!-- 返回連結 -->
     <div class="back-link">
         <a th:href="@{/dashboard}">← Back to Dashboard</a>
     </div>
 </main>
 
-<!--signUpCoursesDescription.html-->
+<!-- 選課頁說明區塊 -->
 <div th:replace="~{text/signUpCoursesDescription :: signUpCoursesDescriptionFrag}">...</div>
 
 </body>

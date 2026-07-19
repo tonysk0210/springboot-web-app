@@ -13,14 +13,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
- * application/json if the client asks for JSON (via Accept: application/json header).
- * application/xml if the client asks for XML (via Accept: application/xml header).
+ * Contact 的 REST API（/api/contact/**）
+ *
+ * produces = { JSON, XML }：依 client 送來的 Accept header 決定回傳格式：
+ *   - Accept: application/json → 回 JSON（Jackson）
+ *   - Accept: application/xml  → 回 XML（jackson-dataformat-xml）
  */
 @Slf4j
 @RestController
 @RequestMapping(path = "/api/contact", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-@CrossOrigin(origins = "*") //allows all domains (e.g., http://localhost:3000, https://example.com, etc.) to access this endpoint.
+@CrossOrigin(origins = "*") // 允許所有 origin 存取（例如 http://localhost:3000）；正式環境應限縮白名單
 public class ContactRestController {
 
     private final ContactRepository contactRepository;
@@ -31,7 +33,7 @@ public class ContactRestController {
     }
 
     /**
-     * To fetch a list of contact by status using query parameter
+     * 依 status 取聯絡訊息清單（用 query parameter）
      */
     @GetMapping("/getContactMessageByStatus")
     public List<Contact> getContactMessageByStatus(@RequestParam String status) {
@@ -39,18 +41,17 @@ public class ContactRestController {
     }
 
     /**
-     * To fetch a list of contact by status using RequestBody
+     * 依 status 取聯絡訊息清單（用 @RequestBody）
+     * @RequestBody：把 HTTP body 的 JSON/XML 反序列化成 Contact 物件
      */
-    /*@RequestBody: "Take the JSON (or XML) from the HTTP request body and map it into a Contact Java object."*/
     @GetMapping("/getContactMessageByStatusRequestBody")
     public List<Contact> getContactMessageByStatusRequestBody(@RequestBody Contact contact) {
         return (contact != null && contact.getStatus() != null) ? contactRepository.findByStatus(contact.getStatus()) : List.of();
     }
 
     /**
-     * This method is to accept HTTP Header (invocationFrom required) and JSON Body mapped to a validated Contact object.
-     * Log the request info, then persist the contact.
-     * Afterward, return a ResponseEntity wrapping Response pojo
+     * 儲存聯絡訊息：接受一個必填 HTTP header（invocationFrom）+ 一個驗證過的 Contact JSON body
+     * log 記錄請求 → 存 DB → 回 ResponseEntity 包 Response
      */
     @PostMapping("/saveContactMessage")
     public ResponseEntity<Response> saveContactMessage(@RequestHeader("invocationFrom") String invocationFrom, @Valid @RequestBody Contact contact) {
@@ -58,69 +59,66 @@ public class ContactRestController {
         contactRepository.save(contact);
         Response response = new Response();
         response.setStatusCode("201");
-        response.setStatusMessage("Contact message saved successfully");
-        return ResponseEntity.status(HttpStatus.CREATED) //code 201 (Resource created successfully)
-                .header("isSaved", "true").body(response); //ResponseBody datatype
+        response.setStatusMessage("聯絡訊息已儲存");
+        return ResponseEntity.status(HttpStatus.CREATED) // 201 Created
+                .header("isSaved", "true").body(response);
     }
 
     /**
-     * This method is to display header info and delete the contact object from RequestEntity<Contact>.
-     * Send ResponseEntity<Response> after deletion
+     * 刪除聯絡訊息：透過 RequestEntity<Contact> 拿到 header + body，記錄後刪除
      */
     @DeleteMapping("/deleteContactMessage")
     public ResponseEntity<Response> deleteContactMessage(RequestEntity<Contact> requestEntity) {
-        //1) iterate all key-value pair elements in http headers and display them
-        HttpHeaders httpHeaders = requestEntity.getHeaders(); //HttpHeaders implements Map<String, List<String>>
+        // 1) 印出所有 request header
+        HttpHeaders httpHeaders = requestEntity.getHeaders(); // HttpHeaders 實作 Map<String, List<String>>
         httpHeaders.forEach((key, value) -> {
             log.info("key={} : value={}", key, value);
         });
 
-        //2) retrieve contact object through RequestEntity<Contact>
-        Contact contact = requestEntity.getBody(); //It deserializes it into a Contact object using Jackson (by default in Spring Boot).
+        // 2) 從 RequestEntity 取出 body 內的 Contact（Spring 用 Jackson 反序列化）
+        Contact contact = requestEntity.getBody();
 
-        //3) delete contactMessage via contact
-        contactRepository.delete(contact); //equivalent to DELETE FROM contact WHERE contact_id = ? | for .delete() in JPA If contact already deleted	or not found✅ Executes, but does nothing
-        //contactRepository.deleteById(contact.getContactId()); would also work and is the better approach
+        // 3) 刪除聯絡訊息（等同 DELETE FROM contact WHERE contact_id = ?；找不到則靜默略過）
+        contactRepository.delete(contact);
+        // contactRepository.deleteById(contact.getContactId()) 也可以，且較常見
 
-        //4) send ResponseEntity after deletion
+        // 4) 回傳刪除成功的 ResponseEntity
         Response response = new Response();
         response.setStatusCode("200");
-        response.setStatusMessage("Contact message deleted successfully");
-        return ResponseEntity.status(HttpStatus.OK) //code 200 (Request succeeded by default)
+        response.setStatusMessage("聯絡訊息已刪除");
+        return ResponseEntity.status(HttpStatus.OK) // 200 OK
                 .header("isDeleted", "true").body(response);
     }
 
     /**
-     * This method is to update the contact status given the contactId using @RequestBody.
-     * If the contactId given exists, update the status and send isUpdated=true in the Response, or isUpdated=false otherwise.
+     * 依 contactId 把狀態改為 CLOSED
+     * 找到 → 更新並回 200；找不到 → 回 400
      */
     @PatchMapping("/updateContactMessageStatus")
     public ResponseEntity<Response> updateContactMessageStatus(@RequestBody Contact contact) {
         Response response = new Response();
-        //1) fetch contact object based on getContactId()
+        // 1) 依 contactId 取 Contact
         Optional<Contact> contactOptional = contactRepository.findById(contact.getContactId());
-        //2) if corresponding contact is found, modify the status and persist
+        // 2) 找到就改狀態並存回；找不到回 400
         if (contactOptional.isPresent()) {
             contactOptional.get().setStatus(ProjectConstant.STATUS_CLOSED);
             contactRepository.save(contactOptional.get());
         } else {
             response.setStatusCode("400");
-            response.setStatusMessage("Invalid contact ID received");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST) //code 400 (Invalid input, Missing required fields, Violated validation rules)
+            response.setStatusMessage("找不到對應的 contactId");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST) // 400 Bad Request（無效輸入 / 欄位驗證失敗）
                     .header("isUpdated", "false").body(response);
         }
-        //3) send a success ResponseEntity
+        // 3) 回傳成功
         response.setStatusCode("200");
-        response.setStatusMessage("Message status updated successfully to CLOSED");
+        response.setStatusMessage("訊息狀態已更新為 CLOSED");
         return ResponseEntity.status(HttpStatus.OK).header("isUpdated", "true").body(response);
     }
 
     /**
-     * Spring Data Rest API automatically provided when implementing Spring Data JPA
-     * To view other available URI, visit below
-     * http://localhost:8081/spring-data-api/profile
-     * http://localhost:8081/spring-data-api/ - HAL explorer
+     * Spring Data REST 自動端點（因 ContactRepository 是 JpaRepository）
+     *   http://localhost:8081/spring-data-api/profile
+     *   http://localhost:8081/spring-data-api/      ← HAL Explorer
      */
-
 
 }
