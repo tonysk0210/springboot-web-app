@@ -10,77 +10,81 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Spring Security 主設定 — 定義 filter chain、路徑授權規則、登入方式、密碼編碼器
+ * 認證邏輯（帳密比對）在同 package 的 UsernamePwdAuthenticationProvider
+ */
 @Configuration
 public class SpringSecurityConfig {
 
     /**
-     * SecurityFilterChain: a core interface in Spring Security that represents the chain of filters applied to incoming HTTP requests.
+     * SecurityFilterChain：HTTP request 進入時經過的一連串 Security filter
+     * 這個 bean 定義了整個 app 的授權規則與登入行為
      */
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http,
                                     AuthenticationProvider myCustomProvider) throws Exception {
 
+        // CSRF 保護：預設對所有 request 開啟，以下路徑豁免（因為非瀏覽器表單提交）
+        //   - H2 console：內部用非標準表單，CSRF 會擋
+        //   - REST API / Spring Data REST / Actuator：這些吃 JSON、由程式呼叫，無需 CSRF token
         http.csrf(csrf -> csrf
-                .ignoringRequestMatchers(PathRequest.toH2Console()) //disable csrf for h2 console
-                .ignoringRequestMatchers("/api/**") //disable csrf for REST API
-                .ignoringRequestMatchers("/spring-data-api/**") //disable csrf for Spring Data Rest
+                .ignoringRequestMatchers(PathRequest.toH2Console())
+                .ignoringRequestMatchers("/api/**")
+                .ignoringRequestMatchers("/spring-data-api/**")
                 .ignoringRequestMatchers("/myWeb/actuator/**"));
 
+        // 路徑授權規則（由上而下比對，先命中先套用）
+        //   authenticated() = 只要登入就過；hasRole("X") = 需要對應角色（自動加 ROLE_ 前綴）
+        //   anyRequest().permitAll() = 未列出的路徑一律放行（含首頁、H2 console、靜態資源）
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/dashboard").authenticated()
                 .requestMatchers("/profilePage").authenticated()
                 .requestMatchers("/updateProfile").authenticated()
                 .requestMatchers("/student/**").hasRole("STUDENT")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/**").hasRole("ADMIN") //Rest API
-                .requestMatchers("/spring-data-api/**").hasRole("ADMIN") //Spring Data Rest
-                .requestMatchers("/myWeb/actuator/**").hasRole("ADMIN") //actuator
-                .anyRequest().permitAll()); //all other requests are permitted, including h2 console
+                .requestMatchers("/api/**").hasRole("ADMIN")
+                .requestMatchers("/spring-data-api/**").hasRole("ADMIN")
+                .requestMatchers("/myWeb/actuator/**").hasRole("ADMIN")
+                .anyRequest().permitAll());
 
+        // 表單登入：GET /login 顯示登入頁；成功 → /dashboard；失敗 → /login?error=true
         http.formLogin(loginConfig -> loginConfig
                 .loginPage("/login")
                 .defaultSuccessUrl("/dashboard")
                 .failureUrl("/login?error=true"));
 
-        /**
-         * logout is instead handled by controller
-         */
-        /*http.logout(logoutConfig -> logoutConfig
-                .logoutSuccessUrl("/login?logout=true")
-                .invalidateHttpSession(true)
-                .permitAll());   //these wont get executed*/
+        // 登出流程改在 LoginController 內手動處理（走 GET 繞過預設 CSRF）
+        // http.logout(...) 因此不在此設定
 
+        // 同時啟用 HTTP Basic Auth：給 Boot Admin server poll actuator、REST API 呼叫使用
         http.httpBasic(Customizer.withDefaults());
 
-        http.authenticationProvider(myCustomProvider); //allow both providers to authenticate users
+        // 註冊自訂 provider（用 email 查 person 表 + BCrypt 比對密碼）
+        http.authenticationProvider(myCustomProvider);
 
-        //disable h2 console frame options
+        // 關掉 X-Frame-Options → 允許 H2 console 用 <iframe> 顯示子視窗
+        // 生產環境不該關（會有 clickjacking 風險），這裡純為 dev 便利
         http.headers(headersConfigurer -> headersConfigurer
-                //Configures the X-Frame-Options HTTP header, which controls whether the page can be embedded in an <iframe>
                 .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
 
         return http.build();
     }
 
-    /**
-     * establish BcryptHashing PasswordEncoder
-     */
+    /** BCrypt 密碼編碼器：註冊 + 登入時比對密碼都用這個 bean */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /*@Bean
+    /* 保留範例：改用 InMemoryUserDetailsManager 記憶體帳號管理（不查 DB）
+       目前用 UsernamePwdAuthenticationProvider 走 DB 認證，此段停用
+    @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
         UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("123")
-                .roles("ADMIN").build();
+                .username("admin").password("123").roles("ADMIN").build();
         UserDetails student = User.withDefaultPasswordEncoder()
-                .username("student")
-                .password("123")
-                .roles("STUDENT").build();
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager(admin, student);
-        return manager;
+                .username("student").password("123").roles("STUDENT").build();
+        return new InMemoryUserDetailsManager(admin, student);
     }*/
 }

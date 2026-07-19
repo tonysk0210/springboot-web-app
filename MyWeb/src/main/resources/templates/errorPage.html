@@ -1,14 +1,22 @@
 <!DOCTYPE html>
+<!-- xmlns:th 宣告 Thymeleaf 命名空間，讓 th:xxx 屬性能被 Thymeleaf 引擎識別 -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Error</title>
+    <title>錯誤</title>
+    <!-- @{/css/error.css} 是 Thymeleaf URL 表達式：
+         Thymeleaf 會自動加上 context path，產出 "/css/error.css" 之類的路徑 -->
     <link rel="stylesheet" th:href="@{/css/error.css}"/>
 </head>
 <body>
 <div class="error-container">
-    <h1>Oops! Something went wrong.</h1>
-    <p th:text="${exceptionMessage} ?: 'An unexpected error has occurred within controllers'"></p>
-    <a th:href="@{/}" class="home-button">Return to Home Page</a>
+    <h1>哎呀！發生錯誤了。</h1>
+    <!-- th:text="..." → 用表達式運算結果覆蓋 <p> 的內文
+         ${exceptionMessage} → 讀取 Model 內 key="exceptionMessage" 的值
+                              （由 GlobalExceptionHandler 用 modelAndView.addObject("exceptionMessage", ex.getMessage()) 塞入）
+         ?: → Elvis operator：左邊為 null / 空字串時，改用右邊的 fallback 文字 -->
+    <p th:text="${exceptionMessage} ?: 'Controller 執行時發生非預期的錯誤'"></p>
+    <!-- @{/} → 首頁的 URL，Thymeleaf 會加上 context path -->
+    <a th:href="@{/}" class="home-button">回到首頁</a>
 </div>
 </body>
 </html>

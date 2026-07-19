@@ -8,12 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 自訂 /actuator/info 端點的內容
- *
- * 實作 InfoContributor 介面 → Spring Boot 會自動偵測並注入到 /actuator/info 回應內
- * 呼叫 /myWeb/actuator/info 時可看到這裡放的 key/value（會以 "myWeb-info" 作為 JSON 的頂層 key）
- *
- * 也會被 Spring Boot Admin server 定期 poll，顯示在 dashboard 的 Info 分頁
+ * 自訂 /actuator/info 端點內容
+ * 實作 InfoContributor → Spring Boot 自動偵測；資料以 "myWeb-info" 為頂層 key
+ * 出現在 /myWeb/actuator/info 回應與 Spring Boot Admin dashboard 的 Info 分頁
  */
 @Component
 public class MyWebActuatorInfoContributor implements InfoContributor {

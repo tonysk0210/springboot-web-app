@@ -5,10 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * The prefixes get, find, and read are all interpreted as “find” operations by Spring Data.
+ * Roles 的 Spring Data JPA repository。
+ * 注意：Spring Data JPA 的 get/find/read 三種前綴都是「查詢」意思，效果相同。
  */
 @Repository
 public interface RolesRepository extends JpaRepository<Roles, Integer> {
 
-    Roles getByRoleName(String roleName); //JPA derived query method
+    // Derived query：Spring 依方法名自動生成 SELECT ... WHERE role_name = ?
+    Roles getByRoleName(String roleName);
 }
